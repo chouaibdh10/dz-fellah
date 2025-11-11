@@ -1,0 +1,30 @@
+.product-catalog {
+  padding: 2rem 0;
+  min-height: calc(100vh - 80px);
+}
+
+.search-bar {
+  margin-bottom: 3rem;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  max-width: 600px;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #4a7c23;
+}
+
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+  font-size: 1.2rem;
+}
