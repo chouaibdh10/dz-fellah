@@ -9,9 +9,12 @@ import Register from './pages/Register'
 import ProductCatalog from './pages/ProductCatalog'
 import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
+import ProducerAccess from './pages/ProducerAccess'
+import ClientAccess from './pages/ClientAccess'
 import ProducerDashboard from './pages/producer/Dashboard'
 import ProducerShop from './pages/producer/Shop'
 import ProducerProducts from './pages/producer/Products'
+import ProducerOrders from './pages/producer/Orders'
 import ClientDashboard from './pages/client/Dashboard'
 import ClientOrders from './pages/client/Orders'
 import './styles/App.css'
@@ -32,10 +35,15 @@ function App() {
                 <Route path="/products/:id" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />
                 
+                {/* Routes d'accès rapide */}
+                <Route path="/producteur" element={<ProducerAccess />} />
+                <Route path="/client" element={<ClientAccess />} />
+                
                 {/* Routes Producteur */}
                 <Route path="/producer/dashboard" element={<ProducerDashboard />} />
                 <Route path="/producer/shop" element={<ProducerShop />} />
                 <Route path="/producer/products" element={<ProducerProducts />} />
+                <Route path="/producer/orders" element={<ProducerOrders />} />
                 
                 {/* Routes Client */}
                 <Route path="/client/dashboard" element={<ClientDashboard />} />

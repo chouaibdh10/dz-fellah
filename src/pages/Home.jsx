@@ -54,6 +54,37 @@ const Home = () => {
         </div>
       </section>
 
+      <section className="about-section container">
+        <div className="about-content">
+          <div className="about-image">
+            <img
+              src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1400&q=80"
+              alt="Ferme verdoyante en Algérie"
+              loading="lazy"
+            />
+          </div>
+          <div className="about-text">
+            <h2>À propos de DZ-Fellah</h2>
+            <p>
+              DZ-Fellah est la plateforme qui connecte les consommateurs algériens directement 
+              aux agriculteurs locaux. Notre mission est de faciliter l'accès à des produits 
+              frais, authentiques et de saison, tout en soutenant nos producteurs.
+            </p>
+            <ul className="about-highlights">
+              <li>✅ Traçabilité complète et saisonnalité garanties</li>
+              <li>✅ Mise en avant des pratiques agricoles durables</li>
+              <li>✅ Plateforme sécurisée pour achats et ventes</li>
+              <li>✅ Support direct aux agriculteurs algériens</li>
+            </ul>
+            <div className="about-contact">
+              <p>📞 +213 555 12 34 56</p>
+              <p>📧 contact@dz-fellah.com</p>
+              <p>📍 Alger, Algérie</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="seasonal-section container">
         <h2 className="section-title">🍊 Produits de Saison</h2>
         <p className="section-subtitle">Découvrez les produits frais du moment</p>
