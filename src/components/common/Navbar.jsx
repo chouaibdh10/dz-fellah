@@ -22,26 +22,29 @@ const Navbar = () => {
         </Link>
         
         <ul className="navbar-menu">
-          <li><Link to="/products">Produits</Link></li>
-          
-          {/* Afficher le panier seulement si connecté */}
           {user && (
-            <li>
-              <Link to="/cart" className="cart-link">
-                🛒 Panier ({getItemCount()})
-              </Link>
-            </li>
-          )}
-          
-          {/* Si non connecté : afficher connexion et inscription */}
-          {!user && (
             <>
-              <li><Link to="/login">Connexion</Link></li>
-              <li><Link to="/register">Inscription</Link></li>
+              <li>
+                <Link to="/products">
+                  Produits
+                </Link>
+              </li>
+              
+              <li>
+                <Link to="/cart" className="cart-link">
+                  🛒 Panier ({getItemCount()})
+                </Link>
+              </li>
             </>
           )}
           
-          {/* Si connecté producteur : afficher dashboard producteur */}
+          {!user && (
+            <>
+              <li><Link to="/login">Connexion</Link></li>
+              <li><Link to="/register-choice">Inscription</Link></li>
+            </>
+          )}
+          
           {isProducer && (
             <>
               <li><Link to="/producer/dashboard">Tableau de bord</Link></li>
@@ -51,15 +54,13 @@ const Navbar = () => {
             </>
           )}
           
-          {/* Si connecté client : afficher dashboard client */}
           {isClient && (
             <>
-              <li><Link to="/client/dashboard">Mon compte</Link></li>
+              <li><Link to="/client/profile">Mon profil</Link></li>
               <li><Link to="/client/orders">Mes commandes</Link></li>
             </>
           )}
           
-          {/* Bouton déconnexion pour utilisateurs connectés */}
           {user && (
             <li>
               <button onClick={handleLogout} className="logout-btn">

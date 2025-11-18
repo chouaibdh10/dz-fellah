@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import './Auth.css'
 
 const Register = () => {
+  const [searchParams] = useSearchParams()
+  const userTypeFromUrl = searchParams.get('type') || 'client'
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    userType: 'client',
+    userType: userTypeFromUrl,
     phone: '',
     address: ''
   })
@@ -18,6 +21,12 @@ const Register = () => {
   
   const { register } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (userTypeFromUrl) {
+      setFormData(prev => ({ ...prev, userType: userTypeFromUrl }))
+    }
+  }, [userTypeFromUrl])
 
   const handleChange = (e) => {
     setFormData({
@@ -48,7 +57,7 @@ const Register = () => {
       if (formData.userType === 'producer') {
         navigate('/producer/dashboard')
       } else {
-        navigate('/client/dashboard')
+        navigate('/client/profile')
       }
     } catch (err) {
       setError('Une erreur est survenue lors de l\'inscription')
@@ -60,24 +69,19 @@ const Register = () => {
   return (
     <div className="auth-page">
       <div className="auth-container">
+        <Link to="/register-choice" className="back-link">
+          ← Retour
+        </Link>
+        
         <h1 className="auth-title">Inscription</h1>
+        
+        <div className="user-type-badge">
+          {formData.userType === 'producer' ? '🌾 Producteur' : '🛒 Client'}
+        </div>
         
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label>Type de compte</label>
-            <select 
-              name="userType"
-              value={formData.userType} 
-              onChange={handleChange}
-              required
-            >
-              <option value="client">Client</option>
-              <option value="producer">Producteur</option>
-            </select>
-          </div>
-
           <div className="form-group">
             <label>Nom complet</label>
             <input

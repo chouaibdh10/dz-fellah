@@ -6,8 +6,8 @@ import Navbar from './components/common/Navbar'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import RegisterChoice from './pages/RegisterChoice'
 import ProductCatalog from './pages/ProductCatalog'
-import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
 import ProducerAccess from './pages/ProducerAccess'
 import ClientAccess from './pages/ClientAccess'
@@ -15,7 +15,7 @@ import ProducerDashboard from './pages/producer/Dashboard'
 import ProducerShop from './pages/producer/Shop'
 import ProducerProducts from './pages/producer/Products'
 import ProducerOrders from './pages/producer/Orders'
-import ClientDashboard from './pages/client/Dashboard'
+import ClientProfile from './pages/client/Profile'
 import ClientOrders from './pages/client/Orders'
 import './styles/App.css'
 
@@ -30,9 +30,9 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/register-choice" element={<RegisterChoice />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/products" element={<ProductCatalog />} />
-                <Route path="/products/:id" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />
                 
                 {/* Routes d'accès rapide */}
@@ -46,7 +46,7 @@ function App() {
                 <Route path="/producer/orders" element={<ProducerOrders />} />
                 
                 {/* Routes Client */}
-                <Route path="/client/dashboard" element={<ClientDashboard />} />
+                <Route path="/client/profile" element={<ClientProfile />} />
                 <Route path="/client/orders" element={<ClientOrders />} />
               </Routes>
             </main>

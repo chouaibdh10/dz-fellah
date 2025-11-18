@@ -6,7 +6,6 @@ import './Auth.css'
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [userType, setUserType] = useState('client')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   
@@ -19,15 +18,16 @@ const Login = () => {
     setLoading(true)
 
     try {
-      await login(email, password, userType)
+      const user = await login(email, password)
       
-      if (userType === 'producer') {
+      // Redirection automatique selon le type d'utilisateur
+      if (user.userType === 'producer') {
         navigate('/producer/dashboard')
       } else {
-        navigate('/client/dashboard')
+        navigate('/client/profile')
       }
     } catch (err) {
-      setError('Identifiants incorrects')
+      setError('Email ou mot de passe incorrect')
     } finally {
       setLoading(false)
     }
@@ -41,18 +41,6 @@ const Login = () => {
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label>Type de compte</label>
-            <select 
-              value={userType} 
-              onChange={(e) => setUserType(e.target.value)}
-              required
-            >
-              <option value="client">Client</option>
-              <option value="producer">Producteur</option>
-            </select>
-          </div>
-
           <div className="form-group">
             <label>Email</label>
             <input
@@ -81,7 +69,7 @@ const Login = () => {
         </form>
 
         <p className="auth-link">
-          Pas encore de compte ? <Link to="/register">S'inscrire</Link>
+          Pas encore de compte ? <Link to="/register-choice">S'inscrire</Link>
         </p>
       </div>
     </div>

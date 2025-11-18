@@ -1,43 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import Footer from '../components/Footer'
 import './Home.css'
 
 const Home = () => {
-  const [seasonalProducts, setSeasonalProducts] = useState([])
-
-  useEffect(() => {
-    // TODO: Remplacer par un véritable appel API
-    const mockSeasonalProducts = [
-      {
-        id: 1,
-        name: 'Tomates',
-        image: 'https://via.placeholder.com/300x200?text=Tomates',
-        price: 250,
-        unit: 'kg',
-        producer: 'Ferme Ben Ahmed',
-        inSeason: true
-      },
-      {
-        id: 2,
-        name: 'Oranges',
-        image: 'https://via.placeholder.com/300x200?text=Oranges',
-        price: 180,
-        unit: 'kg',
-        producer: 'Verger El Hamri',
-        inSeason: true
-      },
-      {
-        id: 3,
-        name: 'Miel Local',
-        image: 'https://via.placeholder.com/300x200?text=Miel',
-        price: 1200,
-        unit: 'pot',
-        producer: 'Rucher Bensalem',
-        inSeason: true
-      }
-    ]
-    setSeasonalProducts(mockSeasonalProducts)
-  }, [])
+  const { user } = useAuth()
+  const navigate = useNavigate()
 
   return (
     <div className="home">
@@ -48,9 +17,15 @@ const Home = () => {
           <p className="hero-description">
             Des produits frais, de saison, directement de la ferme à votre table
           </p>
-          <Link to="/products" className="btn btn-primary btn-large">
-            Découvrir les produits
-          </Link>
+          {user ? (
+            <Link to="/products" className="btn btn-primary btn-large">
+              Découvrir les produits
+            </Link>
+          ) : (
+            <Link to="/register-choice" className="btn btn-primary btn-large">
+              Commencer maintenant
+            </Link>
+          )}
         </div>
       </section>
 
@@ -76,46 +51,8 @@ const Home = () => {
               <li>✅ Plateforme sécurisée pour achats et ventes</li>
               <li>✅ Support direct aux agriculteurs algériens</li>
             </ul>
-            <div className="about-contact">
-              <p>📞 +213 555 12 34 56</p>
-              <p>📧 contact@dz-fellah.com</p>
-              <p>📍 Alger, Algérie</p>
-            </div>
+           
           </div>
-        </div>
-      </section>
-
-      <section className="seasonal-section container">
-        <h2 className="section-title">🍊 Produits de Saison</h2>
-        <p className="section-subtitle">Découvrez les produits frais du moment</p>
-        
-        <div className="products-grid">
-          {seasonalProducts.map(product => (
-            <div key={product.id} className="product-card">
-              <div className="product-image">
-                <img src={product.image} alt={product.name} />
-                {product.inSeason && (
-                  <span className="badge badge-season">De saison</span>
-                )}
-              </div>
-              <div className="product-info">
-                <h3>{product.name}</h3>
-                <p className="producer-name">{product.producer}</p>
-                <div className="product-price">
-                  {product.price} DA / {product.unit}
-                </div>
-                <Link to={`/products/${product.id}`} className="btn btn-primary btn-small">
-                  Voir le produit
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="view-all">
-          <Link to="/products" className="btn btn-secondary">
-            Voir tous les produits
-          </Link>
         </div>
       </section>
 
@@ -144,6 +81,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   )
 }

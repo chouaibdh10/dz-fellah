@@ -8,16 +8,14 @@ const ClientAccess = () => {
 
   useEffect(() => {
     const autoLogin = async () => {
-      // Si déjà connecté en tant que client, rediriger vers le dashboard
       if (user?.userType === 'client') {
-        navigate('/client/dashboard')
+        navigate('/client/profile')
         return
       }
 
-      // Connexion automatique en tant que client
       try {
-        await login('client@dzfellah.com', 'demo123', 'client')
-        navigate('/client/dashboard')
+        await login('client@dzfellah.com', 'demo123')
+        navigate('/client/profile')
       } catch (error) {
         console.error('Erreur de connexion:', error)
         navigate('/login')
@@ -30,7 +28,7 @@ const ClientAccess = () => {
   return (
     <div className="container" style={{ textAlign: 'center', padding: '4rem' }}>
       <h2>Connexion en cours...</h2>
-      <p>Redirection vers votre espace client</p>
+      <p>Redirection vers votre profil</p>
     </div>
   )
 }

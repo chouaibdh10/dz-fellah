@@ -16,7 +16,7 @@ const ProducerAccess = () => {
 
       // Connexion automatique en tant que producteur
       try {
-        await login('producteur@dzfellah.com', 'demo123', 'producer')
+        await login('producteur@dzfellah.com', 'demo123')
         navigate('/producer/dashboard')
       } catch (error) {
         console.error('Erreur de connexion:', error)

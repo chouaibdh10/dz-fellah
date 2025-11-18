@@ -15,12 +15,18 @@ export const AuthProvider = ({ children }) => {
     setLoading(false)
   }, [])
 
-  const login = async (email, password, userType) => {
+  const login = async (email, password) => {
     // TODO: Remplacer par un véritable appel API
+    // Détection automatique du type d'utilisateur basée sur l'email
+    let userType = 'client'
+    if (email.includes('producteur') || email.includes('producer') || email.includes('ferme')) {
+      userType = 'producer'
+    }
+    
     const userData = {
       id: Date.now(),
       email,
-      userType, // 'producer' ou 'client'
+      userType,
       name: email.split('@')[0]
     }
     
