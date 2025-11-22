@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import ClientLayout from '../components/client/ClientLayout'
 import './ProductCatalog.css'
 
 const ProductCatalog = () => {
@@ -136,133 +137,135 @@ const ProductCatalog = () => {
   }
 
   return (
-    <div className="product-catalog">
-      <div className="container">
-        <h1 className="page-title">Catalogue des Produits</h1>
-        
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="🔍 Rechercher un produit ou un producteur..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-        </div>
+    <ClientLayout>
+      <div className="product-catalog">
+        <div className="container">
+          <h1 className="page-title">Catalogue des Produits</h1>
+          
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="🔍 Rechercher un produit ou un producteur..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
 
-        <div className="catalog-info">
-          <p>{filteredProducts.length} produit(s) disponible(s)</p>
-        </div>
+          <div className="catalog-info">
+            <p>{filteredProducts.length} produit(s) disponible(s)</p>
+          </div>
 
-        <div className="products-grid">
-          {filteredProducts.map(product => (
-            <div key={product.id} className="product-card" onClick={() => openProductModal(product)}>
-              <div className="product-image">
-                <img src={product.image} alt={product.name} />
-                {product.inSeason && (
-                  <span className="badge badge-season">De saison</span>
-                )}
-                {product.stock < 10 && (
-                  <span className="badge badge-warning">Stock limité</span>
-                )}
-              </div>
-              <div className="product-info">
-                <h3>{product.name}</h3>
-                <p className="producer-name">👨‍🌾 {product.producer}</p>
-                <p className="product-description">{product.description}</p>
-                <div className="product-price">
-                  {product.saleType === 'weight' 
-                    ? `${product.pricePerKg} DA / kg`
-                    : `${product.price} DA / unité`
-                  }
+          <div className="products-grid">
+            {filteredProducts.map(product => (
+              <div key={product.id} className="product-card" onClick={() => openProductModal(product)}>
+                <div className="product-image">
+                  <img src={product.image} alt={product.name} />
+                  {product.inSeason && (
+                    <span className="badge badge-season">De saison</span>
+                  )}
+                  {product.stock < 10 && (
+                    <span className="badge badge-warning">Stock limité</span>
+                  )}
                 </div>
-                <p className="stock-info">Stock: {product.stock} {product.unit}</p>
+                <div className="product-info">
+                  <h3>{product.name}</h3>
+                  <p className="producer-name">👨‍🌾 {product.producer}</p>
+                  <p className="product-description">{product.description}</p>
+                  <div className="product-price">
+                    {product.saleType === 'weight' 
+                      ? `${product.pricePerKg} DA / kg`
+                      : `${product.price} DA / unité`
+                    }
+                  </div>
+                  <p className="stock-info">Stock: {product.stock} {product.unit}</p>
+                </div>
+                <div className="product-actions">
+                  <button 
+                    onClick={(e) => handleQuickAdd(product, e)}
+                    className="btn btn-primary btn-small btn-add-cart"
+                  >
+                    🛒 Ajouter
+                  </button>
+                </div>
               </div>
-              <div className="product-actions">
-                <button 
-                  onClick={(e) => handleQuickAdd(product, e)}
-                  className="btn btn-primary btn-small btn-add-cart"
-                >
-                  🛒 Ajouter
-                </button>
+            ))}
+          </div>
+
+          {filteredProducts.length === 0 && (
+            <div className="no-results">
+              <p>Aucun produit trouvé pour "{searchTerm}"</p>
+            </div>
+          )}
+        </div>
+
+        {/* Modal Product Details */}
+        {selectedProduct && (
+          <div className="modal-overlay" onClick={closeModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <button className="modal-close" onClick={closeModal}>✕</button>
+              
+              <div className="modal-body">
+                <div className="modal-image">
+                  <img src={selectedProduct.image} alt={selectedProduct.name} />
+                </div>
+                
+                <div className="modal-info">
+                  <h2>{selectedProduct.name}</h2>
+                  <p className="modal-producer">👨‍🌾 {selectedProduct.producer}</p>
+                  <p className="modal-description">{selectedProduct.description}</p>
+                  
+                  <div className="modal-price">
+                    {selectedProduct.saleType === 'weight' 
+                      ? `${selectedProduct.pricePerKg} DA / ${selectedProduct.unit}`
+                      : `${selectedProduct.price} DA / ${selectedProduct.unit}`
+                    }
+                  </div>
+                  
+                  <p className="modal-stock">
+                    {selectedProduct.stock > 10 
+                      ? `✅ En stock (${selectedProduct.stock} ${selectedProduct.unit})` 
+                      : `⚠️ Stock limité (${selectedProduct.stock} ${selectedProduct.unit})`
+                    }
+                  </p>
+
+                  <div className="modal-quantity">
+                    <label>Quantité:</label>
+                    <div className="quantity-controls">
+                      <button 
+                        className="qty-btn"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      >
+                        -
+                      </button>
+                      <span className="qty-value">{quantity} {selectedProduct.unit}</span>
+                      <button 
+                        className="qty-btn"
+                        onClick={() => setQuantity(Math.min(selectedProduct.stock, quantity + 1))}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="modal-total">
+                    <strong>Total: {calculateTotal().toLocaleString()} DA</strong>
+                  </div>
+
+                  <button 
+                    className="btn btn-primary btn-large"
+                    onClick={handleAddToCart}
+                    disabled={selectedProduct.stock === 0}
+                  >
+                    🛒 Ajouter au panier
+                  </button>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
-
-        {filteredProducts.length === 0 && (
-          <div className="no-results">
-            <p>Aucun produit trouvé pour "{searchTerm}"</p>
           </div>
         )}
       </div>
-
-      {/* Modal Product Details */}
-      {selectedProduct && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={closeModal}>✕</button>
-            
-            <div className="modal-body">
-              <div className="modal-image">
-                <img src={selectedProduct.image} alt={selectedProduct.name} />
-              </div>
-              
-              <div className="modal-info">
-                <h2>{selectedProduct.name}</h2>
-                <p className="modal-producer">👨‍🌾 {selectedProduct.producer}</p>
-                <p className="modal-description">{selectedProduct.description}</p>
-                
-                <div className="modal-price">
-                  {selectedProduct.saleType === 'weight' 
-                    ? `${selectedProduct.pricePerKg} DA / ${selectedProduct.unit}`
-                    : `${selectedProduct.price} DA / ${selectedProduct.unit}`
-                  }
-                </div>
-                
-                <p className="modal-stock">
-                  {selectedProduct.stock > 10 
-                    ? `✅ En stock (${selectedProduct.stock} ${selectedProduct.unit})` 
-                    : `⚠️ Stock limité (${selectedProduct.stock} ${selectedProduct.unit})`
-                  }
-                </p>
-
-                <div className="modal-quantity">
-                  <label>Quantité:</label>
-                  <div className="quantity-controls">
-                    <button 
-                      className="qty-btn"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    >
-                      -
-                    </button>
-                    <span className="qty-value">{quantity} {selectedProduct.unit}</span>
-                    <button 
-                      className="qty-btn"
-                      onClick={() => setQuantity(Math.min(selectedProduct.stock, quantity + 1))}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div className="modal-total">
-                  <strong>Total: {calculateTotal().toLocaleString()} DA</strong>
-                </div>
-
-                <button 
-                  className="btn btn-primary btn-large"
-                  onClick={handleAddToCart}
-                  disabled={selectedProduct.stock === 0}
-                >
-                  🛒 Ajouter au panier
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </ClientLayout>
   )
 }
 

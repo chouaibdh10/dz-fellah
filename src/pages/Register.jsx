@@ -54,11 +54,8 @@ const Register = () => {
     try {
       await register(formData)
       
-      if (formData.userType === 'producer') {
-        navigate('/producer/dashboard')
-      } else {
-        navigate('/client/profile')
-      }
+      // Rediriger vers la page de vérification d'email
+      navigate('/verify-email')
     } catch (err) {
       setError('Une erreur est survenue lors de l\'inscription')
     } finally {

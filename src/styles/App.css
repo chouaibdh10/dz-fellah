@@ -33,3 +33,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+.main-content {
+  min-height: 100vh;
+}
+
+/* Pour les pages avec sidebar client */
+.client-layout .main-content {
+  margin-left: 0;
+}

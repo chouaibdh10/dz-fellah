@@ -77,6 +77,201 @@
   font-size: 0.9rem;
 }
 
+/* Verify Email Styles */
+.verify-email-container {
+  max-width: 600px;
+  text-align: center;
+}
+
+.verify-icon {
+  font-size: 5rem;
+  margin-bottom: 1.5rem;
+  animation: bounce 2s infinite;
+}
+
+.verify-icon.loading {
+  animation: spin 2s linear infinite;
+}
+
+.verify-icon.error {
+  animation: shake 0.5s;
+}
+
+.verify-icon.success {
+  animation: scaleUp 0.5s ease-out;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.verify-message {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.verify-message strong {
+  color: #4a7c23;
+}
+
+.verify-message.error-text {
+  color: #d32f2f;
+}
+
+.verify-instructions {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.verify-steps {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.verify-step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  text-align: left;
+}
+
+.verify-step:not(:last-child) {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.step-number {
+  background: linear-gradient(135deg, #4a7c23, #2d5016);
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.verify-help {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.verify-help p {
+  font-weight: 600;
+  color: #856404;
+  margin-bottom: 0.5rem;
+}
+
+.verify-help ul {
+  list-style: none;
+  padding-left: 0;
+  color: #856404;
+}
+
+.verify-help li {
+  padding: 0.3rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.verify-help li::before {
+  content: '•';
+  position: absolute;
+  left: 0.5rem;
+}
+
+.success-message {
+  background: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #c3e6cb;
+  margin-bottom: 1rem;
+}
+
+.success-animation {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.checkmark-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #4a7c23;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scaleUp 0.5s ease-out;
+}
+
+.checkmark {
+  width: 30px;
+  height: 50px;
+  border: solid white;
+  border-width: 0 5px 5px 0;
+  transform: rotate(45deg);
+  animation: drawCheckmark 0.5s ease-out 0.3s both;
+}
+
+@keyframes drawCheckmark {
+  from {
+    height: 0;
+  }
+  to {
+    height: 50px;
+  }
+}
+
+.redirect-message {
+  font-size: 0.95rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 1.5rem;
+}
+
+.verify-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.verify-actions .btn {
+  min-width: 150px;
+}
+
 @media (max-width: 768px) {
   .auth-container {
     padding: 2rem;

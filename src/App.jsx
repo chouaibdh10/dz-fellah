@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import Navbar from './components/common/Navbar'
@@ -17,40 +17,64 @@ import ProducerProducts from './pages/producer/Products'
 import ProducerOrders from './pages/producer/Orders'
 import ClientProfile from './pages/client/Profile'
 import ClientOrders from './pages/client/Orders'
+import VerifyEmail from './pages/VerifyEmail'
+import EmailVerified from './pages/EmailVerified'
 import './styles/App.css'
+
+function AppContent() {
+  const location = useLocation()
+  
+  // Pages où la navbar horizontale doit être masquée
+  const hideNavbarPaths = [
+    '/client/profile',
+    '/client/orders',
+    '/cart',
+    '/products'
+  ]
+  
+  const shouldHideNavbar = hideNavbarPaths.some(path => 
+    location.pathname.startsWith(path)
+  )
+
+  return (
+    <div className="app">
+      {!shouldHideNavbar && <Navbar />}
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register-choice" element={<RegisterChoice />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/email-verified" element={<EmailVerified />} />
+          <Route path="/products" element={<ProductCatalog />} />
+          <Route path="/cart" element={<Cart />} />
+          
+          {/* Routes d'accès rapide */}
+          <Route path="/producteur" element={<ProducerAccess />} />
+          <Route path="/client" element={<ClientAccess />} />
+          
+          {/* Routes Producteur */}
+          <Route path="/producer/dashboard" element={<ProducerDashboard />} />
+          <Route path="/producer/shop" element={<ProducerShop />} />
+          <Route path="/producer/products" element={<ProducerProducts />} />
+          <Route path="/producer/orders" element={<ProducerOrders />} />
+          
+          {/* Routes Client */}
+          <Route path="/client/profile" element={<ClientProfile />} />
+          <Route path="/client/orders" element={<ClientOrders />} />
+        </Routes>
+      </main>
+    </div>
+  )
+}
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <CartProvider>
-          <div className="app">
-            <Navbar />
-            <main className="main-content">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register-choice" element={<RegisterChoice />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/products" element={<ProductCatalog />} />
-                <Route path="/cart" element={<Cart />} />
-                
-                {/* Routes d'accès rapide */}
-                <Route path="/producteur" element={<ProducerAccess />} />
-                <Route path="/client" element={<ClientAccess />} />
-                
-                {/* Routes Producteur */}
-                <Route path="/producer/dashboard" element={<ProducerDashboard />} />
-                <Route path="/producer/shop" element={<ProducerShop />} />
-                <Route path="/producer/products" element={<ProducerProducts />} />
-                <Route path="/producer/orders" element={<ProducerOrders />} />
-                
-                {/* Routes Client */}
-                <Route path="/client/profile" element={<ClientProfile />} />
-                <Route path="/client/orders" element={<ClientOrders />} />
-              </Routes>
-            </main>
-          </div>
+          <AppContent />
         </CartProvider>
       </AuthProvider>
     </Router>
