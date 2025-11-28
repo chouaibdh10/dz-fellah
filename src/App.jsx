@@ -15,6 +15,7 @@ import ProducerDashboard from './pages/producer/Dashboard'
 import ProducerShop from './pages/producer/Shop'
 import ProducerProducts from './pages/producer/Products'
 import ProducerOrders from './pages/producer/Orders'
+import ProducerProfile from './pages/producer/Profile'
 import ClientProfile from './pages/client/Profile'
 import ClientOrders from './pages/client/Orders'
 import VerifyEmail from './pages/VerifyEmail'
@@ -29,7 +30,8 @@ function AppContent() {
     '/client/profile',
     '/client/orders',
     '/cart',
-    '/products'
+    '/products',
+    '/producer'
   ]
   
   const shouldHideNavbar = hideNavbarPaths.some(path => 
@@ -59,6 +61,7 @@ function AppContent() {
           <Route path="/producer/shop" element={<ProducerShop />} />
           <Route path="/producer/products" element={<ProducerProducts />} />
           <Route path="/producer/orders" element={<ProducerOrders />} />
+          <Route path="/producer/profile" element={<ProducerProfile />} />
           
           {/* Routes Client */}
           <Route path="/client/profile" element={<ClientProfile />} />

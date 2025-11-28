@@ -52,11 +52,25 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user')
   }
 
+  const updateUserPhoto = (photoUrl) => {
+    const updatedUser = { ...user, photo: photoUrl }
+    setUser(updatedUser)
+    localStorage.setItem('user', JSON.stringify(updatedUser))
+  }
+
+  const updateUserProfile = (profileData) => {
+    const updatedUser = { ...user, ...profileData }
+    setUser(updatedUser)
+    localStorage.setItem('user', JSON.stringify(updatedUser))
+  }
+
   const value = {
     user,
     login,
     register,
     logout,
+    updateUserPhoto,
+    updateUserProfile,
     loading,
     isProducer: user?.userType === 'producer',
     isClient: user?.userType === 'client'

@@ -1,0 +1,27 @@
+.producer-profile .profile-card {
+  border-top: 6px solid #4a7c23;
+}
+
+.producer-profile .producer-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.producer-profile .producer-tag {
+  background: rgba(74, 124, 35, 0.12);
+  border: 1px solid rgba(74, 124, 35, 0.4);
+  color: #2d5016;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.producer-profile .profile-stats {
+  margin-top: 1.5rem;
+}
+
+.producer-profile .profile-photo-section .placeholder-icon {
+  font-size: 3.5rem;
+}

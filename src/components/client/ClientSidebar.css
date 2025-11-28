@@ -1,4 +1,5 @@
-.client-sidebar {
+.client-sidebar,
+.producer-sidebar {
   width: 280px;
   height: 100vh;
   background: linear-gradient(180deg, #4a7c23 0%, #2d5016 100%);
@@ -12,17 +13,30 @@
   z-index: 1000;
 }
 
-.sidebar-header {
+.client-sidebar .sidebar-header,
+.producer-sidebar .sidebar-header {
   padding: 2rem 1.5rem;
   text-align: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.client-photo {
+.client-sidebar .client-photo,
+.producer-sidebar .client-photo {
   margin-bottom: 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.3s ease;
 }
 
-.photo-circle {
+.client-sidebar .client-photo:hover,
+.producer-sidebar .client-photo:hover {
+  transform: scale(1.05);
+}
+
+.client-sidebar .photo-circle,
+.producer-sidebar .photo-circle {
   width: 100px;
   height: 100px;
   border-radius: 50%;
@@ -36,28 +50,50 @@
   margin: 0 auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   border: 4px solid rgba(255, 255, 255, 0.3);
+  overflow: hidden;
+  position: relative;
 }
 
-.client-name {
+.client-sidebar .photo-circle .profile-img,
+.producer-sidebar .photo-circle .profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.client-sidebar .photo-placeholder,
+.producer-sidebar .photo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.client-sidebar .client-name,
+.producer-sidebar .client-name {
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 0.3rem;
   color: white;
 }
 
-.client-email {
+.client-sidebar .client-email,
+.producer-sidebar .client-email {
   font-size: 0.85rem;
   opacity: 0.9;
   color: rgba(255, 255, 255, 0.8);
 }
 
-.sidebar-menu {
+.client-sidebar .sidebar-menu,
+.producer-sidebar .sidebar-menu {
   flex: 1;
   padding: 1.5rem 0;
   overflow-y: auto;
 }
 
-.menu-item {
+.client-sidebar .menu-item,
+.producer-sidebar .menu-item {
   display: flex;
   align-items: center;
   padding: 1rem 1.5rem;
@@ -68,29 +104,34 @@
   gap: 1rem;
 }
 
-.menu-item:hover {
+.client-sidebar .menu-item:hover,
+.producer-sidebar .menu-item:hover {
   background: rgba(255, 255, 255, 0.1);
   padding-left: 2rem;
 }
 
-.menu-item.active {
+.client-sidebar .menu-item.active,
+.producer-sidebar .menu-item.active {
   background: rgba(255, 255, 255, 0.2);
   border-left: 4px solid white;
   padding-left: calc(1.5rem - 4px);
 }
 
-.menu-icon {
+.client-sidebar .menu-icon,
+.producer-sidebar .menu-icon {
   font-size: 1.5rem;
   min-width: 30px;
 }
 
-.menu-label {
+.client-sidebar .menu-label,
+.producer-sidebar .menu-label {
   font-size: 1rem;
   font-weight: 500;
   flex: 1;
 }
 
-.menu-badge {
+.client-sidebar .menu-badge,
+.producer-sidebar .menu-badge {
   background: #ef4444;
   color: white;
   padding: 0.2rem 0.6rem;
@@ -101,12 +142,14 @@
   text-align: center;
 }
 
-.sidebar-footer {
+.client-sidebar .sidebar-footer,
+.producer-sidebar .sidebar-footer {
   padding: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.logout-button {
+.client-sidebar .logout-button,
+.producer-sidebar .logout-button {
   width: 100%;
   display: flex;
   align-items: center;
@@ -122,25 +165,29 @@
   transition: all 0.3s ease;
 }
 
-.logout-button:hover {
+.client-sidebar .logout-button:hover,
+.producer-sidebar .logout-button:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
-  .client-sidebar {
+  .client-sidebar,
+  .producer-sidebar {
     width: 100%;
     height: auto;
     position: relative;
   }
 
-  .sidebar-menu {
+  .client-sidebar .sidebar-menu,
+  .producer-sidebar .sidebar-menu {
     flex-direction: row;
     overflow-x: auto;
     padding: 0;
   }
 
-  .menu-item {
+  .client-sidebar .menu-item,
+  .producer-sidebar .menu-item {
     flex-direction: column;
     padding: 1rem;
     min-width: 80px;
@@ -148,17 +195,20 @@
     gap: 0.5rem;
   }
 
-  .menu-item:hover {
+  .client-sidebar .menu-item:hover,
+  .producer-sidebar .menu-item:hover {
     padding-left: 1rem;
   }
 
-  .menu-item.active {
+  .client-sidebar .menu-item.active,
+  .producer-sidebar .menu-item.active {
     border-left: none;
     border-bottom: 4px solid white;
     padding-left: 1rem;
   }
 
-  .menu-label {
+  .client-sidebar .menu-label,
+  .producer-sidebar .menu-label {
     font-size: 0.75rem;
   }
 }

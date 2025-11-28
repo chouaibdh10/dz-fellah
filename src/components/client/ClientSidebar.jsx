@@ -42,14 +42,22 @@ const ClientSidebar = () => {
     }
   ]
 
+  const handlePhotoClick = () => {
+    navigate('/client/profile')
+  }
+
   return (
     <div className="client-sidebar">
       <div className="sidebar-header">
-        <div className="client-photo">
+        <button className="client-photo" onClick={handlePhotoClick} title="Modifier ma photo">
           <div className="photo-circle">
-            {user?.name?.charAt(0).toUpperCase() || 'C'}
+            {user?.photo ? (
+              <img src={user.photo} alt="Photo de profil" className="profile-img" />
+            ) : (
+              <span className="photo-placeholder">{user?.name?.charAt(0).toUpperCase() || 'C'}</span>
+            )}
           </div>
-        </div>
+        </button>
         <h3 className="client-name">{user?.name || 'Client'}</h3>
         <p className="client-email">{user?.email}</p>
       </div>

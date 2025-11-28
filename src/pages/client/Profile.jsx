@@ -1,17 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import ClientLayout from '../../components/client/ClientLayout'
 import './Profile.css'
 
 const Profile = () => {
-  const { user } = useAuth()
+  const { user, updateUserPhoto, updateUserProfile } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
+  const [photoPreview, setPhotoPreview] = useState(user?.photo || null)
+  const [photoFile, setPhotoFile] = useState(null)
+  const fileInputRef = useRef(null)
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
     phone: user?.phone || '',
     address: user?.address || ''
   })
+
+  // Synchroniser la photo preview avec la photo de l'utilisateur
+  useEffect(() => {
+    setPhotoPreview(user?.photo || null)
+  }, [user?.photo])
 
   const handleChange = (e) => {
     setFormData({
@@ -20,9 +28,52 @@ const Profile = () => {
     })
   }
 
+  const handlePhotoClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('La photo ne doit pas dépasser 5 MB')
+        return
+      }
+      
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const photoDataUrl = reader.result
+        setPhotoPreview(photoDataUrl)
+        setPhotoFile(file)
+        // Mettre à jour immédiatement dans le contexte
+        updateUserPhoto(photoDataUrl)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleRemovePhoto = () => {
+    setPhotoPreview(null)
+    setPhotoFile(null)
+    // Mettre à jour immédiatement dans le contexte
+    updateUserPhoto(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    // TODO: Sauvegarder via API
+    
+    // Sauvegarder la photo si elle a changé
+    if (photoPreview && photoPreview !== user?.photo) {
+      updateUserPhoto(photoPreview)
+    }
+    
+    // Sauvegarder les autres données du profil
+    updateUserProfile(formData)
+    
+    // TODO: Sauvegarder via API avec photoFile
     setIsEditing(false)
     alert('Profil mis à jour avec succès!')
   }
@@ -37,6 +88,49 @@ const Profile = () => {
           </div>
 
           <div className="profile-card">
+            {/* Photo Profile Section */}
+            <div className="profile-photo-section">
+              <div className="profile-photo-wrapper">
+                <div className="profile-photo">
+                  {photoPreview ? (
+                    <img src={photoPreview} alt="Photo de profil" />
+                  ) : (
+                    <div className="photo-placeholder">
+                      <span className="placeholder-icon">👤</span>
+                    </div>
+                  )}
+                </div>
+                <div className="photo-actions">
+                  <button 
+                    type="button"
+                    className="btn btn-icon btn-photo-edit"
+                    onClick={handlePhotoClick}
+                    title="Modifier la photo"
+                  >
+                    📷
+                  </button>
+                  {photoPreview && (
+                    <button 
+                      type="button"
+                      className="btn btn-icon btn-photo-delete"
+                      onClick={handleRemovePhoto}
+                      title="Supprimer la photo"
+                    >
+                      🗑️
+                    </button>
+                  )}
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  style={{ display: 'none' }}
+                />
+              </div>
+              <p className="photo-hint">Format accepté: JPG, PNG (max 5MB)</p>
+            </div>
+
             {isEditing ? (
               <form onSubmit={handleSubmit} className="profile-form">
                 <div className="form-group">

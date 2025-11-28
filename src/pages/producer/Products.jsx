@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import ProducerLayout from '../../components/producer/ProducerLayout'
 import './Products.css'
 
 const Products = () => {
@@ -92,8 +93,9 @@ const Products = () => {
   }
 
   return (
-    <div className="products-management">
-      <div className="container">
+    <ProducerLayout>
+      <div className="products-management">
+        <div className="container">
         <div className="page-header">
           <div>
             <h1 className="page-title">Mes Produits</h1>
@@ -258,6 +260,7 @@ const Products = () => {
         )}
       </div>
     </div>
+  </ProducerLayout>
   )
 }
 

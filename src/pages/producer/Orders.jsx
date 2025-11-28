@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import ProducerLayout from '../../components/producer/ProducerLayout'
 import './ProducerOrders.css'
 
 const Orders = () => {
@@ -109,8 +110,9 @@ const Orders = () => {
   }
 
   return (
-    <div className="producer-orders">
-      <div className="container">
+    <ProducerLayout>
+      <div className="producer-orders">
+        <div className="container">
         <div className="orders-header">
           <div>
             <h1 className="page-title">Mes Commandes</h1>
@@ -298,6 +300,7 @@ const Orders = () => {
         </div>
       </div>
     </div>
+  </ProducerLayout>
   )
 }
 
