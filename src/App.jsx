@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
+import { ProductsProvider } from './context/ProductsContext'
 import Navbar from './components/common/Navbar'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -13,7 +14,6 @@ import ProducerAccess from './pages/ProducerAccess'
 import ClientAccess from './pages/ClientAccess'
 import ProducerDashboard from './pages/producer/Dashboard'
 import ProducerShop from './pages/producer/Shop'
-import ProducerProducts from './pages/producer/Products'
 import ProducerOrders from './pages/producer/Orders'
 import ProducerProfile from './pages/producer/Profile'
 import ClientProfile from './pages/client/Profile'
@@ -59,7 +59,6 @@ function AppContent() {
           {/* Routes Producteur */}
           <Route path="/producer/dashboard" element={<ProducerDashboard />} />
           <Route path="/producer/shop" element={<ProducerShop />} />
-          <Route path="/producer/products" element={<ProducerProducts />} />
           <Route path="/producer/orders" element={<ProducerOrders />} />
           <Route path="/producer/profile" element={<ProducerProfile />} />
           
@@ -77,7 +76,9 @@ function App() {
     <Router>
       <AuthProvider>
         <CartProvider>
-          <AppContent />
+          <ProductsProvider>
+            <AppContent />
+          </ProductsProvider>
         </CartProvider>
       </AuthProvider>
     </Router>

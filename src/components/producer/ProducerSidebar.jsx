@@ -6,9 +6,8 @@ import './ProducerSidebar.css'
 
 const menuItems = [
 	{ path: '/producer/dashboard', icon: '📊', label: 'Tableau de bord' },
-	{ path: '/producer/products', icon: '🌾', label: 'Mes produits' },
-	{ path: '/producer/orders', icon: '📦', label: 'Commandes' },
 	{ path: '/producer/shop', icon: '🏪', label: 'Ma boutique' },
+	{ path: '/producer/orders', icon: '📦', label: 'Commandes' },
 	{ path: '/producer/profile', icon: '⚙️', label: 'Profil' }
 ]
 
