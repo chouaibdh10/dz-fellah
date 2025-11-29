@@ -158,10 +158,10 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## 📞 Contact
 
-**Chouaib DH** - Développeur Full Stack
+**Chouaib BDH** - Développeur FRONT-END
 
 - GitHub : [@chouaibdh10](https://github.com/chouaibdh10)
-- Portfolio : [chouaibdh-portfolio](https://github.com/chouaibdh10/chouaibdh-portfolio)
+- Portfolio : [chouaibdh-portfolio](https://myportfolio-zeta-eight-71.vercel.app/)
 
 ---
 
