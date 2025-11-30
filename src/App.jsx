@@ -51,7 +51,7 @@ function AppContent() {
           <Route path="/email-verified" element={<EmailVerified />} />
           <Route path="/products" element={<ProductCatalog />} />
           <Route path="/cart" element={<Cart />} />
-          
+        
           {/* Routes d'accès rapide */}
           <Route path="/producteur" element={<ProducerAccess />} />
           <Route path="/client" element={<ClientAccess />} />
