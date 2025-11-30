@@ -4,11 +4,30 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* Palette verte inspirée du logo DZ-Fellah */
+  --primary: #2E7D32;
+  --primary-dark: #1B5E20;
+  --primary-light: #4CAF50;
+  --primary-lighter: #81C784;
+  --accent: #8BC34A;
+  --accent-light: #C5E1A5;
+  --bg-light: #F1F8E9;
+  --bg-cream: #FAFDF6;
+  --text-dark: #1A3D1C;
+  --text-medium: #33691E;
+  --text-light: #558B2F;
+  --shadow-green: rgba(46, 125, 50, 0.15);
+  --gradient-primary: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+  --gradient-light: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+  --gradient-accent: linear-gradient(135deg, #8BC34A 0%, #689F38 100%);
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
-  color: #333;
-  background-color: #f5f5f5;
+  color: var(--text-dark);
+  background-color: var(--bg-cream);
 }
 
 .main-content {
@@ -24,20 +43,23 @@ body {
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 500;
+  transition: all 0.3s ease;
+  font-weight: 600;
 }
 
 .btn-primary {
-  background-color: #4a7c23;
+  background: var(--gradient-primary);
   color: white;
+  box-shadow: 0 4px 15px var(--shadow-green);
 }
 
 .btn-primary:hover {
-  background-color: #3a6219;
+  background: var(--gradient-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--shadow-green);
 }
 
 .btn-secondary {
@@ -51,47 +73,51 @@ body {
 
 .card {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px var(--shadow-green);
   padding: 1.5rem;
   margin-bottom: 1rem;
+  border: 1px solid rgba(46, 125, 50, 0.08);
 }
 
 .badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: 20px;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .badge-success {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: var(--accent-light);
+  color: var(--primary-dark);
 }
 
 .badge-warning {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: #FFF8E1;
+  color: #F57F17;
 }
 
 .badge-season {
-  background-color: #4a7c23;
+  background: var(--gradient-accent);
   color: white;
 }
 
 input, textarea, select {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 0.85rem 1rem;
+  border: 2px solid #E8F5E9;
+  border-radius: 12px;
   font-size: 1rem;
   margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  background: white;
 }
 
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: #4a7c23;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
 }
 
 label {

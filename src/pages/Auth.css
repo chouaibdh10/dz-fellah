@@ -16,6 +16,13 @@
   width: 100%;
 }
 
+.auth-logo {
+  display: block;
+  height: 80px;
+  width: auto;
+  margin: 0 auto 1.5rem;
+}
+
 .auth-title {
   text-align: center;
   color: #2d5016;

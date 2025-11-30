@@ -1,7 +1,7 @@
 .shop-management {
   padding: 2rem 0 4rem;
   min-height: calc(100vh - 80px);
-  background: linear-gradient(135deg, #f8fdf5 0%, #e8f5e0 50%, #f0f7ec 100%);
+  background: linear-gradient(135deg, #FAFDF6 0%, #F1F8E9 50%, #E8F5E9 100%);
 }
 
 .page-header {
@@ -13,7 +13,7 @@
 
 .page-title {
   font-size: 2.2rem;
-  background: linear-gradient(135deg, #2d5016 0%, #4a7c23 100%);
+  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -25,7 +25,7 @@
 }
 
 .page-subtitle {
-  color: #5a7a4a;
+  color: #558B2F;
   margin-top: 0.5rem;
   font-size: 1.05rem;
 }
@@ -33,15 +33,15 @@
 /* Product Management Form */
 .product-form {
   background: white;
-  border-radius: 20px;
+  border-radius: 24px;
   padding: 2.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 10px 40px rgba(45, 80, 22, 0.08);
-  border: 1px solid rgba(74, 124, 35, 0.1);
+  box-shadow: 0 10px 40px rgba(46, 125, 50, 0.08);
+  border: 1px solid rgba(46, 125, 50, 0.1);
 }
 
 .product-form h3 {
-  color: #2d5016;
+  color: #1B5E20;
   margin-bottom: 1.5rem;
   font-size: 1.4rem;
   display: flex;
@@ -50,7 +50,7 @@
 }
 
 .product-form h3::before {
-  content: '🌿';
+  content: '🌾';
 }
 
 .form-row {

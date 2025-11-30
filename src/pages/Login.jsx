@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import logo from '../photos/DZ-fellah.png'
 import './Auth.css'
 
 const Login = () => {
@@ -36,6 +37,7 @@ const Login = () => {
   return (
     <div className="auth-page">
       <div className="auth-container">
+        <img src={logo} alt="DZ-Fellah" className="auth-logo" />
         <h1 className="auth-title">Connexion</h1>
         
         {error && <div className="error-message">{error}</div>}

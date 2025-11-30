@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import logo from '../photos/DZ-fellah.png'
 import './Auth.css'
 
 const Register = () => {
@@ -70,6 +71,7 @@ const Register = () => {
           ← Retour
         </Link>
         
+        <img src={logo} alt="DZ-Fellah" className="auth-logo" />
         <h1 className="auth-title">Inscription</h1>
         
         <div className="user-type-badge">

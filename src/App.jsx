@@ -5,6 +5,8 @@ import { CartProvider } from './context/CartContext'
 import { ProductsProvider } from './context/ProductsContext'
 import Navbar from './components/common/Navbar'
 import Home from './pages/Home'
+import About from './pages/About'
+import Contact from './pages/Contact'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import RegisterChoice from './pages/RegisterChoice'
@@ -44,6 +46,8 @@ function AppContent() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register-choice" element={<RegisterChoice />} />
           <Route path="/register" element={<Register />} />

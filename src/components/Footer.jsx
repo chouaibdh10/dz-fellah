@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import logo from '../photos/DZ-fellah.png'
 import './Footer.css'
 
 const Footer = () => {
@@ -7,14 +8,13 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-content container">
         <div className="footer-section">
-          <h3>🌾 DZ-Fellah</h3>
+          <img src={logo} alt="DZ-Fellah" className="footer-logo" />
           <p>Connectez-vous directement avec les producteurs locaux algériens.</p>
         </div>
 
         <div className="footer-section">
           <h4>Liens Utiles</h4>
           <ul>
-            <li><Link to="/products">Produits</Link></li>
             <li><Link to="/about">À propos</Link></li>
             <li><Link to="/contact">Contact</Link></li>
           </ul>
