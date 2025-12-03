@@ -142,21 +142,7 @@ L'application est optimisée pour :
 - [ ] Chat entre producteurs et clients
 - [ ] Application mobile (React Native)
 
-## 👥 Contribution
 
-Les contributions sont les bienvenues ! Pour contribuer :
-
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/nouvelle-fonctionnalite`)
-3. Commit les changements (`git commit -m 'Ajout nouvelle fonctionnalité'`)
-4. Push sur la branche (`git push origin feature/nouvelle-fonctionnalite`)
-5. Ouvrir une Pull Request
-
-## 📄 Licence
-
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
-
-## 📞 Contact
 
 **Chouaib BDH** - Développeur FRONT-END
 
