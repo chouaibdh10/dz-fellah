@@ -6,9 +6,10 @@
 .client-main-content {
   flex: 1;
   margin-left: 240px;
-  background: #FAFDF6;
+  background: var(--bg-cream);
   min-height: 100vh;
   padding: 1.5rem;
+  transition: background-color 0.3s ease;
 }
 
 @media (max-width: 768px) {

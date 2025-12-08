@@ -1,8 +1,8 @@
 .navbar {
-  background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+  background: var(--gradient-primary);
   color: white;
   padding: 0.75rem 0;
-  box-shadow: 0 4px 20px rgba(27, 94, 32, 0.25);
+  box-shadow: 0 4px 20px var(--shadow-green);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -53,6 +53,26 @@
   color: #fff;
   font-size: 1.5rem;
   cursor: pointer;
+}
+
+.theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(15deg);
 }
 
 .user-photo-item {

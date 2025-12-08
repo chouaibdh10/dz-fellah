@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ProductsProvider } from './context/ProductsContext'
+import { ThemeProvider } from './context/ThemeContext'
 import Navbar from './components/common/Navbar'
 import Home from './pages/Home'
 import About from './pages/About'
@@ -76,13 +77,15 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <CartProvider>
-          <ProductsProvider>
-            <AppContent />
-          </ProductsProvider>
-        </CartProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <CartProvider>
+            <ProductsProvider>
+              <AppContent />
+            </ProductsProvider>
+          </CartProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   )
 }

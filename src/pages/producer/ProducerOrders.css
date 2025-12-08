@@ -1,7 +1,7 @@
 .producer-orders {
   padding: 2rem 0;
   min-height: calc(100vh - 80px);
-  background-color: #f5f5f5;
+  background-color: var(--bg-cream);
 }
 
 .orders-header {
@@ -12,7 +12,7 @@
 }
 
 .orders-subtitle {
-  color: #666;
+  color: var(--text-light);
   margin-top: 0.5rem;
 }
 
@@ -24,13 +24,13 @@
 }
 
 .stat-card-mini {
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-green);
   transition: transform 0.3s;
 }
 
@@ -51,7 +51,7 @@
 .stat-card-mini h3 {
   font-size: 1.8rem;
   margin-bottom: 0.25rem;
-  color: #333;
+  color: var(--text-dark);
 }
 
 .stat-card-mini.highlight h3,
@@ -61,7 +61,7 @@
 
 .stat-card-mini p {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text-light);
 }
 
 .orders-filters {
@@ -73,23 +73,24 @@
 
 .filter-btn {
   padding: 0.75rem 1.5rem;
-  border: 2px solid #ddd;
-  background: white;
+  border: 2px solid var(--border-color);
+  background: var(--bg-card);
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
+  color: var(--text-dark);
   transition: all 0.3s;
 }
 
 .filter-btn:hover {
-  border-color: #4a7c23;
-  color: #4a7c23;
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .filter-btn.active {
-  background: #4a7c23;
+  background: var(--primary);
   color: white;
-  border-color: #4a7c23;
+  border-color: var(--primary);
 }
 
 .orders-list {

@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa;
+  background: var(--bg-cream);
   padding: 2rem;
 }
 
@@ -15,14 +15,14 @@
 
 .choice-title {
   font-size: 2rem;
-  color: #333;
+  color: var(--text-dark);
   margin-bottom: 0.5rem;
   font-weight: 700;
 }
 
 .choice-subtitle {
   font-size: 1rem;
-  color: #666;
+  color: var(--text-light);
   margin-bottom: 3rem;
 }
 
@@ -34,8 +34,8 @@
 }
 
 .choice-card {
-  background: white;
-  border: 2px solid #e0e0e0;
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
   border-radius: 12px;
   padding: 3rem 2rem;
   cursor: pointer;
@@ -45,8 +45,8 @@
 
 .choice-card:hover {
   transform: translateY(-5px);
-  border-color: #4CAF50;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 10px 25px var(--shadow-green);
 }
 
 .client-card:hover {
@@ -64,24 +64,24 @@
 
 .choice-card h3 {
   font-size: 1.5rem;
-  color: #333;
+  color: var(--text-dark);
   margin-bottom: 0.5rem;
   font-weight: 600;
 }
 
 .choice-card p {
-  color: #666;
+  color: var(--text-light);
   font-size: 0.95rem;
   margin: 0;
 }
 
 .auth-link {
-  color: #666;
+  color: var(--text-light);
   font-size: 0.95rem;
 }
 
 .auth-link a {
-  color: #4CAF50;
+  color: var(--primary);
   text-decoration: none;
   font-weight: 600;
 }

@@ -14,13 +14,35 @@
   --accent-light: #C5E1A5;
   --bg-light: #F1F8E9;
   --bg-cream: #FAFDF6;
+  --bg-card: #ffffff;
   --text-dark: #1A3D1C;
   --text-medium: #33691E;
   --text-light: #558B2F;
   --shadow-green: rgba(46, 125, 50, 0.15);
+  --border-color: rgba(46, 125, 50, 0.08);
   --gradient-primary: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
   --gradient-light: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
   --gradient-accent: linear-gradient(135deg, #8BC34A 0%, #689F38 100%);
+}
+
+[data-theme='dark'] {
+  --primary: #4CAF50;
+  --primary-dark: #2E7D32;
+  --primary-light: #81C784;
+  --primary-lighter: #A5D6A7;
+  --accent: #AED581;
+  --accent-light: #558B2F;
+  --bg-light: #0f0f0f;
+  --bg-cream: #121212;
+  --bg-card: #2d2d2d;
+  --text-dark: #E8F5E9;
+  --text-medium: #C8E6C9;
+  --text-light: #A5D6A7;
+  --shadow-green: rgba(0, 0, 0, 0.5);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --gradient-primary: linear-gradient(135deg, #1B5E20 0%, #0D3311 100%);
+  --gradient-light: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+  --gradient-accent: linear-gradient(135deg, #689F38 0%, #558B2F 100%);
 }
 
 body {
@@ -28,6 +50,7 @@ body {
   line-height: 1.6;
   color: var(--text-dark);
   background-color: var(--bg-cream);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .main-content {
@@ -72,12 +95,12 @@ body {
 }
 
 .card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   box-shadow: 0 4px 20px var(--shadow-green);
   padding: 1.5rem;
   margin-bottom: 1rem;
-  border: 1px solid rgba(46, 125, 50, 0.08);
+  border: 1px solid var(--border-color);
 }
 
 .badge {

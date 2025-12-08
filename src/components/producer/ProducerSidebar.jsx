@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useTheme } from '../../context/ThemeContext'
 import '../client/ClientSidebar.css'
 import './ProducerSidebar.css'
 
@@ -15,6 +16,7 @@ const ProducerSidebar = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
 	const { user, logout } = useAuth()
+	const { theme, toggleTheme } = useTheme()
 
 	const handleLogout = () => {
 		logout()
@@ -56,12 +58,15 @@ const ProducerSidebar = () => {
 				))}
 			</nav>
 
-			<div className="sidebar-footer">
-				<button onClick={handleLogout} className="logout-button">
-					<span className="menu-icon" aria-hidden="true">🚪</span>
-					<span>Déconnexion</span>
-				</button>
-			</div>
+		<div className="sidebar-footer">
+			<button onClick={toggleTheme} className="theme-toggle-btn" title="Changer le thème">
+				{theme === 'light' ? '🌙' : '☀️'}
+			</button>
+			<button onClick={handleLogout} className="logout-button">
+				<span className="menu-icon" aria-hidden="true">🚪</span>
+				<span>Déconnexion</span>
+			</button>
+		</div>
 		</div>
 	)
 }

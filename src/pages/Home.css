@@ -1,6 +1,6 @@
 .home {
   width: 100%;
-  background: linear-gradient(180deg, #FAFDF6 0%, #F1F8E9 100%);
+  background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-light) 100%);
   overflow-x: hidden;
 }
 
@@ -213,7 +213,7 @@
 
 .section-title {
   font-size: clamp(2rem, 5vw, 2.8rem);
-  color: #1B5E20;
+  color: var(--text-dark);
   text-align: center;
   margin-bottom: 1rem;
   font-weight: 700;
@@ -236,7 +236,7 @@
 
 .section-subtitle {
   text-align: center;
-  color: #558B2F;
+  color: var(--text-light);
   font-size: 1.1rem;
   margin-bottom: 3rem;
   margin-top: 1.5rem;
@@ -250,12 +250,12 @@
 }
 
 .product-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(46, 125, 50, 0.1);
+  box-shadow: 0 4px 20px var(--shadow-green);
   transition: all 0.3s ease;
-  border: 1px solid rgba(46, 125, 50, 0.08);
+  border: 1px solid var(--border-color);
 }
 
 .product-card:hover {
@@ -319,7 +319,7 @@
 
 /* Stats Section */
 .stats-section {
-  background: #FAFDF6;
+  background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-light) 100%);
   padding: 5rem 2rem;
   position: relative;
   overflow: hidden;
@@ -351,10 +351,10 @@
   flex-direction: column;
   align-items: center;
   padding: 2rem 1rem;
-  background: white;
+  background: var(--bg-card);
   border-radius: 24px;
-  box-shadow: 0 10px 40px rgba(46, 125, 50, 0.08);
-  border: 1px solid rgba(46, 125, 50, 0.06);
+  box-shadow: 0 10px 40px var(--shadow-green);
+  border: 1px solid var(--border-color);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   overflow: hidden;
@@ -412,7 +412,7 @@
 
 .stat-label {
   font-size: 0.9rem;
-  color: #558B2F;
+  color: var(--text-light);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -451,7 +451,7 @@
 
 .testimonials {
   padding: 6rem 2rem 5rem;
-  background: linear-gradient(180deg, #FAFDF6 0%, #F1F8E9 100%);
+  background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-light) 100%);
   position: relative;
 }
 
@@ -497,11 +497,11 @@
 }
 
 .testimonial-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 8px 30px rgba(46, 125, 50, 0.1);
-  border: 1px solid rgba(46, 125, 50, 0.06);
+  box-shadow: 0 8px 30px var(--shadow-green);
+  border: 1px solid var(--border-color);
   transition: all 0.4s ease;
   position: relative;
 }
@@ -643,7 +643,7 @@
 
 .features {
   padding: 6rem 2rem;
-  background: linear-gradient(180deg, #F1F8E9 0%, #FAFDF6 100%);
+  background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-cream) 100%);
   position: relative;
 }
 
@@ -683,11 +683,11 @@
 .feature-card {
   text-align: center;
   padding: 2.5rem 2rem;
-  background: white;
+  background: var(--bg-card);
   border-radius: 24px;
-  box-shadow: 0 8px 30px rgba(46, 125, 50, 0.1);
+  box-shadow: 0 8px 30px var(--shadow-green);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(46, 125, 50, 0.08);
+  border: 1px solid var(--border-color);
   position: relative;
   overflow: hidden;
 }
@@ -750,7 +750,7 @@
 
 .home-contact {
   padding: 6rem 2rem;
-  background: linear-gradient(180deg, #F1F8E9 0%, #FAFDF6 100%);
+  background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-cream) 100%);
   position: relative;
   overflow: hidden;
 }
@@ -805,10 +805,10 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.08);
-  border: 1px solid rgba(46, 125, 50, 0.08);
+  box-shadow: 0 4px 15px var(--shadow-green);
+  border: 1px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
@@ -818,11 +818,11 @@
 }
 
 .home-contact-form {
-  background: white;
+  background: var(--bg-card);
   padding: 2.5rem;
   border-radius: 24px;
-  box-shadow: 0 10px 40px rgba(46, 125, 50, 0.1);
-  border: 1px solid rgba(46, 125, 50, 0.08);
+  box-shadow: 0 10px 40px var(--shadow-green);
+  border: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -909,7 +909,7 @@
 /* New About Section */
 .about-section {
   padding: 6rem 2rem;
-  background: linear-gradient(180deg, #FAFDF6 0%, #E8F5E9 100%);
+  background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-light) 100%);
   overflow: hidden;
 }
 

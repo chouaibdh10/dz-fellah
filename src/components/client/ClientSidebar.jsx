@@ -2,6 +2,7 @@ import React from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
+import { useTheme } from '../../context/ThemeContext'
 import './ClientSidebar.css'
 
 const ClientSidebar = () => {
@@ -9,6 +10,7 @@ const ClientSidebar = () => {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
   const { getItemCount } = useCart()
+  const { theme, toggleTheme } = useTheme()
 
   const handleLogout = () => {
     logout()
@@ -79,6 +81,9 @@ const ClientSidebar = () => {
       </nav>
 
       <div className="sidebar-footer">
+        <button onClick={toggleTheme} className="theme-toggle-btn" title="Changer le thème">
+          {theme === 'light' ? '🌙' : '☀️'}
+        </button>
         <button onClick={handleLogout} className="logout-button">
           <span className="menu-icon">🚪</span>
           <span>Déconnexion</span>
