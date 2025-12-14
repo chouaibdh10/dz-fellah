@@ -183,7 +183,12 @@
   .navbar-menu.open { display: flex; }
 
   .navbar-menu li { padding: 0.5rem 0; }
-  .navbar-menu a, .navbar-menu button { padding: 0.5rem 0.75rem; display:block }
+  .navbar-menu a, .navbar-menu button { 
+    padding: 0.5rem 0.75rem; 
+    display: block;
+    color: #fff;
+    text-decoration: none;
+  }
   .cart-link { border-radius: 8px; display:inline-block }
   
   .user-photo-item {
