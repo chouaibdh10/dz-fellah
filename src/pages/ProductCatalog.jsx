@@ -236,23 +236,7 @@ const ProductCatalog = () => {
         rating: 4.6,
         sales: 90
       },
-      {
-        id: 12,
-        name: 'Couscous Artisanal',
-        image: 'https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=400',
-        price: 300,
-        saleType: 'weight',
-        pricePerKg: 300,
-        producer: 'Coopérative Femmes',
-        wilaya: 'Tizi Ouzou',
-        inSeason: false,
-        category: 'cereales',
-        description: 'Couscous roulé à la main, tradition kabyle',
-        stock: 50,
-        unit: 'kg',
-        rating: 5.0,
-        sales: 180
-      }
+      
     ]
     
     setTimeout(() => {
