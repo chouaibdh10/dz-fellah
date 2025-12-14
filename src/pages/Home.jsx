@@ -71,12 +71,54 @@ const Home = () => {
 
   return (
     <div className="home">
-      {/* Hero Banner avec image */}
+      {/* Hero Banner moderne */}
       <section className="hero-banner">
-        <img src={homeImage} alt="DZ-Fellah - Agriculture Algérienne" className="hero-banner-image" />
-        <div className="hero-banner-overlay">
-          <img src={logo} alt="DZ-Fellah" className="hero-logo" />
-          <p>Du producteur à votre table</p>
+        <div className="hero-floating-elements">
+          <span className="floating-icon">🌾</span>
+          <span className="floating-icon">🥕</span>
+          <span className="floating-icon">🍅</span>
+          <span className="floating-icon">🌿</span>
+        </div>
+        
+        <div className="hero-content">
+          <span className="hero-badge">🇩🇿 100% Algérien</span>
+          <h1>Bienvenue sur <span className="highlight">DZ-Fellah</span></h1>
+          <p className="hero-subtitle">Du producteur à votre table</p>
+          <p className="hero-description">
+            La première plateforme algérienne qui connecte directement 
+            les agriculteurs locaux aux consommateurs. Produits frais, 
+            prix justes, livraison rapide.
+          </p>
+          <div className="hero-stats-mini">
+            <div className="mini-stat">
+              <strong>500+</strong>
+              <span>Utilisateurs</span>
+            </div>
+            <div className="mini-stat">
+              <strong>120+</strong>
+              <span>Producteurs</span>
+            </div>
+            <div className="mini-stat">
+              <strong>58</strong>
+              <span>Wilayas</span>
+            </div>
+          </div>
+          <div className="hero-buttons">
+            <Link to="/register-choice" className="hero-btn primary">
+              <span>👤</span> Rejoindre la communauté
+            </Link>
+          </div>
+        </div>
+        
+        <div className="hero-image-wrapper">
+          <div className="hero-image-badge">🌟 Qualité garantie</div>
+          <div className="hero-image-frame">
+            <img src={homeImage} alt="Agriculture Algérienne" className="hero-banner-image" />
+            <div className="hero-image-shine"></div>
+          </div>
+          <div className="hero-image-decoration"></div>
+          <div className="hero-image-decoration-2"></div>
+          <div className="hero-image-dots"></div>
         </div>
       </section>
 

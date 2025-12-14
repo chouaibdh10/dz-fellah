@@ -113,48 +113,49 @@ const Orders = () => {
     <ProducerLayout>
       <div className="producer-orders">
         <div className="container">
+        {/* Header Moderne */}
         <div className="orders-header">
           <div>
-            <h1 className="page-title">Mes Commandes</h1>
+            <h1 className="page-title">📋 Mes Commandes</h1>
             <p className="orders-subtitle">Gérez toutes vos commandes en un seul endroit</p>
           </div>
           <Link to="/producer/dashboard" className="btn btn-secondary">
-            ← Retour au tableau de bord
+            ← Tableau de bord
           </Link>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards Modernes */}
         <div className="orders-stats">
           <div className="stat-card-mini">
-            <span className="stat-icon">📦</span>
+            <div className="stat-icon">📦</div>
             <div>
               <h3>{stats.total}</h3>
               <p>Total commandes</p>
             </div>
           </div>
           <div className="stat-card-mini">
-            <span className="stat-icon">⏳</span>
+            <div className="stat-icon">⏳</div>
             <div>
               <h3>{stats.pending}</h3>
               <p>En attente</p>
             </div>
           </div>
           <div className="stat-card-mini">
-            <span className="stat-icon">📦</span>
+            <div className="stat-icon">🔄</div>
             <div>
               <h3>{stats.processing}</h3>
               <p>En préparation</p>
             </div>
           </div>
           <div className="stat-card-mini">
-            <span className="stat-icon">✅</span>
+            <div className="stat-icon">✅</div>
             <div>
               <h3>{stats.delivered}</h3>
               <p>Livrées</p>
             </div>
           </div>
           <div className="stat-card-mini highlight">
-            <span className="stat-icon">💰</span>
+            <div className="stat-icon">💰</div>
             <div>
               <h3>{stats.revenue.toLocaleString()} DA</h3>
               <p>Chiffre d'affaires</p>
@@ -162,45 +163,47 @@ const Orders = () => {
           </div>
         </div>
 
-        {/* Filters */}
+        {/* Filters Modernes */}
         <div className="orders-filters">
           <button 
             className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
             onClick={() => setFilter('all')}
           >
-            Toutes
+            📋 Toutes ({stats.total})
           </button>
           <button 
             className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
             onClick={() => setFilter('pending')}
           >
-            En attente
+            ⏳ En attente ({stats.pending})
           </button>
           <button 
             className={`filter-btn ${filter === 'processing' ? 'active' : ''}`}
             onClick={() => setFilter('processing')}
           >
-            En préparation
+            🔄 En préparation ({stats.processing})
           </button>
           <button 
             className={`filter-btn ${filter === 'delivered' ? 'active' : ''}`}
             onClick={() => setFilter('delivered')}
           >
-            Livrées
+            ✅ Livrées ({stats.delivered})
           </button>
           <button 
             className={`filter-btn ${filter === 'cancelled' ? 'active' : ''}`}
             onClick={() => setFilter('cancelled')}
           >
-            Annulées
+            ❌ Annulées
           </button>
         </div>
 
-        {/* Orders List */}
+        {/* Orders List Moderne */}
         <div className="orders-list">
           {filteredOrders.length === 0 ? (
             <div className="no-orders">
-              <p>Aucune commande trouvée</p>
+              <div className="no-orders-icon">📭</div>
+              <h3>Aucune commande trouvée</h3>
+              <p>Il n'y a pas de commandes correspondant à ce filtre</p>
             </div>
           ) : (
             filteredOrders.map(order => {
@@ -209,20 +212,21 @@ const Orders = () => {
                 <div key={order.id} className="order-card-detail">
                   <div className="order-card-header">
                     <div className="order-main-info">
-                      <h3>{order.orderNumber}</h3>
+                      <h3>🧾 {order.orderNumber}</h3>
                       <span className={`order-badge ${statusInfo.class}`}>
                         {statusInfo.icon} {statusInfo.text}
                       </span>
                     </div>
                     <div className="order-date">
-                      📅 {new Date(order.date).toLocaleDateString('fr-FR')}
+                      📅 {new Date(order.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </div>
                   </div>
 
                   <div className="order-card-body">
                     <div className="order-customer-info">
+                      <h4>👤 Informations client</h4>
                       <div className="customer-detail">
-                        <span className="label">👤 Client:</span>
+                        <span className="label">🧑 Nom:</span>
                         <span className="value">{order.customer}</span>
                       </div>
                       <div className="customer-detail">
@@ -236,7 +240,7 @@ const Orders = () => {
                     </div>
 
                     <div className="order-items">
-                      <h4>Articles commandés:</h4>
+                      <h4>🛒 Articles commandés</h4>
                       <table className="items-table">
                         <thead>
                           <tr>
@@ -249,17 +253,17 @@ const Orders = () => {
                         <tbody>
                           {order.items.map((item, index) => (
                             <tr key={index}>
-                              <td>{item.product}</td>
+                              <td>🥬 {item.product}</td>
                               <td>{item.quantity} {item.unit}</td>
                               <td>{item.price.toLocaleString()} DA</td>
-                              <td>{(item.quantity * item.price).toLocaleString()} DA</td>
+                              <td><strong>{(item.quantity * item.price).toLocaleString()} DA</strong></td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                       <div className="order-total-row">
-                        <strong>Total:</strong>
-                        <strong className="total-amount">{order.total.toLocaleString()} DA</strong>
+                        <span className="total-label">💵 Total de la commande:</span>
+                        <span className="total-amount">{order.total.toLocaleString()} DA</span>
                       </div>
                     </div>
                   </div>
@@ -268,7 +272,7 @@ const Orders = () => {
                     {order.status === 'pending' && (
                       <>
                         <button 
-                          className="btn btn-primary btn-small"
+                          className="btn btn-success btn-small"
                           onClick={() => handleStatusChange(order.id, 'processing')}
                         >
                           ✓ Accepter
@@ -286,11 +290,11 @@ const Orders = () => {
                         className="btn btn-success btn-small"
                         onClick={() => handleStatusChange(order.id, 'delivered')}
                       >
-                        ✓ Marquer comme livrée
+                        🚚 Marquer comme livrée
                       </button>
                     )}
                     <button className="btn btn-secondary btn-small">
-                      📄 Détails complets
+                      📄 Voir détails
                     </button>
                   </div>
                 </div>

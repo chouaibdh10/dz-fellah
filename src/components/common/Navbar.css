@@ -203,3 +203,59 @@
     font-size: 2rem;
   }
 }
+
+/* ===================================
+   DARK MODE - NAVBAR
+   =================================== */
+[data-theme="dark"] .navbar {
+  background: linear-gradient(135deg, #0d1f0d 0%, #1a2e1a 50%, #0a1a0a 100%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .navbar-logo {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .navbar-menu a {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .navbar-menu a:hover {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+  background: rgba(74, 222, 128, 0.3);
+}
+
+[data-theme="dark"] .cart-link {
+  background: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .cart-link:hover {
+  background: rgba(74, 222, 128, 0.3);
+}
+
+[data-theme="dark"] .user-photo-btn {
+  border-color: #4ade80;
+}
+
+[data-theme="dark"] .user-photo-btn:hover {
+  border-color: #86efac;
+  box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
+}
+
+@media (max-width: 900px) {
+  [data-theme="dark"] .navbar-menu {
+    background: linear-gradient(180deg, rgba(13, 31, 13, 0.98), rgba(26, 46, 26, 0.98));
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+  }
+}

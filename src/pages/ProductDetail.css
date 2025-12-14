@@ -246,3 +246,75 @@
     font-size: 1.5rem;
   }
 }
+
+/* ===================================
+   DARK MODE - PRODUCT DETAIL
+   =================================== */
+[data-theme="dark"] .product-detail {
+  background: linear-gradient(135deg, #1a2e1a 0%, #0d1f0d 50%, #0a1a0a 100%);
+}
+
+[data-theme="dark"] .back-link {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .back-link:hover {
+  color: #86efac;
+}
+
+[data-theme="dark"] .detail-layout {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .detail-info h1 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .producer-info {
+  background: rgba(74, 222, 128, 0.05);
+  border-left-color: #4ade80;
+}
+
+[data-theme="dark"] .producer-info h3 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .producer-info p {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .price-section {
+  background: rgba(74, 222, 128, 0.05);
+}
+
+[data-theme="dark"] .price-main {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .stock-status {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .description-section h2 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .description-section p {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .out-of-stock {
+  background: rgba(248, 113, 113, 0.1);
+  color: #f87171;
+}
+
+[data-theme="dark"] .product-not-found {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .product-not-found h2 {
+  color: #a0a0a0;
+}

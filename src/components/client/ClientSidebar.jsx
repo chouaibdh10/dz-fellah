@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
@@ -11,6 +11,7 @@ const ClientSidebar = () => {
   const { user, logout } = useAuth()
   const { getItemCount } = useCart()
   const { theme, toggleTheme } = useTheme()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
@@ -27,19 +28,19 @@ const ClientSidebar = () => {
     {
       path: '/cart',
       icon: '🛒',
-      label: 'Mon Panier',
+      label: 'Panier',
       badge: getItemCount()
     },
     {
       path: '/client/orders',
       icon: '📋',
-      label: 'Mes Commandes',
+      label: 'Commandes',
       badge: null
     },
     {
       path: '/client/profile',
       icon: '⚙️',
-      label: 'Mon Profil',
+      label: 'Profil',
       badge: null
     }
   ]
@@ -48,48 +49,68 @@ const ClientSidebar = () => {
     navigate('/client/profile')
   }
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen)
+  }
+
   return (
-    <div className="client-sidebar">
-      <div className="sidebar-header">
-        <button className="client-photo" onClick={handlePhotoClick} title="Modifier ma photo">
-          <div className="photo-circle">
-            {user?.photo ? (
-              <img src={user.photo} alt="Photo de profil" className="profile-img" />
-            ) : (
-              <span className="photo-placeholder">{user?.name?.charAt(0).toUpperCase() || 'C'}</span>
-            )}
+    <header className="client-navbar">
+      <div className="navbar-container">
+        {/* Logo & Brand */}
+        <Link to="/products" className="navbar-brand">
+          <span className="brand-icon">🌾</span>
+          <span className="brand-text">DZ-Fellah</span>
+          <span className="brand-badge">Client</span>
+        </Link>
+
+        {/* Mobile Menu Toggle */}
+        <button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
+          {mobileMenuOpen ? '✕' : '☰'}
+        </button>
+
+        {/* Navigation Menu */}
+        <nav className={`navbar-menu ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+          {menuItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span className="nav-icon">{item.icon}</span>
+              <span className="nav-label">{item.label}</span>
+              {item.badge !== null && item.badge > 0 && (
+                <span className="nav-badge">{item.badge}</span>
+              )}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right Section - User & Actions */}
+        <div className="navbar-actions">
+          <button onClick={toggleTheme} className="theme-toggle-btn" title="Changer le thème">
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+
+          <div className="user-dropdown">
+            <button className="user-button" onClick={handlePhotoClick}>
+              <div className="user-avatar">
+                {user?.photo ? (
+                  <img src={user.photo} alt="Photo de profil" />
+                ) : (
+                  <span>{user?.name?.charAt(0).toUpperCase() || 'C'}</span>
+                )}
+              </div>
+              <span className="user-name">{user?.name || 'Client'}</span>
+            </button>
           </div>
-        </button>
-        <h3 className="client-name">{user?.name || 'Client'}</h3>
-        <p className="client-email">{user?.email}</p>
-      </div>
 
-      <nav className="sidebar-menu">
-        {menuItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`menu-item ${location.pathname === item.path ? 'active' : ''}`}
-          >
-            <span className="menu-icon">{item.icon}</span>
-            <span className="menu-label">{item.label}</span>
-            {item.badge !== null && item.badge > 0 && (
-              <span className="menu-badge">{item.badge}</span>
-            )}
-          </Link>
-        ))}
-      </nav>
-
-      <div className="sidebar-footer">
-        <button onClick={toggleTheme} className="theme-toggle-btn" title="Changer le thème">
-          {theme === 'light' ? '🌙' : '☀️'}
-        </button>
-        <button onClick={handleLogout} className="logout-button">
-          <span className="menu-icon">🚪</span>
-          <span>Déconnexion</span>
-        </button>
+          <button onClick={handleLogout} className="logout-btn" title="Déconnexion">
+            <span>🚪</span>
+          </button>
+        </div>
       </div>
-    </div>
+    </header>
   )
 }
 

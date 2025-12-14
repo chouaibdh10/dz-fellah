@@ -236,3 +236,113 @@
     align-items: flex-start;
   }
 }
+
+/* ===================================
+   DARK MODE - CART PAGE
+   =================================== */
+[data-theme="dark"] .cart-page {
+  background: linear-gradient(135deg, #1a2e1a 0%, #0d1f0d 50%, #0a1a0a 100%);
+}
+
+[data-theme="dark"] .empty-cart {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .empty-cart h2 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .empty-cart p {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .producer-group {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .producer-name {
+  color: #f0f0f0;
+  border-bottom-color: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .cart-item {
+  border-bottom-color: rgba(74, 222, 128, 0.1);
+}
+
+[data-theme="dark"] .item-details h4 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .item-price {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .item-quantity {
+  background: rgba(74, 222, 128, 0.1);
+}
+
+[data-theme="dark"] .qty-btn {
+  background: rgba(74, 222, 128, 0.1);
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .qty-btn:hover {
+  background: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .item-qty {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .item-total {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .remove-btn {
+  color: #f87171;
+}
+
+[data-theme="dark"] .remove-btn:hover {
+  background: rgba(248, 113, 113, 0.1);
+}
+
+[data-theme="dark"] .cart-summary {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .cart-summary h3 {
+  color: #f0f0f0;
+  border-bottom-color: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .summary-row {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .summary-row span:last-child {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .summary-row.total {
+  border-top-color: rgba(74, 222, 128, 0.2);
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .total-amount {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .continue-shopping {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .cart-header h1 {
+  color: #f0f0f0;
+}

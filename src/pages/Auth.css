@@ -284,3 +284,89 @@
     padding: 2rem;
   }
 }
+
+/* ===================================
+   DARK MODE - AUTH PAGES
+   =================================== */
+[data-theme="dark"] .auth-page {
+  background: linear-gradient(135deg, #1a2e1a 0%, #0d1f0d 50%, #0a1a0a 100%);
+}
+
+[data-theme="dark"] .auth-container {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .auth-title {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .error-message {
+  background-color: rgba(248, 113, 113, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+[data-theme="dark"] .success-message {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+[data-theme="dark"] .auth-link {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .auth-link a {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .back-link {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .user-type-badge {
+  background: rgba(74, 222, 128, 0.1);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .form-group label {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group select,
+[data-theme="dark"] .form-group textarea {
+  background: rgba(74, 222, 128, 0.05);
+  border-color: rgba(74, 222, 128, 0.2);
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group select:focus,
+[data-theme="dark"] .form-group textarea:focus {
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .form-group input::placeholder {
+  color: #6b7280;
+}
+
+[data-theme="dark"] .verify-email-container h2 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .verify-email-container p {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .redirect-message {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .checkmark-circle {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+}

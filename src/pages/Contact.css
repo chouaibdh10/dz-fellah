@@ -246,3 +246,82 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ===================================
+   DARK MODE - CONTACT PAGE
+   =================================== */
+[data-theme="dark"] .contact-page {
+  background: linear-gradient(180deg, #1a2e1a 0%, #0d1f0d 50%, #0a1a0a 100%);
+}
+
+[data-theme="dark"] .contact-hero {
+  background: linear-gradient(135deg, #1a2e1a 0%, #0d1f0d 100%);
+  border-bottom: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .contact-info {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .contact-info h2 {
+  color: #f0f0f0;
+  border-bottom-color: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .info-item {
+  border-bottom-color: rgba(74, 222, 128, 0.1);
+}
+
+[data-theme="dark"] .info-icon {
+  background: rgba(74, 222, 128, 0.1);
+}
+
+[data-theme="dark"] .info-item h3 {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .info-item p {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .social-links h3 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .social-icon {
+  background: rgba(74, 222, 128, 0.1);
+}
+
+[data-theme="dark"] .social-icon:hover {
+  background: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .contact-form {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .contact-form h2 {
+  color: #f0f0f0;
+  border-bottom-color: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .success-message h3 {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .success-message p {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .new-message-btn {
+  background: rgba(74, 222, 128, 0.1);
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .new-message-btn:hover {
+  background: rgba(74, 222, 128, 0.2);
+}

@@ -1,0 +1,367 @@
+/* ===== PRODUCER NAVBAR - HORIZONTAL LAYOUT ===== */
+.producer-navbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 70px;
+	background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+	box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+	z-index: 1000;
+}
+
+.producer-navbar .navbar-container {
+	max-width: 1400px;
+	height: 100%;
+	margin: 0 auto;
+	padding: 0 24px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+}
+
+/* ===== BRAND SECTION ===== */
+.producer-navbar .navbar-brand {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	text-decoration: none;
+	color: white;
+	font-weight: 700;
+	font-size: 1.25rem;
+	transition: all 0.3s ease;
+}
+
+.producer-navbar .navbar-brand:hover {
+	transform: scale(1.02);
+}
+
+.producer-navbar .brand-icon {
+	font-size: 1.5rem;
+	animation: wheat-sway 2s ease-in-out infinite;
+}
+
+@keyframes wheat-sway {
+	0%, 100% { transform: rotate(-5deg); }
+	50% { transform: rotate(5deg); }
+}
+
+.producer-navbar .brand-text {
+	color: white;
+	font-family: 'Poppins', sans-serif;
+}
+
+.producer-navbar .brand-badge {
+	font-size: 0.65rem;
+	padding: 3px 8px;
+	border-radius: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.producer-navbar .brand-badge.producer {
+	background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+	color: #654321;
+	border: none;
+}
+
+/* ===== NAVIGATION MENU ===== */
+.producer-navbar .navbar-menu {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1;
+	justify-content: center;
+}
+
+.producer-navbar .nav-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 18px;
+	text-decoration: none;
+	color: rgba(255, 255, 255, 0.85);
+	font-weight: 500;
+	font-size: 0.95rem;
+	border-radius: 25px;
+	transition: all 0.3s ease;
+	position: relative;
+}
+
+.producer-navbar .nav-item:hover {
+	background: rgba(255, 255, 255, 0.15);
+	color: white;
+	transform: translateY(-2px);
+}
+
+.producer-navbar .nav-item.active {
+	background: rgba(255, 215, 0, 0.25);
+	color: white;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.producer-navbar .nav-item.active::after {
+	content: '';
+	position: absolute;
+	bottom: -8px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 30px;
+	height: 3px;
+	background: #FFD700;
+	border-radius: 2px;
+}
+
+.producer-navbar .nav-icon {
+	font-size: 1.1rem;
+}
+
+.producer-navbar .nav-label {
+	font-family: 'Poppins', sans-serif;
+}
+
+/* ===== NAVBAR ACTIONS ===== */
+.producer-navbar .navbar-actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.producer-navbar .theme-toggle-btn {
+	background: rgba(255, 255, 255, 0.15);
+	border: none;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-size: 1.2rem;
+}
+
+.producer-navbar .theme-toggle-btn:hover {
+	background: rgba(255, 255, 255, 0.25);
+	transform: rotate(20deg);
+}
+
+.producer-navbar .user-dropdown {
+	position: relative;
+}
+
+.producer-navbar .user-button {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: rgba(255, 255, 255, 0.15);
+	border: none;
+	padding: 6px 14px 6px 6px;
+	border-radius: 30px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	color: white;
+}
+
+.producer-navbar .user-button:hover {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+.producer-navbar .user-avatar {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #90EE90 0%, #228B22 100%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.producer-navbar .user-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.producer-navbar .user-avatar span {
+	font-weight: 700;
+	font-size: 1rem;
+	color: white;
+}
+
+.producer-navbar .user-name {
+	font-weight: 500;
+	font-size: 0.9rem;
+	max-width: 120px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.producer-navbar .logout-btn {
+	background: rgba(255, 107, 107, 0.2);
+	border: 1px solid rgba(255, 107, 107, 0.4);
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-size: 1.1rem;
+	color: white;
+}
+
+.producer-navbar .logout-btn:hover {
+	background: rgba(255, 107, 107, 0.4);
+	transform: scale(1.1);
+}
+
+/* ===== MOBILE MENU TOGGLE ===== */
+.producer-navbar .mobile-menu-toggle {
+	display: none;
+	background: rgba(255, 255, 255, 0.15);
+	border: none;
+	width: 42px;
+	height: 42px;
+	border-radius: 10px;
+	font-size: 1.5rem;
+	color: white;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.producer-navbar .mobile-menu-toggle:hover {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+	.producer-navbar .navbar-container {
+		padding: 0 16px;
+	}
+
+	.producer-navbar .nav-item {
+		padding: 8px 14px;
+		font-size: 0.9rem;
+	}
+
+	.producer-navbar .user-name {
+		display: none;
+	}
+
+	.producer-navbar .user-button {
+		padding: 6px;
+	}
+}
+
+@media (max-width: 768px) {
+	.producer-navbar {
+		height: auto;
+		min-height: 60px;
+	}
+
+	.producer-navbar .navbar-container {
+		flex-wrap: wrap;
+		padding: 12px 16px;
+		gap: 12px;
+	}
+
+	.producer-navbar .mobile-menu-toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.producer-navbar .navbar-menu {
+		display: none;
+		width: 100%;
+		flex-direction: column;
+		gap: 8px;
+		padding: 16px 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.15);
+		order: 3;
+	}
+
+	.producer-navbar .navbar-menu.mobile-open {
+		display: flex;
+	}
+
+	.producer-navbar .nav-item {
+		width: 100%;
+		justify-content: center;
+		padding: 12px;
+		border-radius: 12px;
+	}
+
+	.producer-navbar .nav-item.active::after {
+		display: none;
+	}
+
+	.producer-navbar .navbar-actions {
+		gap: 8px;
+	}
+
+	.producer-navbar .brand-text {
+		font-size: 1rem;
+	}
+
+	.producer-navbar .brand-badge {
+		display: none;
+	}
+}
+
+@media (max-width: 480px) {
+	.producer-navbar .navbar-container {
+		padding: 10px 12px;
+	}
+
+	.producer-navbar .brand-text {
+		display: none;
+	}
+
+	.producer-navbar .brand-icon {
+		font-size: 1.8rem;
+	}
+
+	.producer-navbar .theme-toggle-btn,
+	.producer-navbar .logout-btn {
+		width: 36px;
+		height: 36px;
+	}
+
+	.producer-navbar .user-avatar {
+		width: 32px;
+		height: 32px;
+	}
+}
+
+/* ===== DARK MODE ===== */
+[data-theme="dark"] .producer-navbar {
+	background: linear-gradient(135deg, #3d2914 0%, #2a1c0d 100%);
+	box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .producer-navbar .nav-item {
+	color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="dark"] .producer-navbar .nav-item:hover,
+[data-theme="dark"] .producer-navbar .nav-item.active {
+	background: rgba(255, 215, 0, 0.15);
+	color: white;
+}
+
+[data-theme="dark"] .producer-navbar .theme-toggle-btn,
+[data-theme="dark"] .producer-navbar .mobile-menu-toggle {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .producer-navbar .user-button {
+	background: rgba(255, 255, 255, 0.1);
+}

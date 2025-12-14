@@ -103,3 +103,51 @@
     padding: 2.5rem 1.5rem;
   }
 }
+
+/* ===================================
+   DARK MODE - REGISTER CHOICE
+   =================================== */
+[data-theme="dark"] .register-choice-page {
+  background: linear-gradient(135deg, #1a2e1a 0%, #0d1f0d 50%, #0a1a0a 100%);
+}
+
+[data-theme="dark"] .choice-title {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .choice-subtitle {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .choice-card {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border-color: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .choice-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .client-card:hover {
+  border-color: #60a5fa;
+}
+
+[data-theme="dark"] .producer-card:hover {
+  border-color: #4ade80;
+}
+
+[data-theme="dark"] .choice-card h3 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .choice-card p {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .auth-link {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .auth-link a {
+  color: #4ade80;
+}

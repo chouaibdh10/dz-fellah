@@ -1,13 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
-import '../client/ClientSidebar.css'
 import './ProducerSidebar.css'
 
 const menuItems = [
-	{ path: '/producer/dashboard', icon: '📊', label: 'Tableau de bord' },
-	{ path: '/producer/shop', icon: '🏪', label: 'Ma boutique' },
+	{ path: '/producer/dashboard', icon: '📊', label: 'Dashboard' },
+	{ path: '/producer/shop', icon: '🏪', label: 'Boutique' },
 	{ path: '/producer/orders', icon: '📦', label: 'Commandes' },
 	{ path: '/producer/profile', icon: '⚙️', label: 'Profil' }
 ]
@@ -17,6 +16,7 @@ const ProducerSidebar = () => {
 	const navigate = useNavigate()
 	const { user, logout } = useAuth()
 	const { theme, toggleTheme } = useTheme()
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
 	const handleLogout = () => {
 		logout()
@@ -27,47 +27,65 @@ const ProducerSidebar = () => {
 		navigate('/producer/profile')
 	}
 
+	const toggleMobileMenu = () => {
+		setMobileMenuOpen(!mobileMenuOpen)
+	}
+
 	return (
-		<div className="producer-sidebar">
-			<div className="sidebar-header">
-				<button className="client-photo" onClick={handlePhotoClick} title="Voir mon profil">
-					<div className="photo-circle">
-						{user?.photo ? (
-							<img src={user.photo} alt="Photo de profil" className="profile-img" />
-						) : (
-							<span className="photo-placeholder">
-								{user?.name?.charAt(0).toUpperCase() || 'P'}
-							</span>
-						)}
-					</div>
+		<header className="producer-navbar">
+			<div className="navbar-container">
+				{/* Logo & Brand */}
+				<Link to="/producer/dashboard" className="navbar-brand">
+					<span className="brand-icon">🌾</span>
+					<span className="brand-text">DZ-Fellah</span>
+					<span className="brand-badge producer">Producteur</span>
+				</Link>
+
+				{/* Mobile Menu Toggle */}
+				<button className="mobile-menu-toggle" onClick={toggleMobileMenu}>
+					{mobileMenuOpen ? '✕' : '☰'}
 				</button>
-				<h3 className="client-name">{user?.name || 'Producteur'}</h3>
-				<p className="client-email">{user?.email || 'producteur@dz-fellah.com'}</p>
+
+				{/* Navigation Menu */}
+				<nav className={`navbar-menu ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+					{menuItems.map((item) => (
+						<Link
+							key={item.path}
+							to={item.path}
+							className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+							onClick={() => setMobileMenuOpen(false)}
+						>
+							<span className="nav-icon">{item.icon}</span>
+							<span className="nav-label">{item.label}</span>
+						</Link>
+					))}
+				</nav>
+
+				{/* Right Section - User & Actions */}
+				<div className="navbar-actions">
+					<button onClick={toggleTheme} className="theme-toggle-btn" title="Changer le thème">
+						{theme === 'light' ? '🌙' : '☀️'}
+					</button>
+
+					<div className="user-dropdown">
+						<button className="user-button" onClick={handlePhotoClick}>
+							<div className="user-avatar">
+								{user?.photo ? (
+									<img src={user.photo} alt="Photo de profil" />
+								) : (
+									<span>{user?.name?.charAt(0).toUpperCase() || 'P'}</span>
+								)}
+							</div>
+							<span className="user-name">{user?.name || 'Producteur'}</span>
+						</button>
+					</div>
+
+					<button onClick={handleLogout} className="logout-btn" title="Déconnexion">
+						<span>🚪</span>
+					</button>
+				</div>
 			</div>
-
-			<nav className="sidebar-menu">
-				{menuItems.map((item) => (
-					<Link
-						key={item.path}
-						to={item.path}
-						className={`menu-item ${location.pathname === item.path ? 'active' : ''}`}
-					>
-						<span className="menu-icon" aria-hidden="true">{item.icon}</span>
-						<span className="menu-label">{item.label}</span>
-					</Link>
-				))}
-			</nav>
-
-		<div className="sidebar-footer">
-			<button onClick={toggleTheme} className="theme-toggle-btn" title="Changer le thème">
-				{theme === 'light' ? '🌙' : '☀️'}
-			</button>
-			<button onClick={handleLogout} className="logout-button">
-				<span className="menu-icon" aria-hidden="true">🚪</span>
-				<span>Déconnexion</span>
-			</button>
-		</div>
-		</div>
+		</header>
 	)
 }
 

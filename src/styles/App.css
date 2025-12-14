@@ -42,3 +42,18 @@
 .client-layout .main-content {
   margin-left: 0;
 }
+
+/* ===================================
+   DARK MODE - GLOBAL APP STYLES
+   =================================== */
+[data-theme="dark"] .app {
+  background: #0a1a0a;
+}
+
+[data-theme="dark"] .page-title {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .main-content {
+  background: linear-gradient(135deg, #1a2e1a 0%, #0d1f0d 50%, #0a1a0a 100%);
+}
