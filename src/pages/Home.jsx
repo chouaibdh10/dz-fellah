@@ -111,7 +111,6 @@ const Home = () => {
         </div>
         
         <div className="hero-image-wrapper">
-          <div className="hero-image-badge">🌟 Qualité garantie</div>
           <div className="hero-image-frame">
             <img src={homeImage} alt="Agriculture Algérienne" className="hero-banner-image" />
             <div className="hero-image-shine"></div>
