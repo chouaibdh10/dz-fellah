@@ -133,9 +133,6 @@ const Profile = () => {
                     <span className="badge badge-member">
                       <span>🏆</span> Client fidèle
                     </span>
-                    <span className="badge badge-verified">
-                      <span>✓</span> Vérifié
-                    </span>
                   </div>
                 </div>
               </div>

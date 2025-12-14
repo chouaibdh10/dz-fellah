@@ -513,8 +513,6 @@
   background-image: radial-gradient(#4ade80 2.5px, transparent 2.5px);
   opacity: 0.15;
 }
-  }
-}
 
 .hero-banner-overlay p {
   font-size: clamp(1.3rem, 3.5vw, 2rem);

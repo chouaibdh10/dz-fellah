@@ -16,14 +16,16 @@ const ProductDetail = () => {
     const mockProducts = [
       {
         id: 1,
-        name: 'Tomates',
-        image: 'https://via.placeholder.com/600x400?text=Tomates',
+        name: 'Tomates Bio',
+        image: 'https://images.unsplash.com/photo-1546470427-0d4db154ceb8?w=600',
         price: 250,
         saleType: 'weight',
         pricePerKg: 250,
         producer: 'Ferme Ben Ahmed',
         producerPhone: '+213 555 12 34 56',
         producerAddress: 'Tipaza, Algérie',
+        market: 'Marché Agricole Blida',
+        marketPhone: '+213 541 98 76 54',
         inSeason: true,
         description: 'Tomates fraîches et biologiques, cultivées sans pesticides. Idéales pour les salades et les sauces.',
         stock: 50,
@@ -31,14 +33,16 @@ const ProductDetail = () => {
       },
       {
         id: 2,
-        name: 'Oranges',
-        image: 'https://via.placeholder.com/600x400?text=Oranges',
+        name: 'Oranges Thomson',
+        image: 'https://images.unsplash.com/photo-1547514701-42782101795e?w=600',
         price: 180,
         saleType: 'weight',
         pricePerKg: 180,
         producer: 'Verger El Hamri',
         producerPhone: '+213 555 98 76 54',
         producerAddress: 'Blida, Algérie',
+        market: 'Marché Agricole Blida',
+        marketPhone: '+213 541 98 76 54',
         inSeason: true,
         description: 'Oranges juteuses et sucrées de saison. Riches en vitamine C.',
         stock: 30,
@@ -46,13 +50,15 @@ const ProductDetail = () => {
       },
       {
         id: 3,
-        name: 'Miel Local',
-        image: 'https://via.placeholder.com/600x400?text=Miel',
+        name: 'Miel de Montagne',
+        image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600',
         price: 1200,
         saleType: 'unit',
         producer: 'Rucher Bensalem',
         producerPhone: '+213 555 11 22 33',
         producerAddress: 'Béjaïa, Algérie',
+        market: 'Marché Apicole Kabylie',
+        marketPhone: '+213 534 55 66 77',
         inSeason: false,
         description: 'Miel naturel 100% pur, récolté artisanalement. Pot de 500g.',
         stock: 20,
@@ -61,13 +67,15 @@ const ProductDetail = () => {
       {
         id: 4,
         name: 'Pommes de terre',
-        image: 'https://via.placeholder.com/600x400?text=Pommes+de+terre',
+        image: 'https://images.unsplash.com/photo-1518977676601-b53f82ber17f?w=600',
         price: 120,
         saleType: 'weight',
         pricePerKg: 120,
         producer: 'Ferme Hamza',
         producerPhone: '+213 555 44 55 66',
         producerAddress: 'Aïn Defla, Algérie',
+        market: 'Marché Légumes Médéa',
+        marketPhone: '+213 541 77 88 99',
         inSeason: true,
         description: 'Pommes de terre fraîches, parfaites pour toutes vos préparations culinaires.',
         stock: 100,
@@ -146,6 +154,20 @@ const ProductDetail = () => {
               <h3>👨‍🌾 {product.producer}</h3>
               <p>📍 {product.producerAddress}</p>
               <p>📞 {product.producerPhone}</p>
+            </div>
+
+            <div className="market-section">
+              <h3>🏪 Marché du Producteur</h3>
+              <div className="market-card">
+                <p><strong>{product.market}</strong></p>
+                <p>📞 {product.marketPhone}</p>
+                <button 
+                  className="btn btn-market"
+                  onClick={() => navigate(`/markets?market=${encodeURIComponent(product.market)}`)}
+                >
+                  Accéder au marché
+                </button>
+              </div>
             </div>
 
             <div className="price-section">

@@ -80,6 +80,54 @@
   color: var(--text-light);
 }
 
+.market-section {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e6f2ff 100%);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid #2563eb;
+}
+
+.market-section h3 {
+  color: var(--text-dark);
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.market-card {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #dbeafe;
+}
+
+.market-card p {
+  margin: 0.5rem 0;
+  color: var(--text-dark);
+}
+
+.market-card p:first-child {
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.btn-market {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  transition: all 0.3s;
+}
+
+.btn-market:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
 .price-section {
   padding: 1.5rem;
   background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-cream) 100%);
@@ -270,6 +318,50 @@
 
 [data-theme="dark"] .detail-info h1 {
   color: #f0f0f0;
+}
+
+[data-theme="dark"] .producer-info {
+  background: rgba(29, 78, 25, 0.5);
+  border-left-color: #4ade80;
+}
+
+[data-theme="dark"] .producer-info h3 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .producer-info p {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .market-section {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
+  border-left-color: #60a5fa;
+}
+
+[data-theme="dark"] .market-section h3 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .market-card {
+  background: rgba(29, 78, 25, 0.3);
+  border-color: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .market-card p {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .market-card p:first-child {
+  color: #60a5fa;
+}
+
+[data-theme="dark"] .btn-market {
+  background-color: #2563eb;
+}
+
+[data-theme="dark"] .btn-market:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
 [data-theme="dark"] .producer-info {

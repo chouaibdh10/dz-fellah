@@ -61,6 +61,10 @@ const ProductCatalog = () => {
         saleType: 'weight',
         pricePerKg: 250,
         producer: 'Ferme Ben Ahmed',
+        producerPhone: '+213 555 12 34 56',
+        producerAddress: 'Tipaza, Algérie',
+        market: 'Marché Agricole Blida',
+        marketPhone: '+213 541 98 76 54',
         wilaya: 'Blida',
         inSeason: true,
         category: 'legumes',
@@ -78,6 +82,10 @@ const ProductCatalog = () => {
         saleType: 'weight',
         pricePerKg: 180,
         producer: 'Verger El Hamri',
+        producerPhone: '+213 555 98 76 54',
+        producerAddress: 'Blida, Algérie',
+        market: 'Marché Agricole Blida',
+        marketPhone: '+213 541 98 76 54',
         wilaya: 'Blida',
         inSeason: true,
         category: 'agrumes',
@@ -94,6 +102,10 @@ const ProductCatalog = () => {
         price: 1200,
         saleType: 'unit',
         producer: 'Rucher Bensalem',
+        producerPhone: '+213 555 11 22 33',
+        producerAddress: 'Béjaïa, Algérie',
+        market: 'Marché Apicole Kabylie',
+        marketPhone: '+213 534 55 66 77',
         wilaya: 'Tizi Ouzou',
         inSeason: false,
         category: 'miel',
@@ -111,6 +123,10 @@ const ProductCatalog = () => {
         saleType: 'weight',
         pricePerKg: 120,
         producer: 'Ferme Hamza',
+        producerPhone: '+213 555 44 55 66',
+        producerAddress: 'Aïn Defla, Algérie',
+        market: 'Marché Légumes Médéa',
+        marketPhone: '+213 541 77 88 99',
         wilaya: 'Médéa',
         inSeason: true,
         category: 'legumes',
@@ -128,6 +144,10 @@ const ProductCatalog = () => {
         saleType: 'weight',
         pricePerKg: 800,
         producer: 'Palmeraie Sahara',
+        producerPhone: '+213 555 22 33 44',
+        producerAddress: 'Tolga, Biskra',
+        market: 'Marché Dattes Sahara',
+        marketPhone: '+213 545 11 22 33',
         wilaya: 'Biskra',
         inSeason: true,
         category: 'dattes',
@@ -144,6 +164,10 @@ const ProductCatalog = () => {
         price: 1500,
         saleType: 'unit',
         producer: 'Moulin Traditionnel',
+        producerPhone: '+213 555 77 88 99',
+        producerAddress: 'Béjaïa, Algérie',
+        market: 'Marché Oléicole Béjaïa',
+        marketPhone: '+213 534 44 55 66',
         wilaya: 'Béjaïa',
         inSeason: false,
         category: 'huiles',
@@ -161,6 +185,10 @@ const ProductCatalog = () => {
         saleType: 'weight',
         pricePerKg: 150,
         producer: 'Jardin Vert',
+        producerPhone: '+213 555 33 44 55',
+        producerAddress: 'Tipaza, Algérie',
+        market: 'Marché Bio Tipaza',
+        marketPhone: '+213 541 33 44 55',
         wilaya: 'Tipaza',
         inSeason: true,
         category: 'legumes',
@@ -178,6 +206,10 @@ const ProductCatalog = () => {
         saleType: 'weight',
         pricePerKg: 350,
         producer: 'Verger Atlas',
+        producerPhone: '+213 555 55 66 77',
+        producerAddress: 'Médéa, Algérie',
+        market: 'Marché Fruits Médéa',
+        marketPhone: '+213 541 66 77 88',
         wilaya: 'Médéa',
         inSeason: true,
         category: 'fruits',
@@ -194,6 +226,10 @@ const ProductCatalog = () => {
         price: 400,
         saleType: 'unit',
         producer: 'Laiterie Montagne',
+        producerPhone: '+213 555 66 77 88',
+        producerAddress: 'Sétif, Algérie',
+        market: 'Marché Laitiers Sétif',
+        marketPhone: '+213 541 88 99 00',
         wilaya: 'Sétif',
         inSeason: false,
         category: 'laitiers',
@@ -210,6 +246,10 @@ const ProductCatalog = () => {
         price: 50,
         saleType: 'unit',
         producer: 'Herbes du Sahel',
+        producerPhone: '+213 555 88 99 00',
+        producerAddress: 'Alger, Algérie',
+        market: 'Marché Herbes Alger',
+        marketPhone: '+213 541 00 11 22',
         wilaya: 'Alger',
         inSeason: true,
         category: 'herbes',
@@ -227,6 +267,10 @@ const ProductCatalog = () => {
         saleType: 'weight',
         pricePerKg: 200,
         producer: 'Agrumes du Littoral',
+        producerPhone: '+213 555 99 00 11',
+        producerAddress: 'Boumerdès, Algérie',
+        market: 'Marché Agrumes Boumerdès',
+        marketPhone: '+213 541 22 33 44',
         wilaya: 'Boumerdès',
         inSeason: true,
         category: 'agrumes',
@@ -413,6 +457,13 @@ const ProductCatalog = () => {
             <div className="catalog-header-content">
               <h1 className="page-title">🛒 Catalogue des Produits</h1>
               <p className="page-subtitle">Découvrez les meilleurs produits frais de nos agriculteurs locaux</p>
+              <button 
+                className="btn btn-market-link"
+                onClick={() => navigate('/markets')}
+                title="Accéder aux marchés des producteurs"
+              >
+                🏪 Voir les Marchés
+              </button>
             </div>
           </div>
 
@@ -622,6 +673,21 @@ const ProductCatalog = () => {
                   <div className="modal-meta">
                     <span className="modal-producer">👨‍🌾 {selectedProduct.producer}</span>
                     <span className="modal-location">📍 {selectedProduct.wilaya}</span>
+                  </div>
+                  
+                  <div className="modal-market">
+                    <h4>🏪 Marché du Producteur</h4>
+                    <p><strong>{selectedProduct.market}</strong></p>
+                    <p>📞 {selectedProduct.marketPhone}</p>
+                    <button 
+                      className="btn btn-market-small"
+                      onClick={() => {
+                        closeModal()
+                        navigate(`/markets?market=${encodeURIComponent(selectedProduct.market)}`)
+                      }}
+                    >
+                      Accéder au marché
+                    </button>
                   </div>
                   
                   <p className="modal-description">{selectedProduct.description}</p>
