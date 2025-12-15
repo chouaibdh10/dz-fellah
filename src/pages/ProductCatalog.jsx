@@ -457,13 +457,6 @@ const ProductCatalog = () => {
             <div className="catalog-header-content">
               <h1 className="page-title">🛒 Catalogue des Produits</h1>
               <p className="page-subtitle">Découvrez les meilleurs produits frais de nos agriculteurs locaux</p>
-              <button 
-                className="btn btn-market-link"
-                onClick={() => navigate('/markets')}
-                title="Accéder aux marchés des producteurs"
-              >
-                🏪 Voir les Marchés
-              </button>
             </div>
           </div>
 
@@ -675,19 +668,16 @@ const ProductCatalog = () => {
                     <span className="modal-location">📍 {selectedProduct.wilaya}</span>
                   </div>
                   
-                  <div className="modal-market">
-                    <h4>🏪 Marché du Producteur</h4>
-                    <p><strong>{selectedProduct.market}</strong></p>
-                    <p>📞 {selectedProduct.marketPhone}</p>
-                    <button 
-                      className="btn btn-market-small"
-                      onClick={() => {
-                        closeModal()
-                        navigate(`/markets?market=${encodeURIComponent(selectedProduct.market)}`)
-                      }}
+                  <div className="modal-producer-info">
+                    <h4>👨‍🌾 Contact Producteur</h4>
+                    <p>📞 {selectedProduct.producerPhone}</p>
+                    <p>📍 {selectedProduct.producerAddress}</p>
+                    <a 
+                      href={`tel:${selectedProduct.producerPhone}`}
+                      className="btn btn-contact-producer"
                     >
-                      Accéder au marché
-                    </button>
+                      Appeler le producteur
+                    </a>
                   </div>
                   
                   <p className="modal-description">{selectedProduct.description}</p>

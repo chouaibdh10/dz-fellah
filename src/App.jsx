@@ -12,7 +12,6 @@ import Register from './pages/Register'
 import RegisterChoice from './pages/RegisterChoice'
 import ProductCatalog from './pages/ProductCatalog'
 import Cart from './pages/Cart'
-import MarketAccess from './pages/MarketAccess'
 import ProducerAccess from './pages/ProducerAccess'
 import ClientAccess from './pages/ClientAccess'
 import ProducerDashboard from './pages/producer/Dashboard'
@@ -54,7 +53,6 @@ function AppContent() {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/email-verified" element={<EmailVerified />} />
           <Route path="/products" element={<ProductCatalog />} />
-          <Route path="/markets" element={<MarketAccess />} />
           <Route path="/cart" element={<Cart />} />
         
           {/* Routes d'accès rapide */}

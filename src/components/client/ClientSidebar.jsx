@@ -12,6 +12,28 @@ const ClientSidebar = () => {
   const { getItemCount } = useCart()
   const { theme, toggleTheme } = useTheme()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [notifications, setNotifications] = useState([
+    { id: 1, type: 'order', message: 'Votre commande #1234 a été expédiée', time: 'Il y a 5 min', read: false },
+    { id: 2, type: 'promo', message: 'Nouvelle promotion : -20% sur les fruits', time: 'Il y a 1h', read: false },
+    { id: 3, type: 'info', message: 'Bienvenue sur DZ-Fellah !', time: 'Il y a 2h', read: true }
+  ])
+
+  const unreadCount = notifications.filter(n => !n.read).length
+
+  const markAsRead = (id) => {
+    setNotifications(prev => 
+      prev.map(n => n.id === id ? { ...n, read: true } : n)
+    )
+  }
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+  }
+
+  const deleteNotification = (id) => {
+    setNotifications(prev => prev.filter(n => n.id !== id))
+  }
 
   const handleLogout = () => {
     logout()
@@ -88,6 +110,60 @@ const ClientSidebar = () => {
 
         {/* Right Section - User & Actions */}
         <div className="navbar-actions">
+          {/* Notification Bell */}
+          <div className="notification-wrapper">
+            <button 
+              className="notification-btn" 
+              onClick={() => setShowNotifications(!showNotifications)}
+              title="Notifications"
+            >
+              🔔
+              {unreadCount > 0 && (
+                <span className="notification-count">{unreadCount}</span>
+              )}
+            </button>
+
+            {showNotifications && (
+              <div className="notification-dropdown">
+                <div className="notification-header">
+                  <h4>🔔 Notifications</h4>
+                  {unreadCount > 0 && (
+                    <button className="mark-all-read" onClick={markAllAsRead}>
+                      Tout marquer lu
+                    </button>
+                  )}
+                </div>
+                <div className="notification-list">
+                  {notifications.length > 0 ? (
+                    notifications.map(notif => (
+                      <div 
+                        key={notif.id} 
+                        className={`notification-item ${!notif.read ? 'unread' : ''}`}
+                        onClick={() => markAsRead(notif.id)}
+                      >
+                        <span className="notif-icon">
+                          {notif.type === 'order' ? '📦' : notif.type === 'promo' ? '🎉' : 'ℹ️'}
+                        </span>
+                        <div className="notif-content">
+                          <p className="notif-message">{notif.message}</p>
+                          <span className="notif-time">{notif.time}</span>
+                        </div>
+                        <button 
+                          className="notif-delete"
+                          onClick={(e) => { e.stopPropagation(); deleteNotification(notif.id); }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="no-notifications">Aucune notification</p>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
           <button onClick={toggleTheme} className="theme-toggle-btn" title="Changer le thème">
             {theme === 'light' ? '🌙' : '☀️'}
           </button>

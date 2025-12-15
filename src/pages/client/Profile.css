@@ -5,7 +5,13 @@
 .enhanced-profile {
   padding: 0 0 4rem;
   min-height: calc(100vh - 70px);
-  background: linear-gradient(135deg, var(--bg-cream) 0%, var(--bg-light) 50%, var(--bg-light) 100%);
+  background: transparent;
+}
+
+.enhanced-profile > .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
 /* Profile Hero Section */

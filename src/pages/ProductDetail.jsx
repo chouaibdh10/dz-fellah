@@ -154,20 +154,12 @@ const ProductDetail = () => {
               <h3>👨‍🌾 {product.producer}</h3>
               <p>📍 {product.producerAddress}</p>
               <p>📞 {product.producerPhone}</p>
-            </div>
-
-            <div className="market-section">
-              <h3>🏪 Marché du Producteur</h3>
-              <div className="market-card">
-                <p><strong>{product.market}</strong></p>
-                <p>📞 {product.marketPhone}</p>
-                <button 
-                  className="btn btn-market"
-                  onClick={() => navigate(`/markets?market=${encodeURIComponent(product.market)}`)}
-                >
-                  Accéder au marché
-                </button>
-              </div>
+              <a 
+                href={`tel:${product.producerPhone}`}
+                className="btn btn-contact-producer"
+              >
+                Appeler le producteur
+              </a>
             </div>
 
             <div className="price-section">

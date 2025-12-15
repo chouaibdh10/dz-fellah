@@ -9,15 +9,24 @@
   margin-top: 70px;
   background: var(--bg-cream);
   min-height: calc(100vh - 70px);
-  padding: 1.5rem;
   transition: background-color 0.3s ease;
+  overflow-x: hidden;
+}
+
+.client-main-content .container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
 @media (max-width: 768px) {
   .client-main-content {
     margin-top: 60px;
     min-height: calc(100vh - 60px);
-    padding: 1rem;
+  }
+
+  .client-main-content .container {
+    padding: 0 1rem;
   }
 }
 
