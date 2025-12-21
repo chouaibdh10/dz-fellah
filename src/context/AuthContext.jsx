@@ -19,7 +19,9 @@ export const AuthProvider = ({ children }) => {
     // TODO: Remplacer par un véritable appel API
     // Détection automatique du type d'utilisateur basée sur l'email
     let userType = 'client'
-    if (email.includes('producteur') || email.includes('producer') || email.includes('ferme')) {
+    if (email.includes('admin') || email.includes('administrateur')) {
+      userType = 'admin'
+    } else if (email.includes('producteur') || email.includes('producer') || email.includes('ferme')) {
       userType = 'producer'
     }
     
@@ -73,7 +75,8 @@ export const AuthProvider = ({ children }) => {
     updateUserProfile,
     loading,
     isProducer: user?.userType === 'producer',
-    isClient: user?.userType === 'client'
+    isClient: user?.userType === 'client',
+    isAdmin: user?.userType === 'admin'
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
