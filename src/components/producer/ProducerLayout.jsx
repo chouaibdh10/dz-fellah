@@ -1,6 +1,6 @@
 import React from 'react'
 import ProducerSidebar from './ProducerSidebar'
-import './ProducerLayout.css'
+import '../../styles/ProducerLayout.css'
 
 const ProducerLayout = ({ children }) => {
 	return (

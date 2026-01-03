@@ -1,72 +1,101 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ClientLayout from '../../components/client/ClientLayout'
-import './Orders.css'
+import { ordersAPI } from '../../utils/api'
+import '../../styles/Orders.css'
 
 const Orders = () => {
   const [filter, setFilter] = useState('all')
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [expandedOrderId, setExpandedOrderId] = useState(null)
+  const [orderDetails, setOrderDetails] = useState({})
+  const [detailsLoadingId, setDetailsLoadingId] = useState(null)
+  const [detailsError, setDetailsError] = useState(null)
 
-  const orders = [
-    {
-      id: 1,
-      orderNumber: 'CMD-2024-001',
-      date: '2024-01-15',
-      status: 'delivered',
-      producers: [
-        {
-          name: 'Ferme Ben Ahmed',
-          items: [
-            { product: 'Tomates Bio', quantity: 5, unit: 'kg', price: 250 },
-            { product: 'Concombres', quantity: 3, unit: 'kg', price: 180 }
-          ]
-        },
-        {
-          name: 'Verger El Hamri',
-          items: [
-            { product: 'Oranges', quantity: 2, unit: 'kg', price: 180 }
-          ]
-        }
-      ],
-      total: 1970
-    },
-    {
-      id: 2,
-      orderNumber: 'CMD-2024-002',
-      date: '2024-01-10',
-      status: 'in_progress',
-      producers: [
-        {
-          name: 'Rucher Bensalem',
-          items: [
-            { product: 'Miel Local', quantity: 2, unit: 'pot', price: 1200 }
-          ]
-        }
-      ],
-      total: 2400
-    },
-    {
-      id: 3,
-      orderNumber: 'CMD-2024-003',
-      date: '2024-01-05',
-      status: 'pending',
-      producers: [
-        {
-          name: 'Ferme Oasis',
-          items: [
-            { product: 'Huile d\'olive', quantity: 1, unit: 'litre', price: 800 },
-            { product: 'Olives noires', quantity: 2, unit: 'kg', price: 400 }
-          ]
-        }
-      ],
-      total: 1600
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true)
+        const data = await ordersAPI.listOrders()
+        // Backend list serializer returns: {id,total_amount,status,created_at}
+        const list = Array.isArray(data) ? data : (data?.results || [])
+        const mappedOrders = list.map(order => ({
+          id: order.id,
+          orderNumber: order.order_number || `CMD-${String(order.id).slice(0, 8)}`,
+          date: order.created_at,
+          status: order.status,
+          producers: [],
+          total: Number(order.total_amount || order.total_price || order.total || 0),
+        }))
+        setOrders(mappedOrders)
+      } catch (err) {
+        console.error('Failed to fetch orders:', err)
+        setError(err.message)
+        setOrders([])
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchOrders()
+  }, [])
+
+  const mapOrderDetails = (order) => {
+    return {
+      id: order.id,
+      orderNumber: order.order_number || `CMD-${String(order.id).slice(0, 8)}`,
+      date: order.created_at,
+      status: order.status,
+      total: Number(order.total_amount || order.total_price || order.total || 0),
+      producers: (order.sub_orders || []).map(sub => ({
+        name: sub.pickup_location || sub.shop_name || sub.shop?.name || sub.producer_name || 'Producteur',
+        items: (sub.items || []).map(item => ({
+          product: item.product_name || item.product?.name,
+          quantity: Number(item.quantity || 0),
+          unit: item.product?.sale_unit || item.unit || 'kg',
+          price: Number(item.unit_price || 0),
+        }))
+      }))
+    }
+  }
+
+  const toggleDetails = async (orderId) => {
+    setDetailsError(null)
+
+    if (expandedOrderId === orderId) {
+      setExpandedOrderId(null)
+      return
+    }
+
+    setExpandedOrderId(orderId)
+
+    if (orderDetails[orderId]) {
+      return
+    }
+
+    try {
+      setDetailsLoadingId(orderId)
+      const data = await ordersAPI.getOrderDetails(orderId)
+      setOrderDetails(prev => ({
+        ...prev,
+        [orderId]: mapOrderDetails(data)
+      }))
+    } catch (err) {
+      console.error('Failed to fetch order details:', err)
+      setDetailsError(err?.message || 'Erreur de récupération des détails')
+    } finally {
+      setDetailsLoadingId(null)
+    }
+  }
 
   const getStatusInfo = (status) => {
     const statusMap = {
       delivered: { text: 'Livrée', class: 'status-delivered', icon: '✅' },
-      in_progress: { text: 'En cours', class: 'status-progress', icon: '🚚' },
-      pending: { text: 'En attente', class: 'status-pending', icon: '⏳' }
+      processing: { text: 'En cours', class: 'status-progress', icon: '🚚' },
+      pending: { text: 'En attente', class: 'status-pending', icon: '⏳' },
+      cancelled: { text: 'Annulée', class: 'status-cancelled', icon: '❌' }
     }
     return statusMap[status] || statusMap.pending
   }
@@ -79,8 +108,9 @@ const Orders = () => {
   const stats = {
     total: orders.length,
     pending: orders.filter(o => o.status === 'pending').length,
-    inProgress: orders.filter(o => o.status === 'in_progress').length,
-    delivered: orders.filter(o => o.status === 'delivered').length
+    processing: orders.filter(o => o.status === 'processing').length,
+    delivered: orders.filter(o => o.status === 'delivered').length,
+    cancelled: orders.filter(o => o.status === 'cancelled').length
   }
 
   return (
@@ -93,9 +123,6 @@ const Orders = () => {
               <h1>📋 Mes Commandes</h1>
               <p className="orders-subtitle">Historique et suivi de vos commandes</p>
             </div>
-            <Link to="/products" className="btn btn-primary">
-              🛒 Nouvelle commande
-            </Link>
           </div>
 
           {/* Filters Modernes */}
@@ -113,16 +140,22 @@ const Orders = () => {
               ⏳ En attente <span className="filter-count">{stats.pending}</span>
             </button>
             <button 
-              className={`filter-btn ${filter === 'in_progress' ? 'active' : ''}`}
-              onClick={() => setFilter('in_progress')}
+              className={`filter-btn ${filter === 'processing' ? 'active' : ''}`}
+              onClick={() => setFilter('processing')}
             >
-              🚚 En cours <span className="filter-count">{stats.inProgress}</span>
+              🚚 En cours <span className="filter-count">{stats.processing}</span>
             </button>
             <button 
               className={`filter-btn ${filter === 'delivered' ? 'active' : ''}`}
               onClick={() => setFilter('delivered')}
             >
               ✅ Livrées <span className="filter-count">{stats.delivered}</span>
+            </button>
+            <button 
+              className={`filter-btn ${filter === 'cancelled' ? 'active' : ''}`}
+              onClick={() => setFilter('cancelled')}
+            >
+              ❌ Annulées <span className="filter-count">{stats.cancelled}</span>
             </button>
           </div>
 
@@ -131,6 +164,9 @@ const Orders = () => {
             <div className="orders-list">
               {filteredOrders.map(order => {
                 const statusInfo = getStatusInfo(order.status)
+                const details = orderDetails[order.id]
+                const producersToRender = details?.producers?.length ? details.producers : order.producers
+                const totalToRender = details?.total ?? order.total
                 return (
                   <div key={order.id} className="order-card">
                     <div className="order-header">
@@ -146,35 +182,46 @@ const Orders = () => {
                     </div>
 
                     <div className="order-body">
-                      {order.producers.map((producer, idx) => (
-                        <div key={idx} className="producer-section">
-                          <h4>👨‍🌾 {producer.name}</h4>
-                          <ul className="items-list">
-                            {producer.items.map((item, i) => (
-                              <li key={i}>
-                                <span className="item-name">🥬 {item.product}</span>
-                                <span className="item-details">{item.quantity} {item.unit} × {item.price} DA</span>
-                                <span className="item-price">{(item.quantity * item.price).toLocaleString()} DA</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                      {expandedOrderId === order.id ? (
+                        <>
+                          {detailsLoadingId === order.id && (
+                            <p style={{ margin: 0 }}>⏳ Chargement des détails...</p>
+                          )}
+                          {detailsError && (
+                            <p className="error-message" style={{ margin: 0 }}>{detailsError}</p>
+                          )}
+                          {producersToRender.map((producer, idx) => (
+                            <div key={idx} className="producer-section">
+                              <h4>👨‍🌾 {producer.name}</h4>
+                              <ul className="items-list">
+                                {producer.items.map((item, i) => (
+                                  <li key={i}>
+                                    <span className="item-name">🥬 {item.product}</span>
+                                    <span className="item-details">{item.quantity} {item.unit} × {item.price} DA</span>
+                                    <span className="item-price">{(item.quantity * item.price).toLocaleString()} DA</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </>
+                      ) : (
+                        <p style={{ margin: 0, color: '#777' }}>Cliquez sur “Voir détails” pour afficher les produits.</p>
+                      )}
                     </div>
 
                     <div className="order-footer">
                       <div className="order-total">
-                        💵 Total: <strong>{order.total.toLocaleString()} DA</strong>
+                        💵 Total: <strong>{Number(totalToRender || 0).toLocaleString()} DA</strong>
                       </div>
                       <div className="order-actions">
-                        <button className="btn btn-secondary btn-small">
-                          📄 Voir détails
+                        <button
+                          className="btn btn-secondary btn-small"
+                          onClick={() => toggleDetails(order.id)}
+                          disabled={detailsLoadingId === order.id}
+                        >
+                          {expandedOrderId === order.id ? '✕ Masquer détails' : '📄 Voir détails'}
                         </button>
-                        {order.status === 'delivered' && (
-                          <button className="btn btn-primary btn-small">
-                            🔄 Commander à nouveau
-                          </button>
-                        )}
                       </div>
                     </div>
                   </div>

@@ -2,32 +2,14 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { useProducts } from '../context/ProductsContext'
 import ClientLayout from '../components/client/ClientLayout'
-import './ProductCatalog.css'
-
-// Catégories de produits
-const productCategories = [
-  { id: 'all', name: 'Tous', icon: '🏪' },
-  { id: 'legumes', name: 'Légumes', icon: '🥬' },
-  { id: 'fruits', name: 'Fruits', icon: '🍎' },
-  { id: 'agrumes', name: 'Agrumes', icon: '🍊' },
-  { id: 'dattes', name: 'Dattes', icon: '🌴' },
-  { id: 'cereales', name: 'Céréales', icon: '🌾' },
-  { id: 'laitiers', name: 'Produits laitiers', icon: '🧀' },
-  { id: 'miel', name: 'Miel & Sucré', icon: '🍯' },
-  { id: 'herbes', name: 'Herbes', icon: '🌿' },
-  { id: 'huiles', name: 'Huiles', icon: '🫒' }
-]
-
-// Wilayas disponibles
-const wilayas = [
-  'Alger', 'Blida', 'Tipaza', 'Boumerdès', 'Médéa', 'Oran', 'Tlemcen',
-  'Sétif', 'Constantine', 'Annaba', 'Biskra', 'Tizi Ouzou', 'Béjaïa'
-]
+import '../styles/ProductCatalog.css'
 
 const ProductCatalog = () => {
-  const { user } = useAuth()
+  const { user, isAuthenticated } = useAuth()
   const navigate = useNavigate()
+  const { products: apiProducts, loading: productsLoading, error: productsError, fetchProducts, getTotalStock, hasAntigaspiStock, getAntigaspiStock, getRegularStock } = useProducts()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedProduct, setSelectedProduct] = useState(null)
@@ -38,311 +20,112 @@ const ProductCatalog = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedWilaya, setSelectedWilaya] = useState('all')
-  const [selectedProducer, setSelectedProducer] = useState('all')
+  const [producerSearch, setProducerSearch] = useState('')
   const [sortBy, setSortBy] = useState('popular')
   const [priceRange, setPriceRange] = useState('all')
   const [showInSeason, setShowInSeason] = useState(false)
+  const [showAntigaspiOnly, setShowAntigaspiOnly] = useState(false)
   const [viewMode, setViewMode] = useState('grid')
 
   useEffect(() => {
     // Vérifier si l'utilisateur est connecté
-    if (!user) {
+    if (!isAuthenticated) {
       alert('Veuillez vous connecter pour accéder aux produits')
       navigate('/login')
       return
     }
+  }, [isAuthenticated, navigate])
 
-    const mockProducts = [
-      {
-        id: 1,
-        name: 'Tomates Bio',
-        image: 'https://images.unsplash.com/photo-1546470427-0d4db154ceb8?w=400',
-        price: 250,
-        saleType: 'weight',
-        pricePerKg: 250,
-        producer: 'Ferme Ben Ahmed',
-        producerPhone: '+213 555 12 34 56',
-        producerAddress: 'Tipaza, Algérie',
-        market: 'Marché Agricole Blida',
-        marketPhone: '+213 541 98 76 54',
-        wilaya: 'Blida',
-        inSeason: true,
-        category: 'legumes',
-        description: 'Tomates fraîches et biologiques cultivées sans pesticides',
-        stock: 50,
-        unit: 'kg',
-        rating: 4.8,
-        sales: 120
-      },
-      {
-        id: 2,
-        name: 'Oranges Thomson',
-        image: 'https://images.unsplash.com/photo-1547514701-42782101795e?w=400',
-        price: 180,
-        saleType: 'weight',
-        pricePerKg: 180,
-        producer: 'Verger El Hamri',
-        producerPhone: '+213 555 98 76 54',
-        producerAddress: 'Blida, Algérie',
-        market: 'Marché Agricole Blida',
-        marketPhone: '+213 541 98 76 54',
-        wilaya: 'Blida',
-        inSeason: true,
-        category: 'agrumes',
-        description: 'Oranges juteuses de saison, variété Thomson',
-        stock: 30,
-        unit: 'kg',
-        rating: 4.9,
-        sales: 200
-      },
-      {
-        id: 3,
-        name: 'Miel de Montagne',
-        image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400',
-        price: 1200,
-        saleType: 'unit',
-        producer: 'Rucher Bensalem',
-        producerPhone: '+213 555 11 22 33',
-        producerAddress: 'Béjaïa, Algérie',
-        market: 'Marché Apicole Kabylie',
-        marketPhone: '+213 534 55 66 77',
-        wilaya: 'Tizi Ouzou',
-        inSeason: false,
-        category: 'miel',
-        description: 'Miel naturel 100% pur des montagnes de Kabylie',
-        stock: 20,
-        unit: 'pot (500g)',
-        rating: 5.0,
-        sales: 85
-      },
-      {
-        id: 4,
-        name: 'Pommes de terre',
-        image: 'https://images.unsplash.com/photo-1518977676601-b53f82ber17f?w=400',
-        price: 120,
-        saleType: 'weight',
-        pricePerKg: 120,
-        producer: 'Ferme Hamza',
-        producerPhone: '+213 555 44 55 66',
-        producerAddress: 'Aïn Defla, Algérie',
-        market: 'Marché Légumes Médéa',
-        marketPhone: '+213 541 77 88 99',
-        wilaya: 'Médéa',
-        inSeason: true,
-        category: 'legumes',
-        description: 'Pommes de terre fraîches de qualité supérieure',
-        stock: 100,
-        unit: 'kg',
-        rating: 4.5,
-        sales: 300
-      },
-      {
-        id: 5,
-        name: 'Dattes Deglet Nour',
-        image: 'https://images.unsplash.com/photo-1593195643839-7f7e44b3c794?w=400',
-        price: 800,
-        saleType: 'weight',
-        pricePerKg: 800,
-        producer: 'Palmeraie Sahara',
-        producerPhone: '+213 555 22 33 44',
-        producerAddress: 'Tolga, Biskra',
-        market: 'Marché Dattes Sahara',
-        marketPhone: '+213 545 11 22 33',
-        wilaya: 'Biskra',
-        inSeason: true,
-        category: 'dattes',
-        description: 'Dattes Deglet Nour premium de Tolga',
-        stock: 45,
-        unit: 'kg',
-        rating: 4.9,
-        sales: 150
-      },
-      {
-        id: 6,
-        name: 'Huile d\'Olive Extra Vierge',
-        image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400',
-        price: 1500,
-        saleType: 'unit',
-        producer: 'Moulin Traditionnel',
-        producerPhone: '+213 555 77 88 99',
-        producerAddress: 'Béjaïa, Algérie',
-        market: 'Marché Oléicole Béjaïa',
-        marketPhone: '+213 534 44 55 66',
-        wilaya: 'Béjaïa',
-        inSeason: false,
-        category: 'huiles',
-        description: 'Huile d\'olive première pression à froid',
-        stock: 25,
-        unit: 'litre',
-        rating: 4.7,
-        sales: 95
-      },
-      {
-        id: 7,
-        name: 'Carottes Bio',
-        image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400',
-        price: 150,
-        saleType: 'weight',
-        pricePerKg: 150,
-        producer: 'Jardin Vert',
-        producerPhone: '+213 555 33 44 55',
-        producerAddress: 'Tipaza, Algérie',
-        market: 'Marché Bio Tipaza',
-        marketPhone: '+213 541 33 44 55',
-        wilaya: 'Tipaza',
-        inSeason: true,
-        category: 'legumes',
-        description: 'Carottes biologiques croquantes et sucrées',
-        stock: 60,
-        unit: 'kg',
-        rating: 4.6,
-        sales: 110
-      },
-      {
-        id: 8,
-        name: 'Pommes Golden',
-        image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400',
-        price: 350,
-        saleType: 'weight',
-        pricePerKg: 350,
-        producer: 'Verger Atlas',
-        producerPhone: '+213 555 55 66 77',
-        producerAddress: 'Médéa, Algérie',
-        market: 'Marché Fruits Médéa',
-        marketPhone: '+213 541 66 77 88',
-        wilaya: 'Médéa',
-        inSeason: true,
-        category: 'fruits',
-        description: 'Pommes Golden croquantes des hauteurs de l\'Atlas',
-        stock: 40,
-        unit: 'kg',
-        rating: 4.4,
-        sales: 75
-      },
-      {
-        id: 9,
-        name: 'Fromage Frais',
-        image: 'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400',
-        price: 400,
-        saleType: 'unit',
-        producer: 'Laiterie Montagne',
-        producerPhone: '+213 555 66 77 88',
-        producerAddress: 'Sétif, Algérie',
-        market: 'Marché Laitiers Sétif',
-        marketPhone: '+213 541 88 99 00',
-        wilaya: 'Sétif',
-        inSeason: false,
-        category: 'laitiers',
-        description: 'Fromage frais artisanal au lait de vache',
-        stock: 15,
-        unit: 'pièce (250g)',
-        rating: 4.8,
-        sales: 60
-      },
-      {
-        id: 10,
-        name: 'Menthe Fraîche',
-        image: 'https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400',
-        price: 50,
-        saleType: 'unit',
-        producer: 'Herbes du Sahel',
-        producerPhone: '+213 555 88 99 00',
-        producerAddress: 'Alger, Algérie',
-        market: 'Marché Herbes Alger',
-        marketPhone: '+213 541 00 11 22',
-        wilaya: 'Alger',
-        inSeason: true,
-        category: 'herbes',
-        description: 'Botte de menthe fraîche pour thé et cuisine',
-        stock: 80,
-        unit: 'botte',
-        rating: 4.7,
-        sales: 200
-      },
-      {
-        id: 11,
-        name: 'Citrons Beldi',
-        image: 'https://images.unsplash.com/photo-1590502593747-42a996133562?w=400',
-        price: 200,
-        saleType: 'weight',
-        pricePerKg: 200,
-        producer: 'Agrumes du Littoral',
-        producerPhone: '+213 555 99 00 11',
-        producerAddress: 'Boumerdès, Algérie',
-        market: 'Marché Agrumes Boumerdès',
-        marketPhone: '+213 541 22 33 44',
-        wilaya: 'Boumerdès',
-        inSeason: true,
-        category: 'agrumes',
-        description: 'Citrons beldi juteux et parfumés',
-        stock: 35,
-        unit: 'kg',
-        rating: 4.6,
-        sales: 90
-      },
-      
-    ]
-    
-    setTimeout(() => {
-      setProducts(mockProducts)
+  useEffect(() => {
+    // Always refresh when opening the catalog (keeps client view up-to-date after producers add products)
+    if (isAuthenticated) {
+      fetchProducts()
+    }
+  }, [isAuthenticated, fetchProducts])
+
+  useEffect(() => {
+    // Use API products only (no mock fallback)
+    if (apiProducts && apiProducts.length > 0) {
+      // Map API products to catalog format
+      const mappedProducts = apiProducts.map(p => ({
+        ...p,
+        producer: p.shop_name || p.producer || 'Producteur',
+        producerPhone: p.shop?.phone || '+213 555 00 00 00',
+        producerAddress: p.shop?.address || 'Algérie',
+        wilaya: p.shop?.wilaya || 'Alger',
+        category: p.category || 'legumes',
+        total_stock: getTotalStock(p),
+        regular_stock: getRegularStock(p),
+        antigaspi_stock: getAntigaspiStock(p),
+        has_antigaspi: hasAntigaspiStock(p),
+        rating: p.average_rating || 4.5,
+        sales: p.sales_count || 0
+      }))
+      setProducts(mappedProducts)
       setLoading(false)
-    }, 500)
-  }, [user, navigate])
+    } else if (!productsLoading) {
+      setProducts([])
+      setLoading(false)
+    }
+  }, [apiProducts, productsLoading, getTotalStock, hasAntigaspiStock, getAntigaspiStock, getRegularStock])
 
   // Filtrer et trier les produits
   const filteredProducts = useMemo(() => {
     let result = [...products]
-    
+
     // Filtre par recherche
     if (searchTerm) {
       const query = searchTerm.toLowerCase()
-      result = result.filter(product => 
+      result = result.filter(product =>
         product.name.toLowerCase().includes(query) ||
         product.producer.toLowerCase().includes(query) ||
         product.description.toLowerCase().includes(query)
       )
     }
-    
+
     // Filtre par catégorie
     if (selectedCategory !== 'all') {
       result = result.filter(product => product.category === selectedCategory)
     }
-    
+
     // Filtre par wilaya
     if (selectedWilaya !== 'all') {
       result = result.filter(product => product.wilaya === selectedWilaya)
     }
-    
-    // Filtre par producteur
-    if (selectedProducer !== 'all') {
-      result = result.filter(product => product.producer === selectedProducer)
+
+    // Filtre par producteur (recherche textuelle)
+    if (producerSearch) {
+      const query = producerSearch.toLowerCase()
+      result = result.filter(product => product.producer.toLowerCase().includes(query))
     }
-    
+
     // Filtre par prix
     if (priceRange !== 'all') {
       switch (priceRange) {
         case 'low':
-          result = result.filter(p => (p.saleType === 'weight' ? p.pricePerKg : p.price) < 200)
+          result = result.filter(p => p.price < 200)
           break
         case 'medium':
-          result = result.filter(p => {
-            const pr = p.saleType === 'weight' ? p.pricePerKg : p.price
-            return pr >= 200 && pr < 500
-          })
+          result = result.filter(p => p.price >= 200 && p.price < 500)
           break
         case 'high':
-          result = result.filter(p => (p.saleType === 'weight' ? p.pricePerKg : p.price) >= 500)
+          result = result.filter(p => p.price >= 500)
           break
         default:
           break
       }
     }
-    
-    // Filtre saison
+
+    // Filtre saison (fresh products only)
     if (showInSeason) {
-      result = result.filter(product => product.inSeason)
+      result = result.filter(product => product.product_type === 'fresh')
     }
-    
+
+    // Filtre anti-gaspi
+    if (showAntigaspiOnly) {
+      result = result.filter(product => product.has_antigaspi)
+    }
+
     // Tri
     switch (sortBy) {
       case 'popular':
@@ -352,18 +135,10 @@ const ProductCatalog = () => {
         result.sort((a, b) => b.rating - a.rating)
         break
       case 'price-low':
-        result.sort((a, b) => {
-          const priceA = a.saleType === 'weight' ? a.pricePerKg : a.price
-          const priceB = b.saleType === 'weight' ? b.pricePerKg : b.price
-          return priceA - priceB
-        })
+        result.sort((a, b) => a.price - b.price)
         break
       case 'price-high':
-        result.sort((a, b) => {
-          const priceA = a.saleType === 'weight' ? a.pricePerKg : a.price
-          const priceB = b.saleType === 'weight' ? b.pricePerKg : b.price
-          return priceB - priceA
-        })
+        result.sort((a, b) => b.price - a.price)
         break
       case 'name':
         result.sort((a, b) => a.name.localeCompare(b.name))
@@ -371,9 +146,9 @@ const ProductCatalog = () => {
       default:
         break
     }
-    
+
     return result
-  }, [products, searchTerm, selectedCategory, selectedWilaya, selectedProducer, priceRange, showInSeason, sortBy])
+  }, [products, searchTerm, selectedCategory, selectedWilaya, producerSearch, priceRange, showInSeason, showAntigaspiOnly, sortBy])
 
   // Liste des producteurs uniques
   const producers = useMemo(() => {
@@ -381,10 +156,14 @@ const ProductCatalog = () => {
     return uniqueProducers.sort()
   }, [products])
 
-  const handleQuickAdd = (product, e) => {
+  const handleQuickAdd = async (product, e) => {
     e.stopPropagation()
-    addToCart(product, 1)
-    alert(`${product.name} ajouté au panier!`)
+    try {
+      await addToCart(product, 1)
+      alert(`${product.name} ajouté au panier!`)
+    } catch (err) {
+      alert(err?.message || 'Erreur lors de l\'ajout au panier')
+    }
   }
 
   const openProductModal = (product) => {
@@ -397,32 +176,35 @@ const ProductCatalog = () => {
     setQuantity(1)
   }
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (selectedProduct) {
-      addToCart(selectedProduct, quantity)
-      alert(`${quantity} ${selectedProduct.unit} de ${selectedProduct.name} ajouté(s) au panier!`)
-      closeModal()
+      try {
+        await addToCart(selectedProduct, quantity)
+        alert(`${quantity} ${selectedProduct.sale_unit} de ${selectedProduct.name} ajouté(s) au panier!`)
+        closeModal()
+      } catch (err) {
+        alert(err?.message || 'Erreur lors de l\'ajout au panier')
+      }
     }
   }
 
   const calculateTotal = () => {
     if (!selectedProduct) return 0
-    return selectedProduct.saleType === 'weight' 
-      ? selectedProduct.pricePerKg * quantity 
-      : selectedProduct.price * quantity
+    return selectedProduct.price * quantity
   }
 
   const clearFilters = () => {
     setSearchTerm('')
     setSelectedCategory('all')
     setSelectedWilaya('all')
-    setSelectedProducer('all')
+    setProducerSearch('')
     setPriceRange('all')
     setShowInSeason(false)
+    setShowAntigaspiOnly(false)
     setSortBy('popular')
   }
 
-  const hasActiveFilters = searchTerm || selectedCategory !== 'all' || selectedWilaya !== 'all' || selectedProducer !== 'all' || priceRange !== 'all' || showInSeason
+  const hasActiveFilters = searchTerm || selectedCategory !== 'all' || selectedWilaya !== 'all' || producerSearch || priceRange !== 'all' || showInSeason || showAntigaspiOnly
 
   if (!user) {
     return (
@@ -448,6 +230,29 @@ const ProductCatalog = () => {
     )
   }
 
+  if (!loading && products.length === 0) {
+    return (
+      <ClientLayout>
+        <div className="product-catalog">
+          <div className="container" style={{ textAlign: 'center', padding: '4rem' }}>
+            <h2>Aucun produit disponible</h2>
+            <p>Le catalogue est vide, ou le backend n'est pas joignable.</p>
+            {productsError && (
+              <p style={{ marginTop: '1rem' }}><strong>Détail:</strong> {productsError}</p>
+            )}
+            <button
+              className="btn btn-primary"
+              style={{ marginTop: '1.5rem' }}
+              onClick={() => fetchProducts()}
+            >
+              Réessayer
+            </button>
+          </div>
+        </div>
+      </ClientLayout>
+    )
+  }
+
   return (
     <ClientLayout>
       <div className="product-catalog">
@@ -466,7 +271,7 @@ const ProductCatalog = () => {
               <span className="search-icon">🔍</span>
               <input
                 type="text"
-                placeholder="Rechercher un produit, un producteur..."
+                placeholder="Rechercher un produit..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -476,28 +281,26 @@ const ProductCatalog = () => {
                 </button>
               )}
             </div>
-            
+
             <div className="filters-row">
-              <div className="filter-group">
-                <label>📍 Wilaya</label>
-                <select value={selectedWilaya} onChange={(e) => setSelectedWilaya(e.target.value)}>
-                  <option value="all">Toutes les wilayas</option>
-                  {wilayas.map(wilaya => (
-                    <option key={wilaya} value={wilaya}>{wilaya}</option>
-                  ))}
-                </select>
+              <div className="filter-group producer-search">
+                <label>🧑‍🌾 Boutique</label>
+                <div className="search-box-small">
+                  <span className="search-icon-small">🔍</span>
+                  <input
+                    type="text"
+                    placeholder="Rechercher une boutique..."
+                    value={producerSearch}
+                    onChange={(e) => setProducerSearch(e.target.value)}
+                  />
+                  {producerSearch && (
+                    <button className="clear-search-small" onClick={() => setProducerSearch('')}>
+                      ✕
+                    </button>
+                  )}
+                </div>
               </div>
-              
-              <div className="filter-group">
-                <label>👨‍🌾 Producteur</label>
-                <select value={selectedProducer} onChange={(e) => setSelectedProducer(e.target.value)}>
-                  <option value="all">Tous les producteurs</option>
-                  {producers.map(producer => (
-                    <option key={producer} value={producer}>{producer}</option>
-                  ))}
-                </select>
-              </div>
-              
+
               <div className="filter-group">
                 <label>💰 Prix</label>
                 <select value={priceRange} onChange={(e) => setPriceRange(e.target.value)}>
@@ -507,18 +310,16 @@ const ProductCatalog = () => {
                   <option value="high">Plus de 500 DA</option>
                 </select>
               </div>
-              
+
               <div className="filter-group">
                 <label>📊 Trier par</label>
                 <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                  <option value="popular">Plus populaires</option>
-                  <option value="rating">Meilleures notes</option>
                   <option value="price-low">Prix croissant</option>
                   <option value="price-high">Prix décroissant</option>
                   <option value="name">Nom A-Z</option>
                 </select>
               </div>
-              
+
               <div className="filter-group filter-checkbox">
                 <label className="checkbox-label">
                   <input
@@ -530,16 +331,28 @@ const ProductCatalog = () => {
                   🌿 De saison
                 </label>
               </div>
-              
+
+              <div className="filter-group filter-checkbox">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={showAntigaspiOnly}
+                    onChange={(e) => setShowAntigaspiOnly(e.target.checked)}
+                  />
+                  <span className="checkmark"></span>
+                  🏷️ Anti-gaspi
+                </label>
+              </div>
+
               <div className="view-toggle">
-                <button 
+                <button
                   className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
                   onClick={() => setViewMode('grid')}
                   title="Vue grille"
                 >
                   ▦
                 </button>
-                <button 
+                <button
                   className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
                   onClick={() => setViewMode('list')}
                   title="Vue liste"
@@ -550,21 +363,6 @@ const ProductCatalog = () => {
             </div>
           </div>
 
-          {/* Categories Pills */}
-          <div className="categories-pills">
-            {productCategories.map(cat => (
-              <button
-                key={cat.id}
-                className={`category-pill ${selectedCategory === cat.id ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(cat.id)}
-              >
-                <span>{cat.icon}</span>
-                <span>{cat.name}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Results Header */}
           <div className="results-header">
             <span className="results-count">
               {filteredProducts.length} produit{filteredProducts.length !== 1 ? 's' : ''} trouvé{filteredProducts.length !== 1 ? 's' : ''}
@@ -591,11 +389,14 @@ const ProductCatalog = () => {
               {filteredProducts.map(product => (
                 <div key={product.id} className="product-card" onClick={() => openProductModal(product)}>
                   <div className="product-image">
-                    <img src={product.image} alt={product.name} />
-                    {product.inSeason && (
-                      <span className="badge badge-season">🌿 De saison</span>
+                    <img src={product.photo} alt={product.name} />
+                    {product.product_type === 'fresh' && (
+                      <span className="badge badge-season">🌿 Frais</span>
                     )}
-                    {product.stock < 10 && (
+                    {product.has_antigaspi && (
+                      <span className="badge badge-antigaspi">🏷️ Anti-gaspi</span>
+                    )}
+                    {product.total_stock < 10 && (
                       <span className="badge badge-warning">⚠️ Stock limité</span>
                     )}
                     <div className="product-overlay">
@@ -615,18 +416,18 @@ const ProductCatalog = () => {
                     <p className="product-description">{product.description}</p>
                     <div className="product-footer">
                       <div className="product-price">
-                        {product.saleType === 'weight' 
-                          ? `${product.pricePerKg} DA / kg`
-                          : `${product.price} DA / ${product.unit}`
-                        }
+                        {product.price} DA / {product.sale_unit}
+                        {product.has_antigaspi && (
+                          <span className="antigaspi-discount"> (-50%: {product.price / 2} DA)</span>
+                        )}
                       </div>
                       <p className="stock-info">
-                        {product.stock > 20 ? '✅' : product.stock > 10 ? '⚠️' : '🔴'} {product.stock} en stock
+                        {product.total_stock > 20 ? '✅' : product.total_stock > 10 ? '⚠️' : '🔴'} {product.total_stock} en stock
                       </p>
                     </div>
                   </div>
                   <div className="product-actions">
-                    <button 
+                    <button
                       onClick={(e) => handleQuickAdd(product, e)}
                       className="btn btn-primary btn-add-cart"
                     >
@@ -644,71 +445,69 @@ const ProductCatalog = () => {
           <div className="modal-overlay" onClick={closeModal}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
               <button className="modal-close" onClick={closeModal}>✕</button>
-              
+
               <div className="modal-body">
                 <div className="modal-image">
-                  <img src={selectedProduct.image} alt={selectedProduct.name} />
-                  {selectedProduct.inSeason && (
-                    <span className="modal-badge">🌿 Produit de saison</span>
+                  <img src={selectedProduct.photo} alt={selectedProduct.name} />
+                  {selectedProduct.product_type === 'fresh' && (
+                    <span className="modal-badge">🌿 Produit frais</span>
+                  )}
+                  {selectedProduct.has_antigaspi && (
+                    <span className="modal-badge antigaspi">🏷️ Anti-gaspi -50%</span>
                   )}
                 </div>
-                
+
                 <div className="modal-info">
                   <div className="modal-header">
                     <h2>{selectedProduct.name}</h2>
-                    <div className="modal-rating">
-                      <span className="star">★</span>
-                      <span>{selectedProduct.rating}</span>
-                      <span className="sales">({selectedProduct.sales} ventes)</span>
-                    </div>
                   </div>
-                  
+
                   <div className="modal-meta">
                     <span className="modal-producer">👨‍🌾 {selectedProduct.producer}</span>
                     <span className="modal-location">📍 {selectedProduct.wilaya}</span>
                   </div>
-                  
+
                   <div className="modal-producer-info">
                     <h4>👨‍🌾 Contact Producteur</h4>
                     <p>📞 {selectedProduct.producerPhone}</p>
                     <p>📍 {selectedProduct.producerAddress}</p>
-                    <a 
+                    <a
                       href={`tel:${selectedProduct.producerPhone}`}
                       className="btn btn-contact-producer"
                     >
                       Appeler le producteur
                     </a>
                   </div>
-                  
+
                   <p className="modal-description">{selectedProduct.description}</p>
-                  
+
                   <div className="modal-price">
-                    {selectedProduct.saleType === 'weight' 
-                      ? `${selectedProduct.pricePerKg} DA / ${selectedProduct.unit}`
-                      : `${selectedProduct.price} DA / ${selectedProduct.unit}`
-                    }
+                    {selectedProduct.price} DA / {selectedProduct.sale_unit}
+                    {selectedProduct.has_antigaspi && (
+                      <span className="antigaspi-price-tag"> (Prix anti-gaspi: {selectedProduct.price / 2} DA)</span>
+                    )}
                   </div>
-                  
+
                   <p className="modal-stock">
-                    {selectedProduct.stock > 10 
-                      ? `✅ En stock (${selectedProduct.stock} ${selectedProduct.unit} disponibles)` 
-                      : `⚠️ Stock limité (${selectedProduct.stock} ${selectedProduct.unit} restants)`
+                    {selectedProduct.total_stock > 10
+                      ? `✅ En stock (${selectedProduct.total_stock} ${selectedProduct.sale_unit} disponibles)`
+                      : `⚠️ Stock limité (${selectedProduct.total_stock} ${selectedProduct.sale_unit} restants)`
                     }
                   </p>
 
                   <div className="modal-quantity">
                     <label>Quantité:</label>
                     <div className="quantity-controls">
-                      <button 
+                      <button
                         className="qty-btn"
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       >
                         −
                       </button>
                       <span className="qty-value">{quantity}</span>
-                      <button 
+                      <button
                         className="qty-btn"
-                        onClick={() => setQuantity(Math.min(selectedProduct.stock, quantity + 1))}
+                        onClick={() => setQuantity(Math.min(selectedProduct.total_stock, quantity + 1))}
                       >
                         +
                       </button>
@@ -720,10 +519,10 @@ const ProductCatalog = () => {
                     <strong>{calculateTotal().toLocaleString()} DA</strong>
                   </div>
 
-                  <button 
+                  <button
                     className="btn btn-primary btn-large"
                     onClick={handleAddToCart}
-                    disabled={selectedProduct.stock === 0}
+                    disabled={selectedProduct.total_stock === 0}
                   >
                     🛒 Ajouter au panier
                   </button>

@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
-import './ProducerSidebar.css'
+import { useNotifications } from '../../context/NotificationContext'
+import '../../styles/ProducerSidebar.css'
 
 const menuItems = [
 	{ path: '/producer/dashboard', icon: '📊', label: 'Dashboard' },
@@ -16,29 +17,42 @@ const ProducerSidebar = () => {
 	const navigate = useNavigate()
 	const { user, logout } = useAuth()
 	const { theme, toggleTheme } = useTheme()
+	const { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification } = useNotifications()
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	const [showNotifications, setShowNotifications] = useState(false)
-	const [notifications, setNotifications] = useState([
-		{ id: 1, type: 'order', message: 'Nouvelle commande #5678 reçue', time: 'Il y a 2 min', read: false },
-		{ id: 2, type: 'stock', message: 'Stock faible : Tomates Bio (5 kg restants)', time: 'Il y a 30 min', read: false },
-		{ id: 3, type: 'review', message: 'Nouveau avis 5★ sur vos Oranges', time: 'Il y a 1h', read: false },
-		{ id: 4, type: 'info', message: 'Votre boutique a été validée', time: 'Il y a 3h', read: true }
-	])
 
-	const unreadCount = notifications.filter(n => !n.read).length
+	const formatDate = (dateString) => {
+		if (!dateString) return ''
+		const date = new Date(dateString)
+		const now = new Date()
+		const diffMs = now - date
+		const diffMins = Math.floor(diffMs / 60000)
+		const diffHours = Math.floor(diffMs / 3600000)
+		const diffDays = Math.floor(diffMs / 86400000)
 
-	const markAsRead = (id) => {
-		setNotifications(prev => 
-			prev.map(n => n.id === id ? { ...n, read: true } : n)
-		)
+		if (diffMins < 1) return "À l'instant"
+		if (diffMins < 60) return `Il y a ${diffMins} min`
+		if (diffHours < 24) return `Il y a ${diffHours}h`
+		if (diffDays < 7) return `Il y a ${diffDays}j`
+		return date.toLocaleDateString('fr-FR')
 	}
 
-	const markAllAsRead = () => {
-		setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+	const getNotifIcon = (notif) => {
+		if (notif?.category === 'order') return '📦'
+		if (notif?.category === 'product') return '🧺'
+		if (notif?.category === 'account') return '👤'
+		if (notif?.level === 'warning') return '⚠️'
+		if (notif?.level === 'error') return '❌'
+		if (notif?.level === 'success') return '✅'
+		return 'ℹ️'
 	}
 
-	const deleteNotification = (id) => {
-		setNotifications(prev => prev.filter(n => n.id !== id))
+	const handleNotificationClick = (notif) => {
+		markAsRead(notif.id)
+		if (notif.action_url) {
+			navigate(notif.action_url)
+			setShowNotifications(false)
+		}
 	}
 
 	const handleLogout = () => {
@@ -114,21 +128,19 @@ const ProducerSidebar = () => {
 										notifications.map(notif => (
 											<div 
 												key={notif.id} 
-												className={`notification-item ${!notif.read ? 'unread' : ''}`}
-												onClick={() => markAsRead(notif.id)}
+												className={`notification-item ${!notif.is_read ? 'unread' : ''}`}
+												onClick={() => handleNotificationClick(notif)}
 											>
 												<span className="notif-icon">
-													{notif.type === 'order' ? '📦' : 
-													 notif.type === 'stock' ? '⚠️' : 
-													 notif.type === 'review' ? '⭐' : 'ℹ️'}
+													{getNotifIcon(notif)}
 												</span>
 												<div className="notif-content">
-													<p className="notif-message">{notif.message}</p>
-													<span className="notif-time">{notif.time}</span>
+													<p className="notif-message">{notif.title || notif.message}</p>
+													<span className="notif-time">{formatDate(notif.created_at)}</span>
 												</div>
 												<button 
 													className="notif-delete"
-													onClick={(e) => { e.stopPropagation(); deleteNotification(notif.id); }}
+													onClick={(e) => { e.stopPropagation(); removeNotification(notif.id); }}
 												>
 													✕
 												</button>

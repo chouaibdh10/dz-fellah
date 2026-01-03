@@ -1,0 +1,95 @@
+.verification-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.verification-popup {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: popupSlideIn 0.3s ease-out;
+}
+
+[data-theme="dark"] .verification-popup {
+    background: #1a1a1a;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.popup-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.verification-popup h3 {
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+[data-theme="dark"] .verification-popup h3 {
+    color: #f0f0f0;
+}
+
+.verification-popup p {
+    margin-bottom: 1.5rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+[data-theme="dark"] .verification-popup p {
+    color: #a0a0a0;
+}
+
+.popup-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.verification-popup .btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.verification-popup .btn-primary {
+    background: #4caf50;
+    color: white;
+}
+
+.verification-popup .btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+[data-theme="dark"] .verification-popup .btn-secondary {
+    background: #333;
+    color: #f0f0f0;
+}
+
+@keyframes popupSlideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

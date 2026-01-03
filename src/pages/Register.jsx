@@ -1,25 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import logo from '../photos/DZ-fellah.png'
-import './Auth.css'
+import '../styles/Auth.css'
+import { WILAYAS } from '../utils/wilayas'
 
 const Register = () => {
+  const { t } = useTranslation()
   const [searchParams] = useSearchParams()
   const userTypeFromUrl = searchParams.get('type') || 'client'
-  
+
   const [formData, setFormData] = useState({
-    name: '',
+    full_name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
     userType: userTypeFromUrl,
     phone: '',
-    address: ''
+    wilaya: '',
+    city: ''
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  
+
   const { register } = useAuth()
   const navigate = useNavigate()
 
@@ -41,24 +46,25 @@ const Register = () => {
     setError('')
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas')
+      setError(t('errors.passwordMismatch'))
       return
     }
 
     if (formData.password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères')
+      setError(t('errors.passwordTooShort'))
       return
     }
 
     setLoading(true)
 
     try {
-      await register(formData)
-      
-      // Rediriger vers la page de vérification d'email
-      navigate('/verify-email')
+      await register(formData, formData.userType)
+
+      // Après inscription: demander la vérification email
+      navigate(`/verify-email?email=${encodeURIComponent(formData.email)}`)
     } catch (err) {
-      setError('Une erreur est survenue lors de l\'inscription')
+      console.error('Registration error:', err)
+      setError(err.message || t('errors.genericRegister'))
     } finally {
       setLoading(false)
     }
@@ -68,45 +74,53 @@ const Register = () => {
     <div className="auth-page">
       <div className="auth-container">
         <Link to="/register-choice" className="back-link">
-          ← Retour
+          ← {t('auth.back')}
         </Link>
-        
+
         <img src={logo} alt="DZ-Fellah" className="auth-logo" />
-        <h1 className="auth-title">Inscription</h1>
-        
-        <div className="user-type-badge">
-          {formData.userType === 'producer' ? '🌾 Producteur' : '🛒 Client'}
-        </div>
-        
+        <h1 className="auth-title">{t('auth.registerTitle')}</h1>
+
         {error && <div className="error-message">{error}</div>}
-        
+
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label>Nom complet</label>
+            <label>{t('auth.fullName')}</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="full_name"
+              value={formData.full_name}
               onChange={handleChange}
-              placeholder="Votre nom"
+              placeholder="Votre nom complet"
               required
             />
           </div>
 
           <div className="form-group">
-            <label>Email</label>
+            <label>{t('auth.username')}</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Votre nom d'utilisateur"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>{t('auth.email')}</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="votre@email.com"
+              placeholder="exemple@email.com"
               required
             />
           </div>
 
           <div className="form-group">
-            <label>Téléphone</label>
+            <label>{t('auth.phone')}</label>
             <input
               type="tel"
               name="phone"
@@ -117,20 +131,41 @@ const Register = () => {
             />
           </div>
 
-          <div className="form-group">
-            <label>Adresse</label>
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              placeholder="Votre adresse"
-              required
-            />
+          <div className="form-row">
+            <div className="form-group">
+              <label>{t('auth.wilaya')}</label>
+              <select
+                name="wilaya"
+                value={formData.wilaya}
+                onChange={handleChange}
+                required
+                className="form-select"
+              >
+                <option value="">{t('auth.select')}</option>
+                {WILAYAS.map(wilaya => (
+                  <option key={wilaya.code} value={wilaya.code}>
+                    {wilaya.code.padStart(2, '0')} - {wilaya.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>{t('auth.city')}</label>
+              <input
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                placeholder="Votre ville"
+                required
+              />
+            </div>
           </div>
 
+
+
           <div className="form-group">
-            <label>Mot de passe</label>
+            <label>{t('auth.password')}</label>
             <input
               type="password"
               name="password"
@@ -142,7 +177,7 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label>Confirmer le mot de passe</label>
+            <label>{t('auth.confirmPassword')}</label>
             <input
               type="password"
               name="confirmPassword"
@@ -154,12 +189,12 @@ const Register = () => {
           </div>
 
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Inscription...' : 'S\'inscrire'}
+            {loading ? t('auth.registerLoading') : t('auth.registerCta')}
           </button>
         </form>
 
         <p className="auth-link">
-          Déjà un compte ? <Link to="/login">Se connecter</Link>
+          {t('auth.alreadyAccount')} <Link to="/login">{t('auth.loginCta')}</Link>
         </p>
       </div>
     </div>

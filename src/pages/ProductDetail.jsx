@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
-import './ProductDetail.css'
+import { productsAPI } from '../utils/api'
+import '../styles/ProductDetail.css'
 
 const ProductDetail = () => {
   const { id } = useParams()
@@ -10,89 +11,47 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    // TODO: Remplacer par un véritable appel API
-    const mockProducts = [
-      {
-        id: 1,
-        name: 'Tomates Bio',
-        image: 'https://images.unsplash.com/photo-1546470427-0d4db154ceb8?w=600',
-        price: 250,
-        saleType: 'weight',
-        pricePerKg: 250,
-        producer: 'Ferme Ben Ahmed',
-        producerPhone: '+213 555 12 34 56',
-        producerAddress: 'Tipaza, Algérie',
-        market: 'Marché Agricole Blida',
-        marketPhone: '+213 541 98 76 54',
-        inSeason: true,
-        description: 'Tomates fraîches et biologiques, cultivées sans pesticides. Idéales pour les salades et les sauces.',
-        stock: 50,
-        unit: 'kg'
-      },
-      {
-        id: 2,
-        name: 'Oranges Thomson',
-        image: 'https://images.unsplash.com/photo-1547514701-42782101795e?w=600',
-        price: 180,
-        saleType: 'weight',
-        pricePerKg: 180,
-        producer: 'Verger El Hamri',
-        producerPhone: '+213 555 98 76 54',
-        producerAddress: 'Blida, Algérie',
-        market: 'Marché Agricole Blida',
-        marketPhone: '+213 541 98 76 54',
-        inSeason: true,
-        description: 'Oranges juteuses et sucrées de saison. Riches en vitamine C.',
-        stock: 30,
-        unit: 'kg'
-      },
-      {
-        id: 3,
-        name: 'Miel de Montagne',
-        image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600',
-        price: 1200,
-        saleType: 'unit',
-        producer: 'Rucher Bensalem',
-        producerPhone: '+213 555 11 22 33',
-        producerAddress: 'Béjaïa, Algérie',
-        market: 'Marché Apicole Kabylie',
-        marketPhone: '+213 534 55 66 77',
-        inSeason: false,
-        description: 'Miel naturel 100% pur, récolté artisanalement. Pot de 500g.',
-        stock: 20,
-        unit: 'pot'
-      },
-      {
-        id: 4,
-        name: 'Pommes de terre',
-        image: 'https://images.unsplash.com/photo-1518977676601-b53f82ber17f?w=600',
-        price: 120,
-        saleType: 'weight',
-        pricePerKg: 120,
-        producer: 'Ferme Hamza',
-        producerPhone: '+213 555 44 55 66',
-        producerAddress: 'Aïn Defla, Algérie',
-        market: 'Marché Légumes Médéa',
-        marketPhone: '+213 541 77 88 99',
-        inSeason: true,
-        description: 'Pommes de terre fraîches, parfaites pour toutes vos préparations culinaires.',
-        stock: 100,
-        unit: 'kg'
+    const load = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await productsAPI.getDetails(id)
+
+        // Normalize to the fields used by this UI
+        setProduct({
+          id: data.id,
+          name: data.name,
+          image: data.photo || data.image,
+          price: Number(data.price || 0),
+          saleType: 'unit',
+          pricePerKg: Number(data.price || 0),
+          producer: data.shop_name || data.producer || data.shop?.name || 'Producteur',
+          producerPhone: data.shop?.phone || '',
+          producerAddress: data.shop?.address || data.wilaya || 'Algérie',
+          market: '',
+          marketPhone: '',
+          inSeason: false,
+          description: data.description || '',
+          stock: Number(data.stock || 0),
+          unit: data.sale_unit || data.unit || 'unité',
+        })
+      } catch (e) {
+        setError(e?.message || 'Erreur de chargement du produit')
+        setProduct(null)
+      } finally {
+        setLoading(false)
       }
-    ]
-    
-    setTimeout(() => {
-      const foundProduct = mockProducts.find(p => p.id === parseInt(id))
-      setProduct(foundProduct)
-      setLoading(false)
-    }, 500)
+    }
+
+    if (id) load()
   }, [id])
 
   const handleQuantityChange = (delta) => {
     const newQuantity = quantity + delta
-    if (newQuantity >= 1 && newQuantity <= product.stock) {
+    if (newQuantity >= 1 && (!product?.stock || newQuantity <= product.stock)) {
       setQuantity(newQuantity)
     }
   }
@@ -104,15 +63,23 @@ const ProductDetail = () => {
       : product.price * quantity
   }
 
-  const handleAddToCart = () => {
-    addToCart(product, quantity)
-    alert(`${quantity} ${product.unit} de ${product.name} ajouté(s) au panier!`)
-    setQuantity(1)
+  const handleAddToCart = async () => {
+    try {
+      await addToCart(product, quantity)
+      alert(`${quantity} ${product.unit} de ${product.name} ajouté(s) au panier!`)
+      setQuantity(1)
+    } catch (e) {
+      alert(e?.message || 'Erreur lors de l\'ajout au panier')
+    }
   }
 
-  const handleBuyNow = () => {
-    addToCart(product, quantity)
-    navigate('/cart')
+  const handleBuyNow = async () => {
+    try {
+      await addToCart(product, quantity)
+      navigate('/cart')
+    } catch (e) {
+      alert(e?.message || 'Erreur lors de l\'ajout au panier')
+    }
   }
 
   if (loading) {
@@ -123,7 +90,8 @@ const ProductDetail = () => {
     return (
       <div className="container">
         <div className="product-not-found">
-          <h2>Produit non trouvé</h2>
+          <h2>{error ? 'Erreur' : 'Produit non trouvé'}</h2>
+          {error && <p>{error}</p>}
           <Link to="/products" className="btn btn-primary">
             Retour au catalogue
           </Link>

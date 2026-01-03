@@ -1,57 +1,117 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { useProducts } from '../../context/ProductsContext'
 import ProducerLayout from '../../components/producer/ProducerLayout'
-import './ProducerDashboard.css'
+import '../../styles/ProducerDashboard.css'
+import { productsAPI } from '../../utils/api'
+
+const formatDa = (value) => {
+  if (value === null || value === undefined) return '—'
+  const n = Number(value)
+  if (Number.isNaN(n)) return '—'
+  return `${n.toLocaleString()} DA`
+}
+
+const timeAgo = (iso) => {
+  if (!iso) return ''
+  const then = new Date(iso)
+  const now = new Date()
+  const diffMs = now - then
+  const diffMin = Math.floor(diffMs / 60000)
+  if (diffMin < 1) return 'À l’instant'
+  if (diffMin < 60) return `Il y a ${diffMin} min`
+  const diffH = Math.floor(diffMin / 60)
+  if (diffH < 24) return `Il y a ${diffH} h`
+  const diffD = Math.floor(diffH / 24)
+  return `Il y a ${diffD} j`
+}
+
+const categoryName = (code) => {
+  const map = {
+    fruits: 'Fruits',
+    legumes: 'Légumes',
+    agrumes: 'Agrumes',
+    dattes: 'Dattes',
+    miel: 'Miel',
+    huiles: 'Huiles',
+    cereales: 'Céréales et farines',
+    autres: 'Autres',
+  }
+  return map[code] || code
+}
 
 const Dashboard = () => {
   const { user } = useAuth()
-  const { products } = useProducts()
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [overview, setOverview] = useState(null)
+  const [salesTrend, setSalesTrend] = useState(null)
+  const [categoryBreakdown, setCategoryBreakdown] = useState(null)
+  const [topProducts, setTopProducts] = useState([])
+  const [recentActivity, setRecentActivity] = useState([])
 
-  // Données dynamiques basées sur les produits
-  const stats = useMemo(() => {
-    const totalStock = products.reduce((sum, p) => sum + Number(p.stock || 0), 0)
-    const lowStockProducts = products.filter(p => Number(p.stock) <= 10).length
-    const seasonalProducts = products.filter(p => p.inSeason).length
-    
-    return {
-      totalProducts: products.length,
-      activeOrders: 8,
-      monthlyRevenue: 45000,
-      totalViews: 234,
-      totalStock,
-      lowStockProducts,
-      seasonalProducts
+  useEffect(() => {
+    let alive = true
+    const run = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const [o, trend, cat, top, act] = await Promise.all([
+          productsAPI.getDashboardOverview(),
+          productsAPI.getDashboardSalesTrend(),
+          productsAPI.getDashboardCategoryBreakdown(),
+          productsAPI.getDashboardTopProducts(),
+          productsAPI.getDashboardRecentActivity(),
+        ])
+        if (!alive) return
+        setOverview(o)
+        setSalesTrend(trend)
+        setCategoryBreakdown(cat)
+        setTopProducts(top?.products || [])
+        setRecentActivity(act?.activity || [])
+      } catch (e) {
+        if (!alive) return
+        setError(e?.message || 'Erreur de chargement')
+      } finally {
+        if (alive) setLoading(false)
+      }
     }
-  }, [products])
+    run()
+    return () => {
+      alive = false
+    }
+  }, [])
 
-  // Données pour le graphique des ventes (simulation)
-  const salesData = [
-    { month: 'Jan', value: 12000 },
-    { month: 'Fév', value: 19000 },
-    { month: 'Mar', value: 15000 },
-    { month: 'Avr', value: 25000 },
-    { month: 'Mai', value: 32000 },
-    { month: 'Juin', value: 28000 },
-    { month: 'Juil', value: 45000 }
-  ]
-  const maxSale = Math.max(...salesData.map(d => d.value))
+  const stats = useMemo(() => {
+    return {
+      totalProducts: overview?.total_products ?? 0,
+      activeOrders: overview?.active_orders ?? 0,
+      monthlyRevenue: overview?.monthly_revenue ?? 0,
+      totalStock: overview?.total_stock ?? 0,
+      lowStockProducts: overview?.low_stock_products ?? 0,
+      seasonalProducts: overview?.seasonal_products ?? 0,
+    }
+  }, [overview])
 
-  // Données pour le graphique circulaire des catégories
-  const categoryData = [
-    { name: 'Légumes', value: 45, color: '#4CAF50' },
-    { name: 'Fruits', value: 30, color: '#FF9800' },
-    { name: 'Produits laitiers', value: 15, color: '#2196F3' },
-    { name: 'Autres', value: 10, color: '#9C27B0' }
-  ]
+  const salesData = useMemo(() => {
+    const months = salesTrend?.months || []
+    return months.map((m) => ({
+      month: (m.label || '').split(' ')[0] || m.month,
+      value: Number(m.total_revenue) || 0,
+    }))
+  }, [salesTrend])
 
-  // Top produits
-  const topProducts = useMemo(() => {
-    return [...products]
-      .sort((a, b) => Number(b.stock) - Number(a.stock))
-      .slice(0, 4)
-  }, [products])
+  const maxSale = Math.max(1, ...salesData.map(d => d.value))
+
+  const categoryData = useMemo(() => {
+    const colors = ['#4CAF50', '#FF9800', '#2196F3', '#9C27B0']
+    const dist = categoryBreakdown?.distribution || []
+    return dist.slice(0, 4).map((c, idx) => ({
+      name: categoryName(c.category),
+      value: Number(c.percentage) || 0,
+      color: colors[idx % colors.length],
+    }))
+  }, [categoryBreakdown])
 
   // Calcul du pourcentage pour le graphique circulaire
   const calculateCircleOffset = (index) => {
@@ -77,14 +137,6 @@ const Dashboard = () => {
                 <p className="welcome-text">Voici un aperçu de votre activité</p>
               </div>
             </div>
-            <div className="header-actions">
-              <Link to="/producer/shop" className="btn btn-primary">
-                + Ajouter un produit
-              </Link>
-              <Link to="/producer/orders" className="btn btn-secondary">
-                📋 Commandes
-              </Link>
-            </div>
           </div>
 
           {/* Stats Cards améliorées */}
@@ -94,12 +146,12 @@ const Dashboard = () => {
                 <span className="stat-icon">🌾</span>
               </div>
               <div className="stat-content">
-                <h3>{stats.totalProducts}</h3>
+                <h3>{loading ? '…' : stats.totalProducts}</h3>
                 <p>Produits en ligne</p>
-                <span className="stat-badge">{stats.seasonalProducts} de saison</span>
+                <span className="stat-badge">{loading ? '…' : `${stats.seasonalProducts} de saison`}</span>
               </div>
               <div className="stat-trend up">
-                <span>↑ 12%</span>
+                <span>{loading ? '…' : '—'}</span>
               </div>
             </div>
 
@@ -108,12 +160,12 @@ const Dashboard = () => {
                 <span className="stat-icon">📦</span>
               </div>
               <div className="stat-content">
-                <h3>{stats.activeOrders}</h3>
+                <h3>{loading ? '…' : stats.activeOrders}</h3>
                 <p>Commandes actives</p>
-                <span className="stat-badge">3 en attente</span>
+                <span className="stat-badge">{loading ? '…' : 'En cours'}</span>
               </div>
               <div className="stat-trend up">
-                <span>↑ 8%</span>
+                <span>{loading ? '…' : '—'}</span>
               </div>
             </div>
 
@@ -122,29 +174,24 @@ const Dashboard = () => {
                 <span className="stat-icon">💰</span>
               </div>
               <div className="stat-content">
-                <h3>{stats.monthlyRevenue.toLocaleString()} DA</h3>
+                <h3>{loading ? '…' : formatDa(stats.monthlyRevenue)}</h3>
                 <p>Revenus ce mois</p>
-                <span className="stat-badge">+15000 DA vs mois dernier</span>
+                <span className="stat-badge">{loading ? '…' : 'Calculé sur commandes réalisées'}</span>
               </div>
               <div className="stat-trend up">
-                <span>↑ 23%</span>
-              </div>
-            </div>
-
-            <div className="stat-card gradient-purple">
-              <div className="stat-icon-wrapper">
-                <span className="stat-icon">👁️</span>
-              </div>
-              <div className="stat-content">
-                <h3>{stats.totalViews}</h3>
-                <p>Vues cette semaine</p>
-                <span className="stat-badge">45 visiteurs uniques</span>
-              </div>
-              <div className="stat-trend down">
-                <span>↓ 5%</span>
+                <span>{loading ? '…' : '—'}</span>
               </div>
             </div>
           </div>
+
+          {error && (
+            <div className="chart-card" style={{ marginBottom: 16 }}>
+              <div className="chart-header">
+                <h3>⚠️ Erreur</h3>
+              </div>
+              <div style={{ color: 'var(--text-light)', fontWeight: 700 }}>{error}</div>
+            </div>
+          )}
 
           {/* Section graphiques */}
           <div className="charts-section">
@@ -176,11 +223,13 @@ const Dashboard = () => {
               <div className="chart-summary">
                 <div className="summary-item">
                   <span className="summary-label">Total</span>
-                  <span className="summary-value">{salesData.reduce((sum, d) => sum + d.value, 0).toLocaleString()} DA</span>
+                  <span className="summary-value">{formatDa(salesData.reduce((sum, d) => sum + d.value, 0))}</span>
                 </div>
                 <div className="summary-item">
                   <span className="summary-label">Moyenne</span>
-                  <span className="summary-value">{Math.round(salesData.reduce((sum, d) => sum + d.value, 0) / salesData.length).toLocaleString()} DA</span>
+                  <span className="summary-value">
+                    {salesData.length ? formatDa(Math.round(salesData.reduce((sum, d) => sum + d.value, 0) / salesData.length)) : '—'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -211,7 +260,7 @@ const Dashboard = () => {
                     )
                   })}
                   <text x="50" y="47" textAnchor="middle" className="pie-center-text">
-                    {stats.totalProducts}
+                    {loading ? '…' : stats.totalProducts}
                   </text>
                   <text x="50" y="58" textAnchor="middle" className="pie-center-label">
                     produits
@@ -233,68 +282,27 @@ const Dashboard = () => {
           {/* Section inférieure */}
           <div className="dashboard-bottom">
             {/* Quick Actions */}
-            <div className="quick-actions">
-              <h2>⚡ Actions Rapides</h2>
-              <div className="actions-grid">
-                <Link to="/producer/shop" className="action-card">
-                  <div className="action-icon-wrapper green">
-                    <span className="action-icon">🌿</span>
-                  </div>
-                  <div className="action-text">
-                    <span className="action-title">Ma boutique</span>
-                    <span className="action-desc">Gérer vos produits</span>
-                  </div>
-                </Link>
-                <Link to="/producer/orders" className="action-card">
-                  <div className="action-icon-wrapper blue">
-                    <span className="action-icon">📋</span>
-                  </div>
-                  <div className="action-text">
-                    <span className="action-title">Commandes</span>
-                    <span className="action-desc">{stats.activeOrders} en cours</span>
-                  </div>
-                </Link>
-                <Link to="/producer/profile" className="action-card">
-                  <div className="action-icon-wrapper orange">
-                    <span className="action-icon">⚙️</span>
-                  </div>
-                  <div className="action-text">
-                    <span className="action-title">Paramètres</span>
-                    <span className="action-desc">Mon profil</span>
-                  </div>
-                </Link>
-                <div className="action-card coming-soon">
-                  <div className="action-icon-wrapper purple">
-                    <span className="action-icon">📊</span>
-                  </div>
-                  <div className="action-text">
-                    <span className="action-title">Analytics</span>
-                    <span className="action-desc">Bientôt disponible</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+            
             {/* Top Produits */}
             <div className="top-products">
               <h2>🏆 Top Produits</h2>
               <div className="products-list">
                 {topProducts.length > 0 ? topProducts.map((product, index) => (
-                  <div key={product.id} className="product-item">
+                  <div key={product.id || index} className="product-item">
                     <span className="product-rank">#{index + 1}</span>
                     <img src={product.photo} alt={product.name} className="product-thumb" />
                     <div className="product-details">
                       <span className="product-name">{product.name}</span>
-                      <span className="product-price">{product.price} DA/{product.unit}</span>
+                      <span className="product-price">{Number(product.price || 0).toLocaleString()} DA/{product.unit_type || ''}</span>
                     </div>
                     <div className="product-stock-mini">
                       <div className="stock-bar-mini">
                         <div 
-                          className={`stock-fill-mini ${product.stock > 20 ? 'high' : product.stock > 10 ? 'medium' : 'low'}`}
-                          style={{ width: `${Math.min(product.stock, 100)}%` }}
+                          className={`stock-fill-mini ${Number(product.stock_quantity) > 20 ? 'high' : Number(product.stock_quantity) > 10 ? 'medium' : 'low'}`}
+                          style={{ width: `${Math.min(Number(product.stock_quantity || 0), 100)}%` }}
                         ></div>
                       </div>
-                      <span className="stock-text">{product.stock} en stock</span>
+                      <span className="stock-text">{Number(product.stock_quantity || 0)} en stock</span>
                     </div>
                   </div>
                 )) : (
@@ -325,35 +333,25 @@ const Dashboard = () => {
               <button className="view-all-btn">Voir tout</button>
             </div>
             <div className="activity-list">
-              <div className="activity-item success">
-                <span className="activity-icon">✅</span>
-                <div className="activity-content">
-                  <p><strong>Nouvelle commande</strong> - Tomates Bio (5kg)</p>
-                  <span className="activity-time">Il y a 2 heures</span>
+              {recentActivity.length > 0 ? recentActivity.map((a) => (
+                <div key={a.id} className={`activity-item ${a.status === 'cancelled' ? 'warning' : 'success'}`}>
+                  <span className="activity-icon">{a.status === 'cancelled' ? '⚠️' : '✅'}</span>
+                  <div className="activity-content">
+                    <p>
+                      <strong>Commande</strong> — {a.client_name} ({a.total_items} articles)
+                    </p>
+                    <span className="activity-time">{timeAgo(a.created_at)}</span>
+                  </div>
+                  <span className="activity-amount">{formatDa(a.subtotal)}</span>
                 </div>
-                <span className="activity-amount">+1,250 DA</span>
-              </div>
-              <div className="activity-item info">
-                <span className="activity-icon">👁️</span>
-                <div className="activity-content">
-                  <p><strong>Produit consulté</strong> - Oranges Fraîches</p>
-                  <span className="activity-time">Il y a 5 heures</span>
+              )) : (
+                <div className="activity-item">
+                  <span className="activity-icon">ℹ️</span>
+                  <div className="activity-content">
+                    <p><strong>Aucune activité</strong> pour le moment</p>
+                  </div>
                 </div>
-              </div>
-              <div className="activity-item success">
-                <span className="activity-icon">⭐</span>
-                <div className="activity-content">
-                  <p><strong>Nouvel avis</strong> - 5 étoiles sur Miel Local</p>
-                  <span className="activity-time">Hier</span>
-                </div>
-              </div>
-              <div className="activity-item warning">
-                <span className="activity-icon">📦</span>
-                <div className="activity-content">
-                  <p><strong>Stock bas</strong> - Pommes de terre (8 restants)</p>
-                  <span className="activity-time">Hier</span>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

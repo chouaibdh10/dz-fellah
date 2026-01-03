@@ -1,0 +1,42 @@
+.client-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.client-main-content {
+  flex: 1;
+  margin-top: 70px;
+  background: var(--bg-cream);
+  min-height: calc(100vh - 70px);
+  transition: background-color 0.3s ease;
+  overflow-x: hidden;
+}
+
+.client-main-content .container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .client-main-content {
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+  }
+
+  .client-main-content .container {
+    padding: 0 1rem;
+  }
+}
+
+/* ===================================
+   DARK MODE - CLIENT LAYOUT
+   =================================== */
+[data-theme="dark"] .client-layout {
+  background: linear-gradient(135deg, #1a2e1a 0%, #0d1f0d 50%, #0a1a0a 100%);
+}
+
+[data-theme="dark"] .client-main-content {
+  background: linear-gradient(135deg, #1a2e1a 0%, #0d1f0d 50%, #0a1a0a 100%);
+}

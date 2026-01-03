@@ -1,0 +1,349 @@
+.product-detail {
+  padding: 2rem 0;
+  min-height: calc(100vh - 80px);
+  background-color: var(--bg-cream);
+}
+
+.back-link {
+  display: inline-block;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  transition: color 0.3s;
+}
+
+.back-link:hover {
+  color: #2d5016;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px var(--shadow-green);
+}
+
+.detail-image {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.detail-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.badge-season-large {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #4a7c23;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detail-info h1 {
+  color: var(--text-dark);
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.producer-info {
+  background: var(--bg-light);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+}
+
+.producer-info h3 {
+  color: var(--text-dark);
+  margin-bottom: 0.75rem;
+}
+
+.producer-info p {
+  margin: 0.5rem 0;
+  color: var(--text-light);
+}
+
+.producer-info .btn-contact-producer {
+  display: inline-block;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 1rem;
+  transition: all 0.3s;
+  text-decoration: none;
+}
+
+.producer-info .btn-contact-producer:hover {
+  background-color: #2d5016;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(45, 80, 22, 0.3);
+}
+
+.price-section {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-cream) 100%);
+  border-radius: 12px;
+}
+
+.price-main {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.stock-status {
+  color: var(--text-light);
+  margin: 0;
+  font-weight: 500;
+}
+
+.description-section h3,
+.quantity-section h3,
+.total-section h3 {
+  color: var(--text-dark);
+  margin-bottom: 0.75rem;
+}
+
+.description-section p {
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--bg-light);
+  padding: 1rem;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.qty-btn {
+  width: 50px;
+  height: 50px;
+  border: none;
+  background: var(--bg-card);
+  border-radius: 8px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--primary);
+}
+
+.qty-btn:hover:not(:disabled) {
+  background: #4a7c23;
+  color: white;
+  transform: scale(1.1);
+}
+
+.qty-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.qty-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.qty-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+.qty-unit {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.total-section {
+  background: var(--bg-light);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.total-price {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-large {
+  flex: 1;
+  padding: 1.25rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.btn-success {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-success:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.btn-success:disabled,
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.out-of-stock {
+  text-align: center;
+  color: #d32f2f;
+  font-weight: 600;
+  padding: 1rem;
+  background: #ffebee;
+  border-radius: 8px;
+}
+
+.product-not-found {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--bg-card);
+  border-radius: 12px;
+}
+
+.product-not-found h2 {
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .detail-info h1 {
+    font-size: 1.8rem;
+  }
+  
+  .price-main {
+    font-size: 1.5rem;
+  }
+}
+
+/* ===================================
+   DARK MODE - PRODUCT DETAIL
+   =================================== */
+[data-theme="dark"] .product-detail {
+  background: linear-gradient(135deg, #1a2e1a 0%, #0d1f0d 50%, #0a1a0a 100%);
+}
+
+[data-theme="dark"] .back-link {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .back-link:hover {
+  color: #86efac;
+}
+
+[data-theme="dark"] .detail-layout {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .detail-info h1 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .producer-info {
+  background: rgba(29, 78, 25, 0.5);
+  border-left-color: #4ade80;
+}
+
+[data-theme="dark"] .producer-info h3 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .producer-info p {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .producer-info .btn-contact-producer {
+  background-color: #4ade80;
+  color: #1a2e1a;
+}
+
+[data-theme="dark"] .producer-info .btn-contact-producer:hover {
+  background-color: #86efac;
+}
+
+[data-theme="dark"] .price-section {
+  background: rgba(74, 222, 128, 0.05);
+}
+
+[data-theme="dark"] .price-main {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .stock-status {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .description-section h2 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .description-section p {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .out-of-stock {
+  background: rgba(248, 113, 113, 0.1);
+  color: #f87171;
+}
+
+[data-theme="dark"] .product-not-found {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .product-not-found h2 {
+  color: #a0a0a0;
+}

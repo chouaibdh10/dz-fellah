@@ -1,0 +1,156 @@
+.footer {
+  background: linear-gradient(135deg, #1B5E20 0%, #0D3311 100%);
+  color: white;
+  padding: 4rem 0 1.5rem;
+  margin-top: 4rem;
+  position: relative;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #8BC34A, #4CAF50, #2E7D32);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.footer-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.footer-logo {
+  height: 70px;
+  width: auto;
+  margin-bottom: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.footer-logo:hover {
+  transform: scale(1.05);
+}
+
+.footer-section h4 {
+  font-size: 1.15rem;
+  margin-bottom: 1.25rem;
+  color: #8BC34A;
+  font-weight: 600;
+}
+
+.footer-section p {
+  line-height: 1.6;
+  color: #e0e0e0;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.5rem;
+  color: #e0e0e0;
+}
+
+.footer-section a {
+  color: #e0e0e0;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.footer-section a:hover {
+  color: #8BC34A;
+  transform: translateX(5px);
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.5rem;
+}
+
+.social-links a {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(139, 195, 74, 0.15);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  transform: scale(1.15) translateY(-3px);
+  background: rgba(139, 195, 74, 0.3);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(139, 195, 74, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+}
+
+/* ===================================
+   DARK MODE - FOOTER
+   =================================== */
+[data-theme="dark"] .footer {
+  background: linear-gradient(135deg, #0a1a0a 0%, #0d1f0d 50%, #1a2e1a 100%);
+  border-top: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .footer::before {
+  background: linear-gradient(90deg, #4ade80, #22c55e, #16a34a);
+}
+
+[data-theme="dark"] .footer-section h4 {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .footer-section p,
+[data-theme="dark"] .footer-section ul li {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .footer-section a {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .footer-section a:hover {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .social-links a {
+  background: rgba(74, 222, 128, 0.1);
+}
+
+[data-theme="dark"] .social-links a:hover {
+  background: rgba(74, 222, 128, 0.25);
+}
+
+[data-theme="dark"] .footer-bottom {
+  border-top-color: rgba(74, 222, 128, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+}

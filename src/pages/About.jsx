@@ -1,11 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import Footer from '../components/Footer'
 import logo from '../photos/DZ-fellah.png'
 import fieldImage from '../photos/field.jpg'
-import './About.css'
+import '../styles/About.css'
 
 const About = () => {
+  const { t } = useTranslation()
   return (
     <>
       <div className="about-page">
@@ -14,20 +16,20 @@ const About = () => {
           <div className="about-hero-bg"></div>
           <div className="about-hero-content">
             <img src={logo} alt="DZ-Fellah" className="about-hero-logo" />
-            <h1>À propos de DZ-Fellah</h1>
-            <p>La plateforme qui révolutionne l'agriculture algérienne en connectant directement producteurs et consommateurs</p>
+            <h1>{t('about.title')}</h1>
+            <p>{t('about.subtitle')}</p>
             <div className="about-hero-stats">
               <div className="hero-stat">
                 <span className="hero-stat-number">500+</span>
-                <span className="hero-stat-label">Utilisateurs</span>
+                <span className="hero-stat-label">{t('about.statUsers')}</span>
               </div>
               <div className="hero-stat">
                 <span className="hero-stat-number">120+</span>
-                <span className="hero-stat-label">Producteurs</span>
+                <span className="hero-stat-label">{t('about.statProducers')}</span>
               </div>
               <div className="hero-stat">
                 <span className="hero-stat-number">58</span>
-                <span className="hero-stat-label">Wilayas</span>
+                <span className="hero-stat-label">{t('about.statWilayas')}</span>
               </div>
             </div>
           </div>
@@ -41,35 +43,26 @@ const About = () => {
               <div className="mission-image-overlay"></div>
               <div className="mission-badge">
                 <span>🌾</span>
-                <span>Depuis 2024</span>
+                <span>{t('about.since')}</span>
               </div>
             </div>
             <div className="about-mission-content">
-              <span className="section-badge">Notre Mission</span>
-              <h2>Valoriser l'agriculture algérienne</h2>
-              <p>
-                DZ-Fellah est née d'une vision simple mais ambitieuse : créer un pont entre 
-                les producteurs agricoles algériens et les consommateurs. Nous croyons que 
-                chaque agriculteur mérite un accès direct au marché, sans les contraintes 
-                des intermédiaires traditionnels.
-              </p>
-              <p>
-                Notre plateforme offre aux producteurs les outils nécessaires pour vendre 
-                leurs produits directement, tout en garantissant aux consommateurs la 
-                fraîcheur et la qualité qu'ils recherchent.
-              </p>
+              <span className="section-badge">{t('about.missionBadge')}</span>
+              <h2>{t('about.missionTitle')}</h2>
+              <p>{t('about.missionP1')}</p>
+              <p>{t('about.missionP2')}</p>
               <div className="mission-highlights">
                 <div className="highlight">
                   <span className="highlight-icon">✓</span>
-                  <span>Traçabilité garantie</span>
+                  <span>{t('about.missionH1')}</span>
                 </div>
                 <div className="highlight">
                   <span className="highlight-icon">✓</span>
-                  <span>Circuit court</span>
+                  <span>{t('about.missionH2')}</span>
                 </div>
                 <div className="highlight">
                   <span className="highlight-icon">✓</span>
-                  <span>Prix équitables</span>
+                  <span>{t('about.missionH3')}</span>
                 </div>
               </div>
             </div>
@@ -79,28 +72,28 @@ const About = () => {
         {/* Values Section */}
         <section className="about-values">
           <div className="about-values-container">
-            <span className="section-badge center">Nos Valeurs</span>
-            <h2 className="section-title-about">Ce qui nous guide au quotidien</h2>
+            <span className="section-badge center">{t('about.valuesBadge')}</span>
+            <h2 className="section-title-about">{t('about.valuesTitle')}</h2>
             <div className="values-grid">
               <div className="value-card">
                 <div className="value-icon">🤝</div>
-                <h3>Confiance</h3>
-                <p>Nous construisons des relations durables basées sur la transparence et l'honnêteté</p>
+                <h3>{t('about.value1Title')}</h3>
+                <p>{t('about.value1Desc')}</p>
               </div>
               <div className="value-card">
                 <div className="value-icon">🌱</div>
-                <h3>Durabilité</h3>
-                <p>Nous encourageons les pratiques agricoles respectueuses de l'environnement</p>
+                <h3>{t('about.value2Title')}</h3>
+                <p>{t('about.value2Desc')}</p>
               </div>
               <div className="value-card">
                 <div className="value-icon">💪</div>
-                <h3>Équité</h3>
-                <p>Des prix justes qui valorisent le travail des producteurs</p>
+                <h3>{t('about.value3Title')}</h3>
+                <p>{t('about.value3Desc')}</p>
               </div>
               <div className="value-card">
                 <div className="value-icon">🚀</div>
-                <h3>Innovation</h3>
-                <p>Nous utilisons la technologie pour simplifier le commerce agricole</p>
+                <h3>{t('about.value4Title')}</h3>
+                <p>{t('about.value4Desc')}</p>
               </div>
             </div>
           </div>
@@ -109,14 +102,14 @@ const About = () => {
         {/* How it works */}
         <section className="about-how">
           <div className="about-how-container">
-            <span className="section-badge center">Comment ça marche</span>
-            <h2 className="section-title-about">Simple, rapide et efficace</h2>
+            <span className="section-badge center">{t('about.howBadge')}</span>
+            <h2 className="section-title-about">{t('about.howTitle')}</h2>
             <div className="steps-grid">
               <div className="step-card">
                 <div className="step-number">1</div>
                 <div className="step-content">
                   <h3>Inscription</h3>
-                  <p>Créez votre compte en tant que producteur ou client en quelques minutes</p>
+                  <p>{t('about.step1')}</p>
                 </div>
               </div>
               <div className="step-connector"></div>
@@ -124,7 +117,7 @@ const About = () => {
                 <div className="step-number">2</div>
                 <div className="step-content">
                   <h3>Découverte</h3>
-                  <p>Parcourez les produits frais disponibles ou créez votre boutique</p>
+                  <p>{t('about.step2')}</p>
                 </div>
               </div>
               <div className="step-connector"></div>
@@ -132,7 +125,7 @@ const About = () => {
                 <div className="step-number">3</div>
                 <div className="step-content">
                   <h3>Transaction</h3>
-                  <p>Achetez ou vendez directement, sans intermédiaires</p>
+                  <p>{t('about.step3')}</p>
                 </div>
               </div>
               <div className="step-connector"></div>
@@ -140,7 +133,7 @@ const About = () => {
                 <div className="step-number">4</div>
                 <div className="step-content">
                   <h3>Livraison</h3>
-                  <p>Recevez vos produits frais directement chez vous</p>
+                  <p>{t('about.step4')}</p>
                 </div>
               </div>
             </div>
@@ -150,63 +143,63 @@ const About = () => {
         {/* Audience Section */}
         <section className="about-audience">
           <div className="about-audience-container">
-            <span className="section-badge center">Pour qui ?</span>
-            <h2 className="section-title-about">Une plateforme pour tous</h2>
+            <span className="section-badge center">{t('about.forWhoBadge')}</span>
+            <h2 className="section-title-about">{t('about.forWhoTitle')}</h2>
             <div className="audience-grid">
               <div className="audience-card producer">
                 <div className="audience-header">
                   <div className="audience-icon">🌾</div>
-                  <h3>Producteurs</h3>
+                  <h3>{t('about.producersTitle')}</h3>
                 </div>
-                <p className="audience-desc">Vendez vos produits directement aux consommateurs</p>
+                <p className="audience-desc">{t('about.producersDesc')}</p>
                 <ul className="audience-features">
                   <li>
                     <span className="check">✓</span>
-                    <span>Créez votre boutique en ligne gratuitement</span>
+                    <span>{t('about.producerF1')}</span>
                   </li>
                   <li>
                     <span className="check">✓</span>
-                    <span>Gérez vos produits et commandes facilement</span>
+                    <span>{t('about.producerF2')}</span>
                   </li>
                   <li>
                     <span className="check">✓</span>
-                    <span>Atteignez des clients dans toute l'Algérie</span>
+                    <span>{t('about.producerF3')}</span>
                   </li>
                   <li>
                     <span className="check">✓</span>
-                    <span>Tableau de bord avec statistiques</span>
+                    <span>{t('about.producerF4')}</span>
                   </li>
                 </ul>
                 <Link to="/register" className="audience-cta producer-cta">
-                  Devenir producteur →
+                  {t('about.becomeProducer')} →
                 </Link>
               </div>
               <div className="audience-card client">
                 <div className="audience-header">
                   <div className="audience-icon">🛒</div>
-                  <h3>Clients</h3>
+                  <h3>{t('about.clientsTitle')}</h3>
                 </div>
-                <p className="audience-desc">Achetez des produits frais directement à la source</p>
+                <p className="audience-desc">{t('about.clientsDesc')}</p>
                 <ul className="audience-features">
                   <li>
                     <span className="check">✓</span>
-                    <span>Accédez à des produits locaux de qualité</span>
+                    <span>{t('about.clientF1')}</span>
                   </li>
                   <li>
                     <span className="check">✓</span>
-                    <span>Comparez les prix et les offres</span>
+                    <span>{t('about.clientF2')}</span>
                   </li>
                   <li>
                     <span className="check">✓</span>
-                    <span>Livraison partout en Algérie</span>
+                    <span>{t('about.clientF3')}</span>
                   </li>
                   <li>
                     <span className="check">✓</span>
-                    <span>Paiement sécurisé</span>
+                    <span>{t('about.clientF4')}</span>
                   </li>
                 </ul>
                 <Link to="/register" className="audience-cta client-cta">
-                  S'inscrire gratuitement →
+                  {t('about.signupFree')} →
                 </Link>
               </div>
             </div>
@@ -217,17 +210,14 @@ const About = () => {
         <section className="about-cta-section">
           <div className="about-cta-container">
             <div className="cta-content">
-              <h2>Rejoignez la communauté DZ-Fellah</h2>
-              <p>
-                Que vous soyez producteur souhaitant élargir votre clientèle ou consommateur 
-                à la recherche de produits frais et locaux, DZ-Fellah est fait pour vous.
-              </p>
+              <h2>{t('about.ctaTitle')}</h2>
+              <p>{t('about.ctaText')}</p>
               <div className="cta-buttons">
                 <Link to="/register" className="cta-btn primary">
-                  Créer un compte
+                  {t('about.createAccount')}
                 </Link>
                 <Link to="/" className="cta-btn secondary">
-                  Découvrir les produits
+                  {t('about.discoverProducts')}
                 </Link>
               </div>
             </div>

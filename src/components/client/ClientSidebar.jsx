@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { useTheme } from '../../context/ThemeContext'
-import './ClientSidebar.css'
+import '../../styles/ClientSidebar.css'
 
 const ClientSidebar = () => {
   const location = useLocation()
@@ -44,7 +44,7 @@ const ClientSidebar = () => {
     {
       path: '/products',
       icon: '🏪',
-      label: 'Boutique',
+      label: 'catalog',
       badge: null
     },
     {

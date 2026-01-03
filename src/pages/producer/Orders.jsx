@@ -1,112 +1,98 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { ordersAPI } from '../../utils/api'
 import ProducerLayout from '../../components/producer/ProducerLayout'
-import './ProducerOrders.css'
+import '../../styles/ProducerOrders.css'
 
 const Orders = () => {
   const { user } = useAuth()
   const [filter, setFilter] = useState('all')
 
-  const orders = [
-    {
-      id: 1,
-      orderNumber: 'CMD-2024-001',
-      customer: 'Ahmed Benali',
-      date: '2024-01-15',
-      status: 'pending',
-      items: [
-        { product: 'Tomates Bio', quantity: 5, unit: 'kg', price: 250 },
-        { product: 'Concombres', quantity: 3, unit: 'kg', price: 180 }
-      ],
-      total: 1790,
-      deliveryAddress: 'Alger, Hydra',
-      phone: '+213 555 12 34 56'
-    },
-    {
-      id: 2,
-      orderNumber: 'CMD-2024-002',
-      customer: 'Fatima Brahimi',
-      date: '2024-01-14',
-      status: 'processing',
-      items: [
-        { product: 'Oranges Fraîches', quantity: 10, unit: 'kg', price: 180 },
-        { product: 'Miel Local', quantity: 2, unit: 'pot', price: 1200 }
-      ],
-      total: 4200,
-      deliveryAddress: 'Oran, Les Plateaux',
-      phone: '+213 555 98 76 54'
-    },
-    {
-      id: 3,
-      orderNumber: 'CMD-2024-003',
-      customer: 'Karim Djebbar',
-      date: '2024-01-12',
-      status: 'delivered',
-      items: [
-        { product: 'Pommes de terre', quantity: 15, unit: 'kg', price: 120 }
-      ],
-      total: 1800,
-      deliveryAddress: 'Constantine, Ville nouvelle',
-      phone: '+213 555 11 22 33'
-    },
-    {
-      id: 4,
-      orderNumber: 'CMD-2024-004',
-      customer: 'Samira Meziane',
-      date: '2024-01-11',
-      status: 'cancelled',
-      items: [
-        { product: 'Courgettes', quantity: 4, unit: 'kg', price: 150 }
-      ],
-      total: 600,
-      deliveryAddress: 'Blida, Centre-ville',
-      phone: '+213 555 44 55 66'
-    },
-    {
-      id: 5,
-      orderNumber: 'CMD-2024-005',
-      customer: 'Yacine Lounis',
-      date: '2024-01-10',
-      status: 'delivered',
-      items: [
-        { product: 'Olives', quantity: 8, unit: 'kg', price: 350 },
-        { product: 'Huile d\'olive', quantity: 1, unit: 'litre', price: 800 }
-      ],
-      total: 3600,
-      deliveryAddress: 'Tizi Ouzou, Nouvelle Ville',
-      phone: '+213 555 77 88 99'
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await ordersAPI.listProducerSubOrders()
+        setOrders(Array.isArray(data) ? data : [])
+      } catch (err) {
+        console.error('Failed to load producer suborders:', err)
+        setOrders([])
+        setError(err?.message || 'Impossible de charger les commandes')
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    load()
+  }, [])
 
   const getStatusInfo = (status) => {
     const statusMap = {
       pending: { text: 'En attente', class: 'status-pending', icon: '⏳' },
-      processing: { text: 'En préparation', class: 'status-processing', icon: '📦' },
+      in_preparation: { text: 'En préparation', class: 'status-processing', icon: '📦' },
+      ready: { text: 'Prête', class: 'status-processing', icon: '📦' },
+      picked_up: { text: 'Récupérée', class: 'status-processing', icon: '📦' },
       delivered: { text: 'Livrée', class: 'status-delivered', icon: '✅' },
       cancelled: { text: 'Annulée', class: 'status-cancelled', icon: '❌' }
     }
     return statusMap[status] || statusMap.pending
   }
 
-  const handleStatusChange = (orderId, newStatus) => {
-    // TODO: Appeler l'API pour changer le statut
-    console.log(`Changement de statut de la commande ${orderId} vers ${newStatus}`)
-    alert(`Statut mis à jour avec succès !`)
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      const updated = await ordersAPI.updateProducerSubOrderStatus(orderId, newStatus)
+      setOrders((prev) => prev.map((o) => (o.id === updated.id ? updated : o)))
+      alert('Statut mis à jour avec succès !')
+    } catch (err) {
+      console.error('Status update failed:', err)
+      alert(err?.message || 'Erreur lors de la mise à jour du statut')
+    }
   }
 
-  const filteredOrders = filter === 'all' 
-    ? orders 
-    : orders.filter(order => order.status === filter)
+  const promptStatusChange = (order) => {
+    if (!order) return
+    if (order.status === 'delivered' || order.status === 'cancelled') return
 
-  const stats = {
-    total: orders.length,
-    pending: orders.filter(o => o.status === 'pending').length,
-    processing: orders.filter(o => o.status === 'processing').length,
-    delivered: orders.filter(o => o.status === 'delivered').length,
-    revenue: orders
-      .filter(o => o.status === 'delivered')
-      .reduce((sum, o) => sum + o.total, 0)
+    const allowed = ['pending', 'in_preparation', 'ready', 'picked_up', 'delivered', 'cancelled']
+    const next = window.prompt(
+      `Nouveau statut (${allowed.join(', ')}):`,
+      order.status || 'pending'
+    )
+    if (!next) return
+    const normalized = String(next).trim()
+    if (!allowed.includes(normalized)) {
+      alert('Statut invalide.')
+      return
+    }
+    handleStatusChange(order.id, normalized)
+  }
+
+  const filteredOrders = useMemo(() => {
+    if (filter === 'all') return orders
+    return orders.filter((order) => order.status === filter)
+  }, [orders, filter])
+
+  const stats = useMemo(() => {
+    const total = orders.length
+    const pending = orders.filter((o) => o.status === 'pending').length
+    const inPreparation = orders.filter((o) => o.status === 'in_preparation').length
+    const delivered = orders.filter((o) => o.status === 'delivered').length
+    const revenue = orders
+      .filter((o) => o.status === 'delivered')
+      .reduce((sum, o) => sum + (Number(o.subtotal) || 0), 0)
+    return { total, pending, inPreparation, delivered, revenue }
+  }, [orders])
+
+  const formatClientAddress = (client) => {
+    if (!client) return 'Non renseignée'
+    const parts = [client.address, client.city, client.wilaya].map((v) => (v ? String(v).trim() : '')).filter(Boolean)
+    return parts.length ? parts.join(', ') : 'Non renseignée'
   }
 
   return (
@@ -119,9 +105,6 @@ const Orders = () => {
             <h1 className="page-title">📋 Mes Commandes</h1>
             <p className="orders-subtitle">Gérez toutes vos commandes en un seul endroit</p>
           </div>
-          <Link to="/producer/dashboard" className="btn btn-secondary">
-            ← Tableau de bord
-          </Link>
         </div>
 
         {/* Stats Cards Modernes */}
@@ -143,7 +126,7 @@ const Orders = () => {
           <div className="stat-card-mini">
             <div className="stat-icon">🔄</div>
             <div>
-              <h3>{stats.processing}</h3>
+              <h3>{stats.inPreparation}</h3>
               <p>En préparation</p>
             </div>
           </div>
@@ -152,13 +135,6 @@ const Orders = () => {
             <div>
               <h3>{stats.delivered}</h3>
               <p>Livrées</p>
-            </div>
-          </div>
-          <div className="stat-card-mini highlight">
-            <div className="stat-icon">💰</div>
-            <div>
-              <h3>{stats.revenue.toLocaleString()} DA</h3>
-              <p>Chiffre d'affaires</p>
             </div>
           </div>
         </div>
@@ -178,10 +154,10 @@ const Orders = () => {
             ⏳ En attente ({stats.pending})
           </button>
           <button 
-            className={`filter-btn ${filter === 'processing' ? 'active' : ''}`}
-            onClick={() => setFilter('processing')}
+            className={`filter-btn ${filter === 'in_preparation' ? 'active' : ''}`}
+            onClick={() => setFilter('in_preparation')}
           >
-            🔄 En préparation ({stats.processing})
+            🔄 En préparation ({stats.inPreparation})
           </button>
           <button 
             className={`filter-btn ${filter === 'delivered' ? 'active' : ''}`}
@@ -199,7 +175,19 @@ const Orders = () => {
 
         {/* Orders List Moderne */}
         <div className="orders-list">
-          {filteredOrders.length === 0 ? (
+          {loading ? (
+            <div className="no-orders">
+              <div className="no-orders-icon">⏳</div>
+              <h3>Chargement...</h3>
+              <p>Récupération de vos commandes</p>
+            </div>
+          ) : error ? (
+            <div className="no-orders">
+              <div className="no-orders-icon">⚠️</div>
+              <h3>Impossible de charger les commandes</h3>
+              <p>{error}</p>
+            </div>
+          ) : filteredOrders.length === 0 ? (
             <div className="no-orders">
               <div className="no-orders-icon">📭</div>
               <h3>Aucune commande trouvée</h3>
@@ -208,17 +196,37 @@ const Orders = () => {
           ) : (
             filteredOrders.map(order => {
               const statusInfo = getStatusInfo(order.status)
+              const client = order.client
+              const customerName = client?.full_name || client?.email || 'Client'
+              const phone = client?.phone || 'Non renseigné'
+              const deliveryAddress = formatClientAddress(client)
+              const items = Array.isArray(order.items) ? order.items : []
+              const dateValue = order.created_at || order.updated_at
+              const total = Number(order.subtotal) || 0
               return (
                 <div key={order.id} className="order-card-detail">
                   <div className="order-card-header">
                     <div className="order-main-info">
-                      <h3>🧾 {order.orderNumber}</h3>
-                      <span className={`order-badge ${statusInfo.class}`}>
+                      <h3>🧾 CMD-{String(order.id).padStart(6, '0')}</h3>
+                      <span
+                        className={`order-badge ${statusInfo.class}`}
+                        role="button"
+                        tabIndex={0}
+                        title={(order.status === 'delivered' || order.status === 'cancelled')
+                          ? 'Statut final'
+                          : 'Cliquer pour changer le statut'}
+                        onClick={() => promptStatusChange(order)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') promptStatusChange(order)
+                        }}
+                      >
                         {statusInfo.icon} {statusInfo.text}
                       </span>
                     </div>
                     <div className="order-date">
-                      📅 {new Date(order.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      📅 {dateValue
+                        ? new Date(dateValue).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+                        : '—'}
                     </div>
                   </div>
 
@@ -227,15 +235,15 @@ const Orders = () => {
                       <h4>👤 Informations client</h4>
                       <div className="customer-detail">
                         <span className="label">🧑 Nom:</span>
-                        <span className="value">{order.customer}</span>
+                        <span className="value">{customerName}</span>
                       </div>
                       <div className="customer-detail">
                         <span className="label">📞 Téléphone:</span>
-                        <span className="value">{order.phone}</span>
+                        <span className="value">{phone}</span>
                       </div>
                       <div className="customer-detail">
                         <span className="label">📍 Adresse:</span>
-                        <span className="value">{order.deliveryAddress}</span>
+                        <span className="value">{deliveryAddress}</span>
                       </div>
                     </div>
 
@@ -251,51 +259,21 @@ const Orders = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {order.items.map((item, index) => (
+                          {items.map((item, index) => (
                             <tr key={index}>
-                              <td>🥬 {item.product}</td>
-                              <td>{item.quantity} {item.unit}</td>
-                              <td>{item.price.toLocaleString()} DA</td>
-                              <td><strong>{(item.quantity * item.price).toLocaleString()} DA</strong></td>
+                              <td>🥬 {item.product_name || 'Produit'}</td>
+                              <td>{item.quantity} {item.sale_unit || ''}</td>
+                              <td>{Math.round(Number(item.unit_price) || 0).toLocaleString()} DA</td>
+                              <td><strong>{Math.round(Number(item.total_price) || 0).toLocaleString()} DA</strong></td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                       <div className="order-total-row">
                         <span className="total-label">💵 Total de la commande:</span>
-                        <span className="total-amount">{order.total.toLocaleString()} DA</span>
+                        <span className="total-amount">{Math.round(total).toLocaleString()} DA</span>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="order-card-footer">
-                    {order.status === 'pending' && (
-                      <>
-                        <button 
-                          className="btn btn-success btn-small"
-                          onClick={() => handleStatusChange(order.id, 'processing')}
-                        >
-                          ✓ Accepter
-                        </button>
-                        <button 
-                          className="btn btn-danger btn-small"
-                          onClick={() => handleStatusChange(order.id, 'cancelled')}
-                        >
-                          ✗ Refuser
-                        </button>
-                      </>
-                    )}
-                    {order.status === 'processing' && (
-                      <button 
-                        className="btn btn-success btn-small"
-                        onClick={() => handleStatusChange(order.id, 'delivered')}
-                      >
-                        🚚 Marquer comme livrée
-                      </button>
-                    )}
-                    <button className="btn btn-secondary btn-small">
-                      📄 Voir détails
-                    </button>
                   </div>
                 </div>
               )

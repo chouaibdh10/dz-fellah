@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Footer from '../components/Footer'
-import './Contact.css'
+import '../styles/Contact.css'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -113,7 +113,7 @@ const Contact = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="votre@email.com"
+                      placeholder="exemple@email.com"
                       required
                     />
                   </div>

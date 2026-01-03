@@ -53,6 +53,10 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+html[dir='rtl'] {
+  direction: rtl;
+}
+
 .main-content {
   min-height: calc(100vh - 80px);
 }
@@ -135,6 +139,13 @@ input, textarea, select {
   margin-bottom: 1rem;
   transition: all 0.3s ease;
   background: white;
+  color: #1f2937;
+}
+
+/* Ensure options stay readable in native dropdowns */
+select option {
+  color: #1f2937;
+  background: #ffffff;
 }
 
 input:focus, textarea:focus, select:focus {
@@ -167,6 +178,11 @@ label {
   background: rgba(74, 222, 128, 0.05);
   border-color: rgba(74, 222, 128, 0.2);
   color: #f0f0f0;
+}
+
+[data-theme="dark"] select option {
+  color: #f0f0f0;
+  background: #0f1b0f;
 }
 
 [data-theme="dark"] input:focus,
