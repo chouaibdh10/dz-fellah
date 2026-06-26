@@ -54,41 +54,42 @@ const Navbar = () => {
         <ul className={`navbar-menu ${isOpen ? 'open' : ''}`}>
           {user ? (
             <>
-              <li><Link to="/about" onClick={closeMenu}>{t('nav.about')}</Link></li>
+              <li><Link to="/about" className="nav-link" onClick={closeMenu}>{t('nav.about')}</Link></li>
               {isProducer && (
-                <li><Link to="/producer/dashboard" onClick={closeMenu}>Espace Producteur</Link></li>
+                <li><Link to="/producer/dashboard" className="nav-link" onClick={closeMenu}>Espace Producteur</Link></li>
               )}
               {isClient && (
-                <li><Link to="/client/profile" onClick={closeMenu}>Espace Client</Link></li>
+                <li><Link to="/client/profile" className="nav-link" onClick={closeMenu}>Espace Client</Link></li>
               )}
               {isAdmin && (
-                <li><Link to="/admin/dashboard" onClick={closeMenu}>Admin</Link></li>
+                <li><Link to="/admin/dashboard" className="nav-link" onClick={closeMenu}>Admin</Link></li>
               )}
               <li>
-                <Link to="/products" onClick={closeMenu} className="cart-link">
+                <Link to="/products" className="nav-link cart-link" onClick={closeMenu}>
                   🛒 Produits
                 </Link>
               </li>
               <li>
-                <Link to="/cart" onClick={closeMenu} className="cart-link">
+                <Link to="/cart" className="nav-link cart-link" onClick={closeMenu}>
                   🛒 Panier
-                  {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+                  {cartCount > 0 && <span className="cart-badge">{cartCount > 99 ? '99+' : cartCount}</span>}
                 </Link>
               </li>
-              <li className="navbar-notifications"><NotificationBell /></li>
-              <li className="navbar-lang-item">
-                <select
-                  aria-label={t('lang.label')}
-                  className="navbar-lang-select"
-                  value={i18n.resolvedLanguage || i18n.language}
-                  onChange={handleLangChange}
-                >
-                  <option value="fr">{t('lang.fr')}</option>
-                  <option value="en">{t('lang.en')}</option>
-                  <option value="ar">{t('lang.ar')}</option>
-                </select>
-              </li>
-              <li>
+
+              <li className="navbar-utilities">
+                <div className="navbar-notifications"><NotificationBell /></div>
+                <div className="navbar-lang-item">
+                  <select
+                    aria-label={t('lang.label')}
+                    className="navbar-lang-select"
+                    value={i18n.resolvedLanguage || i18n.language}
+                    onChange={handleLangChange}
+                  >
+                    <option value="fr">{t('lang.fr')}</option>
+                    <option value="en">{t('lang.en')}</option>
+                    <option value="ar">{t('lang.ar')}</option>
+                  </select>
+                </div>
                 <button
                   onClick={toggleTheme}
                   className="theme-toggle-btn"
@@ -98,7 +99,8 @@ const Navbar = () => {
                   {theme === 'light' ? '🌙' : '☀️'}
                 </button>
               </li>
-              <li className="user-menu-item">
+
+              <li className="user-section">
                 <Link
                   to={isProducer ? '/producer/profile' : isAdmin ? '/admin/dashboard' : '/client/profile'}
                   className="user-photo-btn"
@@ -119,23 +121,24 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <li><Link to="/about" onClick={closeMenu}>{t('nav.about')}</Link></li>
-              <li><Link to="/login" onClick={closeMenu}>{t('nav.login')}</Link></li>
-              <li><Link to="/register-choice" onClick={closeMenu}>{t('nav.register')}</Link></li>
-              <li className="navbar-notifications"><NotificationBell /></li>
-              <li className="navbar-lang-item">
-                <select
-                  aria-label={t('lang.label')}
-                  className="navbar-lang-select"
-                  value={i18n.resolvedLanguage || i18n.language}
-                  onChange={handleLangChange}
-                >
-                  <option value="fr">{t('lang.fr')}</option>
-                  <option value="en">{t('lang.en')}</option>
-                  <option value="ar">{t('lang.ar')}</option>
-                </select>
-              </li>
-              <li>
+              <li><Link to="/about" className="nav-link" onClick={closeMenu}>{t('nav.about')}</Link></li>
+              <li><Link to="/login" className="nav-link" onClick={closeMenu}>{t('nav.login')}</Link></li>
+              <li><Link to="/register-choice" className="nav-link" onClick={closeMenu}>{t('nav.register')}</Link></li>
+
+              <li className="navbar-utilities">
+                <div className="navbar-notifications"><NotificationBell /></div>
+                <div className="navbar-lang-item">
+                  <select
+                    aria-label={t('lang.label')}
+                    className="navbar-lang-select"
+                    value={i18n.resolvedLanguage || i18n.language}
+                    onChange={handleLangChange}
+                  >
+                    <option value="fr">{t('lang.fr')}</option>
+                    <option value="en">{t('lang.en')}</option>
+                    <option value="ar">{t('lang.ar')}</option>
+                  </select>
+                </div>
                 <button
                   onClick={toggleTheme}
                   className="theme-toggle-btn"
