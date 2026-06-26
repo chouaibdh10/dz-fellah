@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { api } from '../services/api'
 import ClientLayout from '../components/client/ClientLayout'
 import './ProductCatalog.css'
 
@@ -33,6 +34,12 @@ const ProductCatalog = () => {
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const { addToCart } = useCart()
+
+  // Liste unique des producteurs dérivée des produits
+  const producers = useMemo(
+    () => [...new Set(products.map((p) => p.producer).filter(Boolean))].sort(),
+    [products]
+  )
 
   // États pour la recherche et les filtres
   const [searchTerm, setSearchTerm] = useState('')
@@ -261,125 +268,82 @@ const ProductCatalog = () => {
       },
       {
         id: 11,
-        name: 'Citrons Beldi',
-        image: 'https://images.unsplash.com/photo-1590502593747-42a996133562?w=400',
-        price: 200,
-        saleType: 'weight',
-        pricePerKg: 200,
-        producer: 'Agrumes du Littoral',
-        producerPhone: '+213 555 99 00 11',
-        producerAddress: 'Boumerdès, Algérie',
-        market: 'Marché Agrumes Boumerdès',
-        marketPhone: '+213 541 22 33 44',
-        wilaya: 'Boumerdès',
-        inSeason: true,
-        category: 'agrumes',
-        description: 'Citrons beldi juteux et parfumés',
-        stock: 35,
-        unit: 'kg',
+        name: 'Lait de Vache Frais',
+        image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400',
+        price: 120,
+        saleType: 'unit',
+        producer: 'Ferme Laitière Nord',
+        producerPhone: '+213 555 90 12 34',
+        producerAddress: 'Constantine, Algérie',
+        market: 'Marché Laitiers Constantine',
+        marketPhone: '+213 551 23 45 67',
+        wilaya: 'Constantine',
+        inSeason: false,
+        category: 'laitiers',
+        description: 'Lait frais pasteurisé du jour',
+        stock: 25,
+        unit: 'litre',
         rating: 4.6,
-        sales: 90
+        sales: 180
       },
-      
-    ]
-    
-    setTimeout(() => {
-      setProducts(mockProducts)
-      setLoading(false)
-    }, 500)
-  }, [user, navigate])
-
-  // Filtrer et trier les produits
-  const filteredProducts = useMemo(() => {
-    let result = [...products]
-    
-    // Filtre par recherche
-    if (searchTerm) {
-      const query = searchTerm.toLowerCase()
-      result = result.filter(product => 
-        product.name.toLowerCase().includes(query) ||
-        product.producer.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query)
-      )
-    }
-    
-    // Filtre par catégorie
-    if (selectedCategory !== 'all') {
-      result = result.filter(product => product.category === selectedCategory)
-    }
-    
-    // Filtre par wilaya
-    if (selectedWilaya !== 'all') {
-      result = result.filter(product => product.wilaya === selectedWilaya)
-    }
-    
-    // Filtre par producteur
-    if (selectedProducer !== 'all') {
-      result = result.filter(product => product.producer === selectedProducer)
-    }
-    
-    // Filtre par prix
-    if (priceRange !== 'all') {
-      switch (priceRange) {
-        case 'low':
-          result = result.filter(p => (p.saleType === 'weight' ? p.pricePerKg : p.price) < 200)
-          break
-        case 'medium':
-          result = result.filter(p => {
-            const pr = p.saleType === 'weight' ? p.pricePerKg : p.price
-            return pr >= 200 && pr < 500
-          })
-          break
-        case 'high':
-          result = result.filter(p => (p.saleType === 'weight' ? p.pricePerKg : p.price) >= 500)
-          break
-        default:
-          break
+      {
+        id: 12,
+        name: 'Blé Dur',
+        image: 'https://images.unsplash.com/photo-1590502593747-42a996133562?w=400',
+        price: 80,
+        saleType: 'weight',
+        pricePerKg: 80,
+        producer: 'Coopérative Céréales',
+        producerPhone: '+213 555 67 89 01',
+        producerAddress: 'Sétif, Algérie',
+        market: 'Marché Céréales Sétif',
+        marketPhone: '+213 552 34 56 78',
+        wilaya: 'Sétif',
+        inSeason: true,
+        category: 'cereales',
+        description: 'Blé dur de qualité supérieure pour couscous',
+        stock: 200,
+        unit: 'kg',
+        rating: 4.3,
+        sales: 500
       }
-    }
-    
-    // Filtre saison
-    if (showInSeason) {
-      result = result.filter(product => product.inSeason)
-    }
-    
-    // Tri
-    switch (sortBy) {
-      case 'popular':
-        result.sort((a, b) => b.sales - a.sales)
-        break
-      case 'rating':
-        result.sort((a, b) => b.rating - a.rating)
-        break
-      case 'price-low':
-        result.sort((a, b) => {
-          const priceA = a.saleType === 'weight' ? a.pricePerKg : a.price
-          const priceB = b.saleType === 'weight' ? b.pricePerKg : b.price
-          return priceA - priceB
-        })
-        break
-      case 'price-high':
-        result.sort((a, b) => {
-          const priceA = a.saleType === 'weight' ? a.pricePerKg : a.price
-          const priceB = b.saleType === 'weight' ? b.pricePerKg : b.price
-          return priceB - priceA
-        })
-        break
-      case 'name':
-        result.sort((a, b) => a.name.localeCompare(b.name))
-        break
-      default:
-        break
-    }
-    
-    return result
-  }, [products, searchTerm, selectedCategory, selectedWilaya, selectedProducer, priceRange, showInSeason, sortBy])
+    ]
 
-  // Liste des producteurs uniques
-  const producers = useMemo(() => {
-    const uniqueProducers = [...new Set(products.map(p => p.producer))]
-    return uniqueProducers.sort()
-  }, [products])
+    const isWeight = (unit) => {
+      const u = String(unit || '').toLowerCase()
+      return u.includes('kg') || u === 'g'
+    }
+
+    setLoading(true)
+    api.products
+      .list()
+      .then((list) => {
+        setProducts(
+          list.map((p) => {
+            const fallback = mockProducts.find((m) => m.id === p.id)
+            const saleType = isWeight(p.unit) ? 'weight' : 'unit'
+            return {
+              ...(fallback || {}),
+              id: p.id,
+              name: p.name,
+              image: p.photo || fallback?.image,
+              price: Number(p.price),
+              saleType,
+              pricePerKg: Number(p.price),
+              producer: p.producer_name || p.producer_email || fallback?.producer || 'Producteur',
+              producerPhone: p.producer_phone || fallback?.producerPhone || '',
+              producerAddress: p.producer_address || fallback?.producerAddress || '',
+              inSeason: !!p.in_season,
+              category: p.category || fallback?.category || 'all',
+              stock: p.stock,
+              unit: p.unit
+            }
+          })
+        )
+      })
+      .catch(() => setProducts(mockProducts))
+      .finally(() => setLoading(false))
+  }, [user, navigate])
 
   const handleQuickAdd = (product, e) => {
     e.stopPropagation()

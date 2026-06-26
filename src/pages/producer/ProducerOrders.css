@@ -549,7 +549,6 @@
   .orders-stats {
     grid-template-columns: 1fr;
   }
-}
 
   .order-card-header {
     flex-direction: column;

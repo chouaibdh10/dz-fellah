@@ -749,11 +749,11 @@
   background-clip: text;
 }
 
-[data-theme="dark"] .welcome-subtitle {
+[data-theme="dark"] .welcome-text {
   color: #a0a0a0;
 }
 
-[data-theme="dark"] .date-badge {
+[data-theme="dark"] .greeting-date {
   background: rgba(74, 222, 128, 0.15);
   color: #4ade80;
   border-color: rgba(74, 222, 128, 0.3);

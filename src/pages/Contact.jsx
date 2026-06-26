@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Footer from '../components/Footer'
 import './Contact.css'
 
 const Contact = () => {
@@ -157,7 +156,6 @@ const Contact = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   )
 }

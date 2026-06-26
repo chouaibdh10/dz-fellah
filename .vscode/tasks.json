@@ -1,0 +1,18 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "backend: django runserver",
+			"type": "shell",
+			"command": "C:/Users/acer/Documents/GitHub/chouaibdh-portfolio/dz-fellah/.venv/Scripts/python.exe",
+			"args": [
+				"manage.py",
+				"runserver",
+				"8000"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"group": "test"
+		}
+	]
+}

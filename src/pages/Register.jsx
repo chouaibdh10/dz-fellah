@@ -58,7 +58,7 @@ const Register = () => {
       // Rediriger vers la page de vérification d'email
       navigate('/verify-email')
     } catch (err) {
-      setError('Une erreur est survenue lors de l\'inscription')
+      setError(err?.message || "Une erreur est survenue lors de l'inscription")
     } finally {
       setLoading(false)
     }

@@ -1,0 +1,37 @@
+Watching for file changes with StatReloader
+[30/Dec/2025 13:44:06] "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+[30/Dec/2025 13:44:08] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:44:33] "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+[30/Dec/2025 13:45:26] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:45:26] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:45:45] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:45:45] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:45:45] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:45:54] "OPTIONS /api/auth/register/ HTTP/1.1" 200 0
+[30/Dec/2025 13:45:56] "POST /api/auth/register/ HTTP/1.1" 201 141
+[30/Dec/2025 13:45:56] "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+[30/Dec/2025 13:45:58] "POST /api/auth/login/ HTTP/1.1" 200 779
+[30/Dec/2025 13:47:33] "POST /api/auth/login/ HTTP/1.1" 200 739
+[30/Dec/2025 13:49:29] "POST /api/auth/login/ HTTP/1.1" 200 858
+C:\Users\acer\Documents\GitHub\chouaibdh-portfolio\dz-fellah\backend\orders\views.py changed, reloading.
+Watching for file changes with StatReloader
+[30/Dec/2025 13:53:57] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:53:57] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:53:57] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:53:57] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:53:57] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:54:07] "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+[30/Dec/2025 13:54:07] "OPTIONS /api/auth/login/ HTTP/1.1" 200 0
+[30/Dec/2025 13:54:07] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:54:07] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:54:07] "GET /api/products/ HTTP/1.1" 200 4515
+[30/Dec/2025 13:56:33] "OPTIONS /products/ HTTP/1.1" 200 0
+Not Found: /products/
+[30/Dec/2025 13:56:33] "GET /products/ HTTP/1.1" 404 2664
+Not Found: /products/
+[30/Dec/2025 13:56:33] "GET /products/ HTTP/1.1" 404 2664
+[30/Dec/2025 13:58:11] "OPTIONS /users/client-registeration/ HTTP/1.1" 200 0
+Not Found: /users/client-registeration/
+[30/Dec/2025 13:58:11] "POST /users/client-registeration/ HTTP/1.1" 404 2719
+Not Found: /users/client-registeration/
+[30/Dec/2025 13:58:12] "POST /users/client-registeration/ HTTP/1.1" 404 2719

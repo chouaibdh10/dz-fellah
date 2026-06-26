@@ -56,7 +56,7 @@ const ProducerSidebar = () => {
 
 	return (
 		<header className="producer-navbar">
-			<div className="navbar-container">
+			<div className="producer-navbar-container">
 				{/* Logo & Brand */}
 				<Link to="/producer/dashboard" className="navbar-brand">
 					<span className="brand-icon">🌾</span>
@@ -70,16 +70,16 @@ const ProducerSidebar = () => {
 				</button>
 
 				{/* Navigation Menu */}
-				<nav className={`navbar-menu ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+				<nav className={`producer-navbar-menu ${mobileMenuOpen ? 'mobile-open' : ''}`}>
 					{menuItems.map((item) => (
 						<Link
 							key={item.path}
 							to={item.path}
-							className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+							className={`producer-nav-item ${location.pathname === item.path ? 'active' : ''}`}
 							onClick={() => setMobileMenuOpen(false)}
 						>
-							<span className="nav-icon">{item.icon}</span>
-							<span className="nav-label">{item.label}</span>
+							<span className="producer-nav-icon">{item.icon}</span>
+							<span className="producer-nav-label">{item.label}</span>
 						</Link>
 					))}
 				</nav>
@@ -142,7 +142,7 @@ const ProducerSidebar = () => {
 						)}
 					</div>
 
-					<button onClick={toggleTheme} className="theme-toggle-btn" title="Changer le thème">
+					<button onClick={toggleTheme} className="producer-theme-toggle-btn" title="Changer le thème">
 						{theme === 'light' ? '🌙' : '☀️'}
 					</button>
 
@@ -159,7 +159,7 @@ const ProducerSidebar = () => {
 						</button>
 					</div>
 
-					<button onClick={handleLogout} className="logout-btn" title="Déconnexion">
+					<button onClick={handleLogout} className="producer-logout-btn" title="Déconnexion">
 						<span>🚪</span>
 					</button>
 				</div>

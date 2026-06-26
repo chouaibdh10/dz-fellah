@@ -5,6 +5,7 @@ import { CartProvider } from './context/CartContext'
 import { ProductsProvider } from './context/ProductsContext'
 import { ThemeProvider } from './context/ThemeContext'
 import Navbar from './components/common/Navbar'
+import Footer from './components/Footer'
 import Home from './pages/Home'
 import About from './pages/About'
 import Login from './pages/Login'
@@ -64,22 +65,22 @@ function AppContent() {
           <Route path="/email-verified" element={<EmailVerified />} />
           <Route path="/products" element={<ProductCatalog />} />
           <Route path="/cart" element={<Cart />} />
-        
+
           {/* Routes d'accès rapide */}
           <Route path="/producteur" element={<ProducerAccess />} />
           <Route path="/client" element={<ClientAccess />} />
           <Route path="/administrateur" element={<AdminAccess />} />
-          
+
           {/* Routes Producteur */}
           <Route path="/producer/dashboard" element={<ProducerDashboard />} />
           <Route path="/producer/shop" element={<ProducerShop />} />
           <Route path="/producer/orders" element={<ProducerOrders />} />
           <Route path="/producer/profile" element={<ProducerProfile />} />
-          
+
           {/* Routes Client */}
           <Route path="/client/profile" element={<ClientProfile />} />
           <Route path="/client/orders" element={<ClientOrders />} />
-          
+
           {/* Routes Admin */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<AdminUsers />} />
@@ -90,6 +91,7 @@ function AppContent() {
           <Route path="/admin/settings" element={<AdminSettings />} />
         </Routes>
       </main>
+      {!shouldHideNavbar && <Footer />}
     </div>
   )
 }

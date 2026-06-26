@@ -22,7 +22,9 @@ const Login = () => {
       const user = await login(email, password)
       
       // Redirection automatique selon le type d'utilisateur
-      if (user.userType === 'producer') {
+      if (user.userType === 'admin') {
+        navigate('/admin/dashboard')
+      } else if (user.userType === 'producer') {
         navigate('/producer/dashboard')
       } else {
         navigate('/client/profile')

@@ -128,7 +128,7 @@
 
 .hero-description {
   font-size: 1.15rem;
-  color: var(--text-muted);
+  color: var(--text-medium);
   line-height: 1.8;
   margin-bottom: 1.5rem;
   animation: fadeInUp 0.6s ease-out 0.3s backwards;
@@ -155,7 +155,7 @@
 
 .mini-stat span {
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--text-medium);
 }
 
 .hero-buttons {
@@ -514,137 +514,6 @@
   opacity: 0.15;
 }
 
-.hero-banner-overlay p {
-  font-size: clamp(1.3rem, 3.5vw, 2rem);
-  font-weight: 600;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
-  animation: fadeInUp 1s ease-out 0.3s backwards;
-  letter-spacing: 0.5px;
-  background: linear-gradient(90deg, #fff 0%, #C5E1A5 50%, #fff 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: fadeInUp 1s ease-out 0.3s backwards, shimmer 3s linear infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Scroll indicator */
-.hero-banner-overlay::after {
-  content: '';
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 30px;
-  height: 50px;
-  border: 2px solid rgba(255,255,255,0.5);
-  border-radius: 25px;
-  animation: scrollBounce 2s infinite;
-}
-
-.hero-banner-overlay::after {
-  background: linear-gradient(to bottom, rgba(255,255,255,0.8) 0%, transparent 50%);
-  background-size: 100% 200%;
-  animation: scrollBounce 2s infinite;
-}
-
-@keyframes scrollBounce {
-  0%, 100% { 
-    opacity: 1;
-    background-position: 0% 0%;
-  }
-  50% { 
-    opacity: 0.5;
-    background-position: 0% 100%;
-  }
-}
-
-/* Responsive hero banner */
-@media (max-width: 768px) {
-  .hero-banner {
-    height: 70vh;
-    min-height: 400px;
-  }
-  
-  .hero-banner-overlay::after {
-    display: none;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-banner {
-    height: 60vh;
-    min-height: 350px;
-  }
-  
-  .hero-logo {
-    height: clamp(100px, 35vw, 150px);
-  }
-}
-
-.hero {
-  background: linear-gradient(135deg, #4a7c23 0%, #2d5016 100%);
-  color: white;
-  padding: 6rem 2rem;
-  text-align: center;
-}
-
-.hero-content {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.hero h1 {
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  margin-bottom: 1rem;
-  font-weight: 700;
-}
-
-.hero-subtitle {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  font-weight: 500;
-}
-
-.hero-description {
-  font-size: 1.1rem;
-  margin-bottom: 2.5rem;
-  opacity: 0.9;
-  max-width: 650px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.btn-large {
-  padding: 1rem 2.5rem;
-  font-size: 1.1rem;
-  border-radius: 50px;
-  transition: background-color 0.3s, transform 0.3s;
-}
-
-.btn-large:hover {
-  transform: translateY(-3px);
-}
-
-.seasonal-section {
-  padding: 4rem 2rem;
-}
-
 .section-title {
   font-size: clamp(2rem, 5vw, 2.8rem);
   color: var(--text-dark);
@@ -674,77 +543,6 @@
   font-size: 1.1rem;
   margin-bottom: 3rem;
   margin-top: 1.5rem;
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
-
-.product-card {
-  background: var(--bg-card);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px var(--shadow-green);
-  transition: all 0.3s ease;
-  border: 1px solid var(--border-color);
-}
-
-.product-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 35px rgba(46, 125, 50, 0.18);
-}
-
-.product-image {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-}
-
-.product-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.product-image .badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.product-info {
-  padding: 1.5rem;
-}
-
-.product-info h3 {
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.producer-name {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-}
-
-.product-price {
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: #2E7D32;
-  margin-bottom: 1rem;
-}
-
-.btn-small {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  width: 100%;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
 }
 
 .view-all {
@@ -1584,16 +1382,16 @@
   color: #d0d0d0;
 }
 
-[data-theme="dark"] .testimonial-author strong {
+[data-theme="dark"] .testimonial-header h3 {
   color: #f0f0f0;
 }
 
-[data-theme="dark"] .testimonial-author span {
+[data-theme="dark"] .testimonial-header span {
   color: #4ade80;
 }
 
-[data-theme="dark"] .quote-icon {
-  color: rgba(74, 222, 128, 0.3);
+[data-theme="dark"] .testimonial-card::before {
+  color: rgba(74, 222, 128, 0.15);
 }
 
 /* Features Section Dark Mode */

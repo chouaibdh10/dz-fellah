@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import Footer from '../components/Footer'
 import homeImage from '../photos/home-page.jpg'
 import fieldImage from '../photos/field.jpg'
 import logo from '../photos/DZ-fellah.png'
@@ -322,8 +321,6 @@ const Home = () => {
           </form>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }

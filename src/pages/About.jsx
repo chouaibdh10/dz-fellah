@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Footer from '../components/Footer'
 import logo from '../photos/DZ-fellah.png'
 import fieldImage from '../photos/field.jpg'
 import './About.css'
@@ -234,7 +233,6 @@ const About = () => {
           </div>
         </section>
       </div>
-      <Footer />
     </>
   )
 }

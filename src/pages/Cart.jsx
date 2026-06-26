@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
+import { api } from '../services/api'
 import ClientLayout from '../components/client/ClientLayout'
 import './Cart.css'
 
@@ -34,10 +35,24 @@ const Cart = () => {
       return
     }
 
-    // TODO: Créer la commande via API
-    alert('Commande passée avec succès! Vous recevrez une confirmation par email.')
-    clearCart()
-    navigate('/client/orders')
+    const payload = {
+      address: user?.address || '',
+      items: cart.map((item) => ({
+        product_id: item.id,
+        quantity: item.quantity
+      }))
+    }
+
+    api.orders
+      .create(payload)
+      .then(() => {
+        alert('Commande passée avec succès! Vous recevrez une confirmation par email.')
+        clearCart()
+        navigate('/client/orders')
+      })
+      .catch((err) => {
+        alert(err?.message || 'Erreur lors de la commande')
+      })
   }
 
   if (!user) {

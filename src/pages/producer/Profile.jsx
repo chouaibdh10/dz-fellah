@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import ProducerLayout from '../../components/producer/ProducerLayout'
-import '../client/Profile.css'
 import './ProducerProfile.css'
 
 const ProducerProfile = () => {

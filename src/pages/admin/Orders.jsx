@@ -1,59 +1,43 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import AdminLayout from '../../components/admin/AdminLayout'
+import { api } from '../../services/api'
 import './AdminOrders.css'
 
 const Orders = () => {
   const [filterStatus, setFilterStatus] = useState('all')
-  const [orders, setOrders] = useState([
-    {
-      id: '#CMD-001',
-      customer: 'Ahmed Benali',
-      date: '2024-12-20',
-      items: 5,
-      total: 4500,
-      status: 'pending',
-      payment: 'paid'
-    },
-    {
-      id: '#CMD-002',
-      customer: 'Karim Meziane',
-      date: '2024-12-20',
-      items: 3,
-      total: 2800,
-      status: 'processing',
-      payment: 'paid'
-    },
-    {
-      id: '#CMD-003',
-      customer: 'Sarah Lahouel',
-      date: '2024-12-19',
-      items: 8,
-      total: 6200,
-      status: 'shipped',
-      payment: 'paid'
-    },
-    {
-      id: '#CMD-004',
-      customer: 'Mohamed Alaoui',
-      date: '2024-12-19',
-      items: 2,
-      total: 1500,
-      status: 'delivered',
-      payment: 'paid'
-    },
-    {
-      id: '#CMD-005',
-      customer: 'Amina Saidi',
-      date: '2024-12-18',
-      items: 4,
-      total: 3400,
-      status: 'cancelled',
-      payment: 'refunded'
-    }
-  ])
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const filteredOrders = orders.filter(order => 
-    filterStatus === 'all' || order.status === filterStatus
+  useEffect(() => {
+    setLoading(true)
+    api.orders
+      .list()
+      .then((list) => {
+        const mapped = list.map((o) => {
+          const itemsCount = (o.items || []).reduce((sum, it) => sum + Number(it.quantity), 0)
+          const total = (o.items || []).reduce(
+            (sum, it) => sum + Number(it.unit_price) * Number(it.quantity),
+            0
+          )
+          return {
+            id: `#CMD-${String(o.id).padStart(3, '0')}`,
+            rawId: o.id,
+            customer: o.client_name || o.client_email,
+            date: o.created_at,
+            items: itemsCount,
+            total,
+            status: o.status,
+            payment: 'paid'
+          }
+        })
+        setOrders(mapped)
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  const filteredOrders = useMemo(
+    () => orders.filter(order => filterStatus === 'all' || order.status === filterStatus),
+    [orders, filterStatus]
   )
 
   const getStatusInfo = (status) => {
@@ -85,9 +69,16 @@ const Orders = () => {
   }
 
   const handleStatusChange = (orderId, newStatus) => {
-    setOrders(orders.map(order => 
-      order.id === orderId ? { ...order, status: newStatus } : order
-    ))
+    const found = orders.find((o) => o.id === orderId)
+    if (!found) return
+    api.orders
+      .setStatus(found.rawId, newStatus)
+      .then((updated) => {
+        setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: updated.status } : o)))
+      })
+      .catch(() => {
+        setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)))
+      })
   }
 
   return (
@@ -180,7 +171,12 @@ const Orders = () => {
 
         {/* Orders List */}
         <div className="orders-list">
-          {filteredOrders.map(order => {
+          {loading ? (
+            <div className="no-results">
+              <p>Chargement...</p>
+            </div>
+          ) : (
+          filteredOrders.map(order => {
             const statusInfo = getStatusInfo(order.status)
             const paymentInfo = getPaymentInfo(order.payment)
             
@@ -239,7 +235,7 @@ const Orders = () => {
                 </div>
               </div>
             )
-          })}
+          }))}
         </div>
 
         {filteredOrders.length === 0 && (

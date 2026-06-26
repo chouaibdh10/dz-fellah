@@ -1,85 +1,74 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ClientLayout from '../../components/client/ClientLayout'
+import { api } from '../../services/api'
 import './Orders.css'
 
 const Orders = () => {
   const [filter, setFilter] = useState('all')
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const orders = [
-    {
-      id: 1,
-      orderNumber: 'CMD-2024-001',
-      date: '2024-01-15',
-      status: 'delivered',
-      producers: [
-        {
-          name: 'Ferme Ben Ahmed',
-          items: [
-            { product: 'Tomates Bio', quantity: 5, unit: 'kg', price: 250 },
-            { product: 'Concombres', quantity: 3, unit: 'kg', price: 180 }
-          ]
-        },
-        {
-          name: 'Verger El Hamri',
-          items: [
-            { product: 'Oranges', quantity: 2, unit: 'kg', price: 180 }
-          ]
-        }
-      ],
-      total: 1970
-    },
-    {
-      id: 2,
-      orderNumber: 'CMD-2024-002',
-      date: '2024-01-10',
-      status: 'in_progress',
-      producers: [
-        {
-          name: 'Rucher Bensalem',
-          items: [
-            { product: 'Miel Local', quantity: 2, unit: 'pot', price: 1200 }
-          ]
-        }
-      ],
-      total: 2400
-    },
-    {
-      id: 3,
-      orderNumber: 'CMD-2024-003',
-      date: '2024-01-05',
-      status: 'pending',
-      producers: [
-        {
-          name: 'Ferme Oasis',
-          items: [
-            { product: 'Huile d\'olive', quantity: 1, unit: 'litre', price: 800 },
-            { product: 'Olives noires', quantity: 2, unit: 'kg', price: 400 }
-          ]
-        }
-      ],
-      total: 1600
-    }
-  ]
+  useEffect(() => {
+    setLoading(true)
+    api.orders
+      .list()
+      .then((list) => {
+        const mapped = list.map((o) => {
+          const total = (o.items || []).reduce(
+            (sum, it) => sum + Number(it.unit_price) * Number(it.quantity),
+            0
+          )
+
+          const byProducer = (o.items || []).reduce((acc, it) => {
+            const name = it.producer_name || it.producer_email || 'Producteur'
+            if (!acc[name]) acc[name] = []
+            acc[name].push({
+              product: it.product_name,
+              quantity: it.quantity,
+              unit: it.product_unit,
+              price: Number(it.unit_price)
+            })
+            return acc
+          }, {})
+
+          return {
+            id: o.id,
+            orderNumber: `CMD-${String(o.id).padStart(6, '0')}`,
+            date: o.created_at,
+            status: o.status,
+            producers: Object.entries(byProducer).map(([name, items]) => ({ name, items })),
+            total
+          }
+        })
+        setOrders(mapped)
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
   const getStatusInfo = (status) => {
     const statusMap = {
       delivered: { text: 'Livrée', class: 'status-delivered', icon: '✅' },
-      in_progress: { text: 'En cours', class: 'status-progress', icon: '🚚' },
+      processing: { text: 'En cours', class: 'status-progress', icon: '🚚' },
+      shipped: { text: 'En cours', class: 'status-progress', icon: '🚚' },
       pending: { text: 'En attente', class: 'status-pending', icon: '⏳' }
     }
     return statusMap[status] || statusMap.pending
   }
 
-  const filteredOrders = filter === 'all' 
-    ? orders 
-    : orders.filter(order => order.status === filter)
+  const filteredOrders = useMemo(() => {
+    if (filter === 'all') return orders
+    if (filter === 'in_progress') {
+      return orders.filter((o) => o.status === 'processing' || o.status === 'shipped')
+    }
+    return orders.filter((o) => o.status === filter)
+  }, [filter, orders])
 
   // Calculate stats
   const stats = {
     total: orders.length,
     pending: orders.filter(o => o.status === 'pending').length,
-    inProgress: orders.filter(o => o.status === 'in_progress').length,
+    inProgress: orders.filter(o => o.status === 'processing' || o.status === 'shipped').length,
     delivered: orders.filter(o => o.status === 'delivered').length
   }
 
@@ -127,7 +116,13 @@ const Orders = () => {
           </div>
 
           {/* Orders List Moderne */}
-          {filteredOrders.length > 0 ? (
+          {loading ? (
+            <div className="no-orders">
+              <div className="no-orders-icon">⏳</div>
+              <h3>Chargement...</h3>
+              <p>Récupération de vos commandes</p>
+            </div>
+          ) : filteredOrders.length > 0 ? (
             <div className="orders-list">
               {filteredOrders.map(order => {
                 const statusInfo = getStatusInfo(order.status)

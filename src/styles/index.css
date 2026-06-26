@@ -94,6 +94,32 @@ body {
   background-color: #5a6268;
 }
 
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #EF5350 0%, #C62828 100%);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(135deg, #C62828 0%, #B71C1C 100%);
+  transform: translateY(-2px);
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
 .card {
   background: var(--bg-card);
   border-radius: 16px;
@@ -220,4 +246,13 @@ label {
 [data-theme="dark"] .btn-outline:hover {
   background: rgba(74, 222, 128, 0.1);
   border-color: #4ade80;
+}
+
+[data-theme="dark"] .btn-danger {
+  background: linear-gradient(135deg, #EF5350 0%, #C62828 100%);
+  color: white;
+}
+
+[data-theme="dark"] .btn-danger:hover {
+  background: linear-gradient(135deg, #C62828 0%, #B71C1C 100%);
 }

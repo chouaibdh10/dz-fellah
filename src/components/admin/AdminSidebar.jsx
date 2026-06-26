@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import './AdminSidebar.css'
 
-const AdminSidebar = () => {
+const AdminSidebar = ({ isOpen = false, onLinkClick }) => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
@@ -13,7 +13,7 @@ const AdminSidebar = () => {
   }
 
   return (
-    <div className="admin-sidebar">
+    <div className={`admin-sidebar ${isOpen ? 'open' : ''}`}>
       <div className="admin-sidebar-header">
         <div className="admin-brand">
           <div className="admin-brand-icon">👑</div>
@@ -24,7 +24,7 @@ const AdminSidebar = () => {
         </div>
       </div>
 
-      <nav className="admin-sidebar-nav">
+      <nav className="admin-sidebar-nav" onClick={onLinkClick}>
         <NavLink to="/admin/dashboard" className={({ isActive }) => isActive ? 'active' : ''}>
           <span className="nav-icon">📊</span>
           <span>Dashboard</span>

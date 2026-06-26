@@ -77,7 +77,7 @@ const ClientSidebar = () => {
 
   return (
     <header className="client-navbar">
-      <div className="navbar-container">
+      <div className="client-navbar-container">
         {/* Logo & Brand */}
         <Link to="/products" className="navbar-brand">
           <span className="brand-icon">🌾</span>
@@ -91,18 +91,18 @@ const ClientSidebar = () => {
         </button>
 
         {/* Navigation Menu */}
-        <nav className={`navbar-menu ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+        <nav className={`client-navbar-menu ${mobileMenuOpen ? 'mobile-open' : ''}`}>
           {menuItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+              className={`client-nav-item ${location.pathname === item.path ? 'active' : ''}`}
               onClick={() => setMobileMenuOpen(false)}
             >
-              <span className="nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
+              <span className="client-nav-icon">{item.icon}</span>
+              <span className="client-nav-label">{item.label}</span>
               {item.badge !== null && item.badge > 0 && (
-                <span className="nav-badge">{item.badge}</span>
+                <span className="client-nav-badge">{item.badge}</span>
               )}
             </Link>
           ))}
@@ -164,7 +164,7 @@ const ClientSidebar = () => {
             )}
           </div>
 
-          <button onClick={toggleTheme} className="theme-toggle-btn" title="Changer le thème">
+          <button onClick={toggleTheme} className="client-theme-toggle-btn" title="Changer le thème">
             {theme === 'light' ? '🌙' : '☀️'}
           </button>
 
@@ -181,7 +181,7 @@ const ClientSidebar = () => {
             </button>
           </div>
 
-          <button onClick={handleLogout} className="logout-btn" title="Déconnexion">
+          <button onClick={handleLogout} className="client-logout-btn" title="Déconnexion">
             <span>🚪</span>
           </button>
         </div>

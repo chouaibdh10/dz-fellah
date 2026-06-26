@@ -1,83 +1,48 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import ProducerLayout from '../../components/producer/ProducerLayout'
+import { api } from '../../services/api'
 import './ProducerOrders.css'
 
 const Orders = () => {
   const { user } = useAuth()
   const [filter, setFilter] = useState('all')
+  const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const orders = [
-    {
-      id: 1,
-      orderNumber: 'CMD-2024-001',
-      customer: 'Ahmed Benali',
-      date: '2024-01-15',
-      status: 'pending',
-      items: [
-        { product: 'Tomates Bio', quantity: 5, unit: 'kg', price: 250 },
-        { product: 'Concombres', quantity: 3, unit: 'kg', price: 180 }
-      ],
-      total: 1790,
-      deliveryAddress: 'Alger, Hydra',
-      phone: '+213 555 12 34 56'
-    },
-    {
-      id: 2,
-      orderNumber: 'CMD-2024-002',
-      customer: 'Fatima Brahimi',
-      date: '2024-01-14',
-      status: 'processing',
-      items: [
-        { product: 'Oranges Fraîches', quantity: 10, unit: 'kg', price: 180 },
-        { product: 'Miel Local', quantity: 2, unit: 'pot', price: 1200 }
-      ],
-      total: 4200,
-      deliveryAddress: 'Oran, Les Plateaux',
-      phone: '+213 555 98 76 54'
-    },
-    {
-      id: 3,
-      orderNumber: 'CMD-2024-003',
-      customer: 'Karim Djebbar',
-      date: '2024-01-12',
-      status: 'delivered',
-      items: [
-        { product: 'Pommes de terre', quantity: 15, unit: 'kg', price: 120 }
-      ],
-      total: 1800,
-      deliveryAddress: 'Constantine, Ville nouvelle',
-      phone: '+213 555 11 22 33'
-    },
-    {
-      id: 4,
-      orderNumber: 'CMD-2024-004',
-      customer: 'Samira Meziane',
-      date: '2024-01-11',
-      status: 'cancelled',
-      items: [
-        { product: 'Courgettes', quantity: 4, unit: 'kg', price: 150 }
-      ],
-      total: 600,
-      deliveryAddress: 'Blida, Centre-ville',
-      phone: '+213 555 44 55 66'
-    },
-    {
-      id: 5,
-      orderNumber: 'CMD-2024-005',
-      customer: 'Yacine Lounis',
-      date: '2024-01-10',
-      status: 'delivered',
-      items: [
-        { product: 'Olives', quantity: 8, unit: 'kg', price: 350 },
-        { product: 'Huile d\'olive', quantity: 1, unit: 'litre', price: 800 }
-      ],
-      total: 3600,
-      deliveryAddress: 'Tizi Ouzou, Nouvelle Ville',
-      phone: '+213 555 77 88 99'
-    }
-  ]
+  useEffect(() => {
+    setLoading(true)
+    api.orders
+      .list()
+      .then((list) => {
+        const mapped = list.map((o) => {
+          const total = (o.items || []).reduce(
+            (sum, it) => sum + Number(it.unit_price) * Number(it.quantity),
+            0
+          )
+
+          return {
+            id: o.id,
+            orderNumber: `CMD-${String(o.id).padStart(6, '0')}`,
+            customer: o.client_name || o.client_email,
+            date: o.created_at,
+            status: o.status,
+            items: (o.items || []).map((it) => ({
+              product: it.product_name,
+              quantity: it.quantity,
+              unit: it.product_unit,
+              price: Number(it.unit_price)
+            })),
+            total,
+            deliveryAddress: o.address || o.client_address || '',
+            phone: o.client_phone || ''
+          }
+        })
+        setOrders(mapped)
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
   const getStatusInfo = (status) => {
     const statusMap = {
@@ -90,9 +55,15 @@ const Orders = () => {
   }
 
   const handleStatusChange = (orderId, newStatus) => {
-    // TODO: Appeler l'API pour changer le statut
-    console.log(`Changement de statut de la commande ${orderId} vers ${newStatus}`)
-    alert(`Statut mis à jour avec succès !`)
+    api.orders
+      .setStatus(orderId, newStatus)
+      .then((updated) => {
+        setOrders((prev) =>
+          prev.map((o) => (o.id === orderId ? { ...o, status: updated.status } : o))
+        )
+        alert('Statut mis à jour avec succès !')
+      })
+      .catch((err) => alert(err?.message || 'Erreur lors de la mise à jour'))
   }
 
   const filteredOrders = filter === 'all' 
@@ -199,7 +170,13 @@ const Orders = () => {
 
         {/* Orders List Moderne */}
         <div className="orders-list">
-          {filteredOrders.length === 0 ? (
+          {loading ? (
+            <div className="no-orders">
+              <div className="no-orders-icon">⏳</div>
+              <h3>Chargement...</h3>
+              <p>Récupération des commandes</p>
+            </div>
+          ) : filteredOrders.length === 0 ? (
             <div className="no-orders">
               <div className="no-orders-icon">📭</div>
               <h3>Aucune commande trouvée</h3>
