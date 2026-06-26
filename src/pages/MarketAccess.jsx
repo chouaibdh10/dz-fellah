@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import ClientLayout from '../components/client/ClientLayout'
-import './MarketAccess.css'
+import '../styles/MarketAccess.css'
+import { shopsAPI } from '../utils/api'
+
+const buildLocationLabel = (shop) => {
+  const parts = []
+  if (shop?.address) parts.push(shop.address)
+  if (shop?.producer_city) parts.push(shop.producer_city)
+  if (shop?.producer_wilaya_label) parts.push(shop.producer_wilaya_label)
+  return parts.filter(Boolean).join(', ')
+}
 
 const MarketAccess = () => {
   const navigate = useNavigate()
@@ -13,10 +22,16 @@ const MarketAccess = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedWilaya, setSelectedWilaya] = useState('all')
 
-  const wilayas = [
-    'Alger', 'Blida', 'Tipaza', 'Boumerdès', 'Médéa', 'Oran', 'Tlemcen',
-    'Sétif', 'Constantine', 'Annaba', 'Biskra', 'Tizi Ouzou', 'Béjaïa'
-  ]
+  const wilayas = Array.from(
+    new Set(
+      markets
+        .map((s) => ({ code: s.producer_wilaya, label: s.producer_wilaya_label || s.producer_wilaya }))
+        .filter((w) => w.code)
+        .map((w) => JSON.stringify(w))
+    )
+  )
+    .map((s) => JSON.parse(s))
+    .sort((a, b) => String(a.label).localeCompare(String(b.label)))
 
   useEffect(() => {
     if (!user) {
@@ -24,121 +39,35 @@ const MarketAccess = () => {
       return
     }
 
-    // Mock markets data
-    const mockMarkets = [
-      {
-        id: 1,
-        name: 'Marché Agricole Blida',
-        phone: '+213 541 98 76 54',
-        location: 'Blida, Algérie',
-        wilaya: 'Blida',
-        description: 'Marché principal pour les produits agricoles de la région de Blida',
-        producersCount: 45,
-        productsCount: 120,
-        hours: 'Lundi - Dimanche: 06:00 - 18:00',
-        image: 'https://images.unsplash.com/photo-1488459716781-6918f33427d7?w=400',
-        specialties: ['Tomates', 'Oranges', 'Poivrons', 'Oignons']
-      },
-      {
-        id: 2,
-        name: 'Marché Apicole Kabylie',
-        phone: '+213 534 55 66 77',
-        location: 'Tizi Ouzou, Algérie',
-        wilaya: 'Tizi Ouzou',
-        description: 'Spécialisé dans les produits apicoles et miel',
-        producersCount: 28,
-        productsCount: 85,
-        hours: 'Samedi - Jeudi: 08:00 - 17:00',
-        image: 'https://images.unsplash.com/photo-1537640521293-c7b1f1b20407?w=400',
-        specialties: ['Miel', 'Propolis', 'Pollen', 'Pains d\'épices']
-      },
-      {
-        id: 3,
-        name: 'Marché Légumes Médéa',
-        phone: '+213 541 77 88 99',
-        location: 'Médéa, Algérie',
-        wilaya: 'Médéa',
-        description: 'Grand marché de légumes frais et produits biologiques',
-        producersCount: 52,
-        productsCount: 150,
-        hours: 'Lundi - Samedi: 06:00 - 19:00',
-        image: 'https://images.unsplash.com/photo-1488895714781-ce4cc2b98009?w=400',
-        specialties: ['Pommes de terre', 'Carottes', 'Courges', 'Oignons']
-      },
-      {
-        id: 4,
-        name: 'Marché Dattes Sahara',
-        phone: '+213 545 11 22 33',
-        location: 'Biskra, Algérie',
-        wilaya: 'Biskra',
-        description: 'Marché spécialisé dans les dattes et fruits secs',
-        producersCount: 38,
-        productsCount: 95,
-        hours: 'Mardi - Dimanche: 07:00 - 19:00',
-        image: 'https://images.unsplash.com/photo-1585329967900-85d6455acb84?w=400',
-        specialties: ['Dattes Deglet Nour', 'Dattes Mech Degla', 'Figues sèches', 'Amandes']
-      },
-      {
-        id: 5,
-        name: 'Marché Fruits Oran',
-        phone: '+213 541 55 66 77',
-        location: 'Oran, Algérie',
-        wilaya: 'Oran',
-        description: 'Marché principal pour les fruits frais',
-        producersCount: 35,
-        productsCount: 110,
-        hours: 'Lundi - Samedi: 05:00 - 18:00',
-        image: 'https://images.unsplash.com/photo-1599599810694-6b6e5e3c5e4e?w=400',
-        specialties: ['Pommes', 'Poires', 'Raisins', 'Grenades']
-      },
-      {
-        id: 6,
-        name: 'Marché Herbes Alger',
-        phone: '+213 541 00 11 22',
-        location: 'Alger, Algérie',
-        wilaya: 'Alger',
-        description: 'Marché des herbes aromatiques et épices',
-        producersCount: 40,
-        productsCount: 130,
-        hours: 'Lundi - Dimanche: 07:00 - 20:00',
-        image: 'https://images.unsplash.com/photo-1599599810026-e9a5370d3a6a?w=400',
-        specialties: ['Menthe', 'Persil', 'Coriandre', 'Thym']
-      },
-      {
-        id: 7,
-        name: 'Marché Agrumes Boumerdès',
-        phone: '+213 541 22 33 44',
-        location: 'Boumerdès, Algérie',
-        wilaya: 'Boumerdès',
-        description: 'Spécialisé dans les agrumes de qualité',
-        producersCount: 30,
-        productsCount: 75,
-        hours: 'Lundi - Vendredi: 06:00 - 17:00',
-        image: 'https://images.unsplash.com/photo-1599599810694-6b6e5e3c5e4e?w=400',
-        specialties: ['Citrons', 'Oranges', 'Mandarines', 'Limes']
-      }
-    ]
+    const load = async () => {
+      try {
+        const shops = await shopsAPI.listAll()
+        // Keep existing variable names to minimize UI churn
+        setMarkets(shops || [])
 
-    setMarkets(mockMarkets)
-    
-    // Si un marché est passé en paramètre, l'afficher automatiquement
-    const params = new URLSearchParams(location.search)
-    const marketName = params.get('market')
-    if (marketName) {
-      const market = mockMarkets.find(m => m.name === marketName)
-      if (market) {
-        setSelectedMarket(market)
+        // Si une boutique est passée en paramètre, l'afficher automatiquement
+        const params = new URLSearchParams(location.search)
+        const marketName = params.get('market')
+        if (marketName && shops?.length) {
+          const found = shops.find((s) => s.name === marketName)
+          if (found) setSelectedMarket(found)
+        }
+      } catch {
+        setMarkets([])
       }
     }
+
+    load()
+    
   }, [user, navigate, location.search])
 
   const filteredMarkets = markets.filter(market => {
     const matchesSearch = 
       market.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      market.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      market.specialties.some(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
+      (market.address || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (market.producer_name || '').toLowerCase().includes(searchTerm.toLowerCase())
     
-    const matchesWilaya = selectedWilaya === 'all' || market.wilaya === selectedWilaya
+    const matchesWilaya = selectedWilaya === 'all' || market.producer_wilaya === selectedWilaya
     
     return matchesSearch && matchesWilaya
   })
@@ -149,8 +78,8 @@ const MarketAccess = () => {
         <div className="container">
           {/* Page Header */}
           <div className="market-header">
-            <h1>🏪 Accédez aux Marchés des Producteurs</h1>
-            <p>Découvrez les marchés locaux et contactez les producteurs directement</p>
+            <h1>🏪 Boutiques des Producteurs</h1>
+            <p>Découvrez les boutiques et contactez les producteurs directement</p>
           </div>
 
           {/* Search & Filters */}
@@ -169,8 +98,8 @@ const MarketAccess = () => {
               <label>📍 Filtre par Wilaya</label>
               <select value={selectedWilaya} onChange={(e) => setSelectedWilaya(e.target.value)}>
                 <option value="all">Toutes les wilayas</option>
-                {wilayas.map(wilaya => (
-                  <option key={wilaya} value={wilaya}>{wilaya}</option>
+                {wilayas.map((wilaya) => (
+                  <option key={wilaya.code} value={wilaya.code}>{wilaya.label}</option>
                 ))}
               </select>
             </div>
@@ -182,43 +111,30 @@ const MarketAccess = () => {
               {filteredMarkets.map(market => (
                 <div key={market.id} className="market-card">
                   <div className="market-image">
-                    <img src={market.image} alt={market.name} />
+                    {market.photo ? (
+                      <img src={market.photo} alt={market.name} />
+                    ) : (
+                      <div className="market-image" style={{ display: 'grid', placeItems: 'center' }}>
+                        <span style={{ fontWeight: 900 }}>🏪</span>
+                      </div>
+                    )}
                     <div className="market-badge">
-                      <span className="producers-badge">{market.producersCount} producteurs</span>
-                      <span className="products-badge">{market.productsCount} produits</span>
+                      <span className="products-badge">{market.products_count || 0} produits</span>
                     </div>
                   </div>
 
                   <div className="market-info">
                     <h3>{market.name}</h3>
-                    <p className="market-location">📍 {market.location}</p>
+                    <p className="market-location">📍 {buildLocationLabel(market) || '—'}</p>
                     
                     <div className="market-stats">
                       <div className="stat">
-                        <span className="stat-label">Producteurs</span>
-                        <span className="stat-value">{market.producersCount}</span>
-                      </div>
-                      <div className="stat">
                         <span className="stat-label">Produits</span>
-                        <span className="stat-value">{market.productsCount}</span>
+                        <span className="stat-value">{market.products_count || 0}</span>
                       </div>
                     </div>
 
                     <p className="market-description">{market.description}</p>
-
-                    <div className="market-hours">
-                      <strong>⏰ Horaires</strong>
-                      <p>{market.hours}</p>
-                    </div>
-
-                    <div className="market-specialties">
-                      <strong>🌾 Spécialités</strong>
-                      <div className="specialty-tags">
-                        {market.specialties.map((specialty, idx) => (
-                          <span key={idx} className="specialty-tag">{specialty}</span>
-                        ))}
-                      </div>
-                    </div>
 
                     <div className="market-actions">
                       <button 
@@ -228,10 +144,10 @@ const MarketAccess = () => {
                         Plus d'infos
                       </button>
                       <a 
-                        href={`tel:${market.phone}`}
+                        href={market.phone ? `tel:${market.phone}` : undefined}
                         className="btn btn-contact"
                       >
-                        📞 {market.phone}
+                        📞 {market.phone || 'Non disponible'}
                       </a>
                     </div>
                   </div>
@@ -240,7 +156,7 @@ const MarketAccess = () => {
             </div>
           ) : (
             <div className="no-results">
-              <p>❌ Aucun marché trouvé pour votre recherche</p>
+              <p>❌ Aucune boutique trouvée pour votre recherche</p>
             </div>
           )}
 
@@ -256,7 +172,13 @@ const MarketAccess = () => {
                 </button>
 
                 <div className="market-modal-image">
-                  <img src={selectedMarket.image} alt={selectedMarket.name} />
+                  {selectedMarket.photo ? (
+                    <img src={selectedMarket.photo} alt={selectedMarket.name} />
+                  ) : (
+                    <div style={{ height: 220, display: 'grid', placeItems: 'center' }}>
+                      <span style={{ fontWeight: 900 }}>🏪</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="market-modal-content">
@@ -265,42 +187,26 @@ const MarketAccess = () => {
                   <div className="market-modal-details">
                     <div className="detail-item">
                       <strong>📍 Localisation</strong>
-                      <p>{selectedMarket.location}</p>
+                      <p>{buildLocationLabel(selectedMarket) || '—'}</p>
                     </div>
 
                     <div className="detail-item">
                       <strong>📞 Contact</strong>
-                      <p>{selectedMarket.phone}</p>
-                      <a href={`tel:${selectedMarket.phone}`} className="btn btn-call">
-                        Appeler
-                      </a>
-                    </div>
-
-                    <div className="detail-item">
-                      <strong>⏰ Horaires</strong>
-                      <p>{selectedMarket.hours}</p>
+                      <p>{selectedMarket.phone || 'Non disponible'}</p>
+                      {selectedMarket.phone && (
+                        <a href={`tel:${selectedMarket.phone}`} className="btn btn-call">
+                          Appeler
+                        </a>
+                      )}
                     </div>
 
                     <div className="detail-item">
                       <strong>📊 Statistiques</strong>
                       <div className="market-modal-stats">
                         <div className="stat-box">
-                          <span className="stat-number">{selectedMarket.producersCount}</span>
-                          <span className="stat-name">Producteurs</span>
-                        </div>
-                        <div className="stat-box">
-                          <span className="stat-number">{selectedMarket.productsCount}</span>
+                          <span className="stat-number">{selectedMarket.products_count || 0}</span>
                           <span className="stat-name">Produits</span>
                         </div>
-                      </div>
-                    </div>
-
-                    <div className="detail-item">
-                      <strong>🌾 Spécialités du marché</strong>
-                      <div className="specialty-tags">
-                        {selectedMarket.specialties.map((specialty, idx) => (
-                          <span key={idx} className="specialty-tag">{specialty}</span>
-                        ))}
                       </div>
                     </div>
 
@@ -312,10 +218,10 @@ const MarketAccess = () => {
 
                   <div className="market-modal-actions">
                     <a 
-                      href={`tel:${selectedMarket.phone}`}
+                      href={selectedMarket.phone ? `tel:${selectedMarket.phone}` : undefined}
                       className="btn btn-primary btn-large"
                     >
-                      📞 Appeler le marché
+                      📞 Appeler la boutique
                     </a>
                     <button 
                       className="btn btn-secondary btn-large"

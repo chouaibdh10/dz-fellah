@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import './Contact.css'
+import Footer from '../components/Footer'
+import '../styles/Contact.css'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ const Contact = () => {
         <div className="contact-container">
           <div className="contact-info">
             <h2>Informations de contact</h2>
-            
+
             <div className="info-item">
               <span className="info-icon">📍</span>
               <div>
@@ -81,7 +82,7 @@ const Contact = () => {
 
           <div className="contact-form-container">
             <h2>Envoyez-nous un message</h2>
-            
+
             {submitted ? (
               <div className="success-message">
                 <span className="success-icon">✅</span>
@@ -112,7 +113,7 @@ const Contact = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="votre@email.com"
+                      placeholder="exemple@email.com"
                       required
                     />
                   </div>
@@ -156,6 +157,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   )
 }

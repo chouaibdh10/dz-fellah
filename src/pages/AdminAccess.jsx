@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import './MarketAccess.css'
+import '../styles/MarketAccess.css'
 
 const AdminAccess = () => {
   const navigate = useNavigate()

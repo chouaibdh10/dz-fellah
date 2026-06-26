@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
-import './Auth.css'
+import { authAPI } from '../utils/api'
+import '../styles/Auth.css'
 
 const EmailVerified = () => {
-  const [searchParams] = useSearchParams()
-  const token = searchParams.get('token')
+  const { t } = useTranslation()
+  const { uidb64, token } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
   const [verifying, setVerifying] = useState(true)
@@ -14,34 +16,35 @@ const EmailVerified = () => {
 
   useEffect(() => {
     const verifyEmail = async () => {
-      if (!token) {
-        setError('Token de vérification manquant')
+      if (!uidb64 || !token) {
+        setError(t('emailVerified.invalidLink'))
         setVerifying(false)
         return
       }
 
       try {
-        // TODO: Appeler l'API pour vérifier l'email avec le token
-        await new Promise(resolve => setTimeout(resolve, 1500))
+        await authAPI.verifyEmail(uidb64, token)
         setSuccess(true)
         
         // Rediriger après 3 secondes
         setTimeout(() => {
           if (user?.userType === 'producer') {
-            navigate('/producer/dashboard')
-          } else {
+            navigate('/producer/shop')
+          } else if (user?.userType === 'client' || user?.user_type === 'client') {
             navigate('/products')
+          } else {
+            navigate('/login')
           }
         }, 3000)
       } catch (err) {
-        setError('Erreur lors de la vérification. Le lien a peut-être expiré.')
+        setError(err?.message || t('emailVerified.verifyError'))
       } finally {
         setVerifying(false)
       }
     }
 
     verifyEmail()
-  }, [token, navigate, user])
+  }, [token, uidb64, navigate, user])
 
   if (verifying) {
     return (
@@ -50,8 +53,8 @@ const EmailVerified = () => {
           <div className="verify-icon loading">
             ⏳
           </div>
-          <h1 className="auth-title">Vérification en cours...</h1>
-          <p className="verify-message">Veuillez patienter pendant que nous vérifions votre email.</p>
+          <h1 className="auth-title">{t('emailVerified.verifyingTitle')}</h1>
+          <p className="verify-message">{t('emailVerified.verifyingSubtitle')}</p>
         </div>
       </div>
     )
@@ -64,14 +67,14 @@ const EmailVerified = () => {
           <div className="verify-icon error">
             ❌
           </div>
-          <h1 className="auth-title">Erreur de vérification</h1>
+          <h1 className="auth-title">{t('emailVerified.errorTitle')}</h1>
           <p className="verify-message error-text">{error}</p>
           <div className="verify-actions">
             <Link to="/verify-email" className="btn btn-primary">
-              Renvoyer l'email
+              {t('emailVerified.resend')}
             </Link>
             <Link to="/login" className="btn btn-secondary">
-              Retour à la connexion
+              {t('emailVerified.backToLogin')}
             </Link>
           </div>
         </div>
@@ -86,10 +89,10 @@ const EmailVerified = () => {
           ✅
         </div>
         
-        <h1 className="auth-title">Email vérifié avec succès !</h1>
+        <h1 className="auth-title">{t('emailVerified.successTitle')}</h1>
         
         <p className="verify-message">
-          Votre compte a été activé. Vous pouvez maintenant profiter de toutes les fonctionnalités de DZ-Fellah.
+          {t('emailVerified.successMessage')}
         </p>
 
         <div className="success-animation">
@@ -99,7 +102,7 @@ const EmailVerified = () => {
         </div>
 
         <p className="redirect-message">
-          Redirection automatique dans quelques secondes...
+          {t('emailVerified.redirecting')}
         </p>
 
         <div className="verify-actions">
@@ -107,7 +110,7 @@ const EmailVerified = () => {
             to={user?.userType === 'producer' ? '/producer/dashboard' : '/products'} 
             className="btn btn-primary"
           >
-            Continuer
+            {t('emailVerified.continue')}
           </Link>
         </div>
       </div>

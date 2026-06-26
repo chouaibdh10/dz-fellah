@@ -1,26 +1,28 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
-import { api } from '../services/api'
 import ClientLayout from '../components/client/ClientLayout'
-import './Cart.css'
+import '../styles/Cart.css'
 
 const Cart = () => {
-  const { cart, updateQuantity, removeFromCart, getTotalPrice, clearCart } = useCart()
-  const { user } = useAuth()
+  const { t } = useTranslation()
+  const { cart, updateQuantity, removeFromCart, getTotalPrice, clearCart, checkout, loading } = useCart()
+  const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
 
   useEffect(() => {
-    if (!user) {
-      alert('Veuillez vous connecter pour accéder à votre panier')
+    if (!isAuthenticated) {
+      alert(t('cart.loginToAccess'))
       navigate('/login')
     }
-  }, [user, navigate])
+  }, [isAuthenticated, navigate])
 
   // Grouper les produits par producteur
   const groupedByProducer = cart.reduce((acc, item) => {
-    const producerName = item.producer || 'Producteur inconnu'
+    const producerName = item.shop_name || item.producer || t('cart.unknownProducer')
     if (!acc[producerName]) {
       acc[producerName] = []
     }
@@ -28,35 +30,42 @@ const Cart = () => {
     return acc
   }, {})
 
-  const handleCheckout = () => {
-    if (!user) {
-      alert('Veuillez vous connecter pour passer commande')
+  const handleCheckout = async () => {
+    if (!isAuthenticated) {
+      alert(t('cart.loginToCheckout'))
       navigate('/login')
       return
     }
 
-    const payload = {
-      address: user?.address || '',
-      items: cart.map((item) => ({
-        product_id: item.id,
-        quantity: item.quantity
-      }))
+    try {
+      setCheckoutLoading(true)
+      await checkout({})
+      alert(t('cart.orderSuccess'))
+      navigate('/client/orders')
+    } catch (err) {
+      alert(t('cart.orderErrorPrefix') + err.message)
+    } finally {
+      setCheckoutLoading(false)
     }
-
-    api.orders
-      .create(payload)
-      .then(() => {
-        alert('Commande passée avec succès! Vous recevrez une confirmation par email.')
-        clearCart()
-        navigate('/client/orders')
-      })
-      .catch((err) => {
-        alert(err?.message || 'Erreur lors de la commande')
-      })
   }
 
-  if (!user) {
+  if (!isAuthenticated) {
     return null
+  }
+
+  if (loading) {
+    return (
+      <ClientLayout>
+        <div className="cart-page">
+          <div className="container">
+            <div className="empty-cart">
+              <span className="empty-icon">⏳</span>
+              <h2>{t('cart.loading')}</h2>
+            </div>
+          </div>
+        </div>
+      </ClientLayout>
+    )
   }
 
   if (cart.length === 0) {
@@ -66,10 +75,10 @@ const Cart = () => {
           <div className="container">
             <div className="empty-cart">
               <span className="empty-icon">🛒</span>
-              <h2>Votre panier est vide</h2>
-              <p>Découvrez nos produits frais et locaux</p>
+              <h2>{t('cart.emptyTitle')}</h2>
+              <p>{t('cart.emptySubtitle')}</p>
               <Link to="/products" className="btn btn-primary">
-                Voir les produits
+                {t('cart.viewProducts')}
               </Link>
             </div>
           </div>
@@ -83,16 +92,16 @@ const Cart = () => {
       <div className="cart-page">
         <div className="container">
           <div className="cart-header">
-            <h1 className="page-title">Mon Panier</h1>
-            <button 
+            <h1 className="page-title">{t('cart.title')}</h1>
+            <button
               className="btn btn-danger btn-small"
               onClick={() => {
-                if (confirm('Vider tout le panier?')) {
+                if (confirm(t('cart.confirmClear'))) {
                   clearCart()
                 }
               }}
             >
-              🗑️ Vider le panier
+              🗑️ {t('cart.clear')}
             </button>
           </div>
 
@@ -101,39 +110,37 @@ const Cart = () => {
               {Object.entries(groupedByProducer).map(([producer, items]) => (
                 <div key={producer} className="producer-group">
                   <h3 className="producer-name">👨‍🌾 {producer}</h3>
-                  
+
                   {items.map(item => {
-                    const itemPrice = item.saleType === 'weight' 
-                      ? item.pricePerKg * item.quantity 
-                      : item.price * item.quantity
+                    const itemPrice = item.price * item.quantity
 
                     return (
                       <div key={item.id} className="cart-item">
-                        <img src={item.image} alt={item.name} className="item-image" />
-                        
+                        <img src={item.photo} alt={item.name} className="item-image" />
+
                         <div className="item-details">
                           <h4>{item.name}</h4>
                           <p className="item-price">
-                            {item.saleType === 'weight' 
-                              ? `${item.pricePerKg} DA/kg` 
-                              : `${item.price} DA/${item.unit || 'pièce'}`}
+                            {item.price} DA / {item.sale_unit || 'kg'}
+                            {item.isAntigaspi && <span className="antigaspi-tag"> ({t('cart.antigaspi')})</span>}
                           </p>
                         </div>
 
                         <div className="item-quantity">
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          <button
+                            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
                             className="qty-btn"
-                            disabled={item.quantity <= 1}
+                            disabled={loading}
                           >
                             -
                           </button>
                           <span className="qty-value">
-                            {item.quantity} {item.unit || (item.saleType === 'weight' ? 'kg' : 'pcs')}
+                            {item.quantity} {item.sale_unit || 'kg'}
                           </span>
-                          <button 
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          <button
+                            onClick={() => updateQuantity(item.id, (Number(item.quantity) || 0) + 1)}
                             className="qty-btn"
+                            disabled={loading}
                           >
                             +
                           </button>
@@ -143,14 +150,15 @@ const Cart = () => {
                           <strong>{itemPrice.toLocaleString()} DA</strong>
                         </div>
 
-                        <button 
+                        <button
                           onClick={() => {
-                            if (confirm(`Supprimer ${item.name} du panier?`)) {
+                            if (confirm(t('cart.confirmRemove', { name: item.name }))) {
                               removeFromCart(item.id)
                             }
                           }}
                           className="remove-btn"
-                          title="Supprimer du panier"
+                          title={t('cart.removeTitle')}
+                          disabled={loading}
                         >
                           🗑️
                         </button>
@@ -162,38 +170,40 @@ const Cart = () => {
             </div>
 
             <div className="cart-summary">
-              <h3>Résumé de la commande</h3>
-              
+              <h3>{t('cart.summaryTitle')}</h3>
+
               <div className="summary-row">
-                <span>Nombre d'articles:</span>
+                <span>{t('cart.itemsCount')}:</span>
                 <span><strong>{cart.reduce((sum, item) => sum + item.quantity, 0)}</strong></span>
               </div>
 
               <div className="summary-row">
-                <span>Producteurs:</span>
+                <span>{t('cart.producers')}:</span>
                 <span><strong>{Object.keys(groupedByProducer).length}</strong></span>
               </div>
 
               <div className="summary-divider" />
 
               <div className="summary-row total">
-                <span>Total à payer:</span>
+                <span>{t('cart.totalToPay')}:</span>
                 <strong className="total-amount">{getTotalPrice().toLocaleString()} DA</strong>
               </div>
 
-              <button 
+              <button
                 className="btn btn-primary btn-full"
                 onClick={handleCheckout}
+                disabled={checkoutLoading || loading}
               >
-                ✓ Passer la commande
+                {checkoutLoading ? t('cart.processing') : t('cart.checkout')}
               </button>
 
               <Link to="/products" className="continue-shopping">
-                ← Continuer mes achats
+                ← {t('cart.continueShopping')}
               </Link>
             </div>
           </div>
         </div>
+
       </div>
     </ClientLayout>
   )

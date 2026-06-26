@@ -1,27 +1,67 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { ordersAPI } from '../../utils/api'
+import { WILAYAS } from '../../utils/wilayas'
 import ClientLayout from '../../components/client/ClientLayout'
-import './Profile.css'
+import '../../styles/Profile.css'
 
 const Profile = () => {
-  const { user, updateUserPhoto, updateUserProfile } = useAuth()
+  const navigate = useNavigate()
+  const { user, updateUserPhoto, updateUserProfile, isAuthenticated, refreshProfile } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [photoPreview, setPhotoPreview] = useState(user?.photo || null)
   const [photoFile, setPhotoFile] = useState(null)
   const [activeSection, setActiveSection] = useState('info')
   const fileInputRef = useRef(null)
+  const [orders, setOrders] = useState([])
+  const [ordersLoading, setOrdersLoading] = useState(false)
+  const [ordersError, setOrdersError] = useState(null)
   const [formData, setFormData] = useState({
-    name: user?.name || '',
+    full_name: user?.full_name || user?.name || '',
+    username: user?.username || '',
     email: user?.email || '',
     phone: user?.phone || '',
     address: user?.address || '',
     wilaya: user?.wilaya || '',
-    commune: user?.commune || ''
+    city: user?.city || ''
   })
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login')
+      return
+    }
     setPhotoPreview(user?.photo || null)
-  }, [user?.photo])
+    setFormData({
+      full_name: user?.full_name || user?.name || '',
+      username: user?.username || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+      address: user?.address || '',
+      wilaya: user?.wilaya || '',
+      city: user?.city || ''
+    })
+  }, [user, isAuthenticated, navigate])
+
+  useEffect(() => {
+    const loadOrders = async () => {
+      if (!isAuthenticated) return
+      setOrdersLoading(true)
+      setOrdersError(null)
+      try {
+        const data = await ordersAPI.listOrders()
+        setOrders(Array.isArray(data) ? data : [])
+      } catch (err) {
+        console.error('Failed to load orders:', err)
+        setOrdersError(err?.message || 'Erreur de chargement des commandes')
+      } finally {
+        setOrdersLoading(false)
+      }
+    }
+    loadOrders()
+  }, [isAuthenticated])
 
   const handleChange = (e) => {
     setFormData({
@@ -41,50 +81,68 @@ const Profile = () => {
         alert('La photo ne doit pas dépasser 5 MB')
         return
       }
-      
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const photoDataUrl = reader.result
-        setPhotoPreview(photoDataUrl)
-        setPhotoFile(file)
-        updateUserPhoto(photoDataUrl)
-      }
-      reader.readAsDataURL(file)
+
+      const objectUrl = URL.createObjectURL(file)
+      setPhotoPreview(objectUrl)
+      setPhotoFile(file)
+
+      // Upload immediately to backend
+      updateUserPhoto(file).catch((err) => {
+        console.error('Photo upload failed:', err)
+        alert(err?.message || 'Erreur lors du téléchargement de la photo')
+      })
     }
   }
 
   const handleRemovePhoto = () => {
     setPhotoPreview(null)
     setPhotoFile(null)
-    updateUserPhoto(null)
+    updateUserPhoto(null).catch((err) => {
+      console.error('Remove photo failed:', err)
+      alert(err?.message || 'Erreur lors de la suppression de la photo')
+    })
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    if (photoPreview && photoPreview !== user?.photo) {
-      updateUserPhoto(photoPreview)
+    setLoading(true)
+
+    try {
+      // Only send fields supported by the backend profile serializer
+      await updateUserProfile({
+        full_name: formData.full_name,
+        username: formData.username,
+        phone: formData.phone,
+        wilaya: formData.wilaya,
+        city: formData.city,
+        address: formData.address,
+      })
+      setIsEditing(false)
+      alert('Profil mis à jour avec succès!')
+
+      // Refresh in case backend normalized data
+      refreshProfile?.()
+    } catch (err) {
+      console.error('Profile update error:', err)
+      alert('Erreur lors de la mise à jour: ' + err.message)
+    } finally {
+      setLoading(false)
     }
-    
-    updateUserProfile(formData)
-    setIsEditing(false)
-    alert('Profil mis à jour avec succès!')
   }
 
-  const clientStats = [
-    { icon: '🛒', label: 'Commandes', value: user?.totalOrders || 12, color: 'blue' },
-    { icon: '💰', label: 'Total dépensé', value: `${(user?.totalSpent || 45600).toLocaleString()} DA`, color: 'green' },
-    { icon: '⭐', label: 'Points fidélité', value: user?.loyaltyPoints || 456, color: 'orange' },
-    { icon: '❤️', label: 'Favoris', value: user?.favorites || 8, color: 'red' }
-  ]
+  const totalOrders = orders.length
+  const totalSpent = orders.reduce((sum, o) => {
+    const amount = Number(o?.total_amount)
+    return sum + (Number.isFinite(amount) ? amount : 0)
+  }, 0)
 
-  const recentOrders = [
-    { id: 'CMD-2024-001', date: '12 Déc 2024', status: 'Livré', total: '2,450 DA' },
-    { id: 'CMD-2024-002', date: '08 Déc 2024', status: 'En cours', total: '1,890 DA' },
-    { id: 'CMD-2024-003', date: '01 Déc 2024', status: 'Livré', total: '3,200 DA' }
+  const clientStats = [
+    { icon: '🛒', label: 'Commandes', value: ordersLoading ? '...' : totalOrders, color: 'blue' },
+    { icon: '💰', label: 'Total dépensé', value: ordersLoading ? '...' : `${Math.round(totalSpent).toLocaleString()} DA`, color: 'green' },
+    { icon: '❤️', label: 'Favoris', value: 0, color: 'red' }
   ]
 
   return (
@@ -110,7 +168,7 @@ const Profile = () => {
                     </div>
                   </div>
                   {photoPreview && (
-                    <button 
+                    <button
                       className="avatar-remove-btn"
                       onClick={(e) => { e.stopPropagation(); handleRemovePhoto(); }}
                       title="Supprimer la photo"
@@ -127,12 +185,9 @@ const Profile = () => {
                   />
                 </div>
                 <div className="profile-identity">
-                  <h1 className="profile-name">{user?.name || 'Client'}</h1>
+                  <h1 className="profile-name">{user?.full_name || user?.name || 'Client'}</h1>
                   <p className="profile-email">{user?.email}</p>
                   <div className="profile-badges">
-                    <span className="badge badge-member">
-                      <span>🏆</span> Client fidèle
-                    </span>
                   </div>
                 </div>
               </div>
@@ -159,23 +214,17 @@ const Profile = () => {
             {/* Left Column - Profile Info */}
             <div className="profile-main-card">
               <div className="card-tabs">
-                <button 
+                <button
                   className={`tab-btn ${activeSection === 'info' ? 'active' : ''}`}
                   onClick={() => setActiveSection('info')}
                 >
                   <span>👤</span> Informations
                 </button>
-                <button 
-                  className={`tab-btn ${activeSection === 'security' ? 'active' : ''}`}
-                  onClick={() => setActiveSection('security')}
+                <button
+                  className={`tab-btn ${activeSection === 'verification' ? 'active' : ''}`}
+                  onClick={() => setActiveSection('verification')}
                 >
-                  <span>🔐</span> Sécurité
-                </button>
-                <button 
-                  className={`tab-btn ${activeSection === 'preferences' ? 'active' : ''}`}
-                  onClick={() => setActiveSection('preferences')}
-                >
-                  <span>⚙️</span> Préférences
+                  <span>🆔</span> Vérification
                 </button>
               </div>
 
@@ -189,8 +238,8 @@ const Profile = () => {
                             <label><span>👤</span> Nom complet</label>
                             <input
                               type="text"
-                              name="name"
-                              value={formData.name}
+                              name="full_name"
+                              value={formData.full_name}
                               onChange={handleChange}
                               placeholder="Votre nom complet"
                               required
@@ -198,17 +247,18 @@ const Profile = () => {
                           </div>
 
                           <div className="form-group">
-                            <label><span>📧</span> Email</label>
+                            <label><span>👤</span> Nom d'utilisateur</label>
                             <input
-                              type="email"
-                              name="email"
-                              value={formData.email}
+                              type="text"
+                              name="username"
+                              value={formData.username}
                               onChange={handleChange}
-                              placeholder="votre@email.com"
+                              placeholder="Votre nom d'utilisateur"
                               required
                             />
                           </div>
 
+                          
                           <div className="form-group">
                             <label><span>📱</span> Téléphone</label>
                             <input
@@ -229,14 +279,24 @@ const Profile = () => {
                               onChange={handleChange}
                             >
                               <option value="">Sélectionner une wilaya</option>
-                              <option value="Alger">Alger</option>
-                              <option value="Oran">Oran</option>
-                              <option value="Constantine">Constantine</option>
-                              <option value="Blida">Blida</option>
-                              <option value="Tizi Ouzou">Tizi Ouzou</option>
-                              <option value="Béjaïa">Béjaïa</option>
-                              <option value="Sétif">Sétif</option>
+                                {WILAYAS.map(wilaya => (
+                                  <option key={wilaya.code} value={wilaya.code}>
+                                    {wilaya.code.padStart(2, '0')} - {wilaya.name}
+                                  </option>
+                                ))}
                             </select>
+                          </div>
+
+                          <div className="form-group">
+                            <label><span>🏙️</span> Ville / Commune</label>
+                            <input
+                              type="text"
+                              name="city"
+                              value={formData.city}
+                              onChange={handleChange}
+                              placeholder="Votre ville ou commune"
+                              required
+                            />
                           </div>
 
                           <div className="form-group full-width">
@@ -255,8 +315,8 @@ const Profile = () => {
                           <button type="submit" className="btn btn-primary btn-save">
                             <span>💾</span> Enregistrer les modifications
                           </button>
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             className="btn btn-outline"
                             onClick={() => setIsEditing(false)}
                           >
@@ -271,14 +331,14 @@ const Profile = () => {
                             <div className="info-icon">👤</div>
                             <div className="info-content">
                               <span className="info-label">Nom complet</span>
-                              <span className="info-value">{user?.name || 'Non renseigné'}</span>
+                              <span className="info-value">{user?.full_name || user?.name || 'Non renseigné'}</span>
                             </div>
                           </div>
                           <div className="info-item">
-                            <div className="info-icon">📧</div>
+                            <div className="info-icon">👤</div>
                             <div className="info-content">
-                              <span className="info-label">Email</span>
-                              <span className="info-value">{user?.email}</span>
+                              <span className="info-label">Nom d'utilisateur</span>
+                              <span className="info-value">{user?.username || formData.username || 'Non renseigné'}</span>
                             </div>
                           </div>
                           <div className="info-item">
@@ -295,6 +355,13 @@ const Profile = () => {
                               <span className="info-value">{user?.wilaya || formData.wilaya || 'Non renseignée'}</span>
                             </div>
                           </div>
+                          <div className="info-item">
+                            <div className="info-icon">🏙️</div>
+                            <div className="info-content">
+                              <span className="info-label">Ville / Commune</span>
+                              <span className="info-value">{user?.city || formData.city || 'Non renseignée'}</span>
+                            </div>
+                          </div>
                           <div className="info-item full-width">
                             <div className="info-icon">📍</div>
                             <div className="info-content">
@@ -304,50 +371,29 @@ const Profile = () => {
                           </div>
                         </div>
 
-                        <button 
+                        <button
                           className="btn btn-primary btn-edit"
                           onClick={() => setIsEditing(true)}
                         >
                           <span>✏️</span> Modifier mes informations
                         </button>
+                        <div className="security-item password-section">
+                          <div className="security-info">
+                            <span className="security-icon">🔑</span>
+                            <div>
+                              <h4>Mot de passe</h4>
+                            </div>
+                          </div>
+                          <button 
+                            className="btn btn-outline btn-password-edit"
+                            onClick={() => navigate('/client/change-password')}
+                          >
+                            Modifier
+                          </button>
+                        </div>
                       </div>
                     )}
                   </>
-                )}
-
-                {activeSection === 'security' && (
-                  <div className="security-section">
-                    <div className="security-item">
-                      <div className="security-info">
-                        <span className="security-icon">🔑</span>
-                        <div>
-                          <h4>Mot de passe</h4>
-                          <p>Dernière modification il y a 30 jours</p>
-                        </div>
-                      </div>
-                      <button className="btn btn-outline btn-small">Modifier</button>
-                    </div>
-                    <div className="security-item">
-                      <div className="security-info">
-                        <span className="security-icon">📱</span>
-                        <div>
-                          <h4>Authentification à deux facteurs</h4>
-                          <p>Non activée</p>
-                        </div>
-                      </div>
-                      <button className="btn btn-outline btn-small">Activer</button>
-                    </div>
-                    <div className="security-item">
-                      <div className="security-info">
-                        <span className="security-icon">📋</span>
-                        <div>
-                          <h4>Sessions actives</h4>
-                          <p>1 appareil connecté</p>
-                        </div>
-                      </div>
-                      <button className="btn btn-outline btn-small">Voir</button>
-                    </div>
-                  </div>
                 )}
 
                 {activeSection === 'preferences' && (
@@ -393,56 +439,70 @@ const Profile = () => {
                     </div>
                   </div>
                 )}
+
+                {activeSection === 'verification' && (
+                  <div className="verification-section">
+                    <div className="security-item">
+                      <div className="security-info">
+                        <span className="security-icon">🆔</span>
+                        <div>
+                          <h4>Pièce d'identité</h4>
+                          <p>
+                            {user?.isVerified
+                              ? 'Compte vérifié ✅'
+                              : user?.hasUploadedID
+                                ? 'En cours de vérification ⏳'
+                                : 'Non fournie'}
+                          </p>
+                        </div>
+                      </div>
+                      {!user?.hasUploadedID && (
+                        <div className="upload-actions">
+                          <input
+                            type="file"
+                            id="id-upload"
+                            className="hidden-file-input"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0]
+                              if (!file) return
+                              updateUserProfile({ id_image: file })
+                                .then(() => {
+                                  alert('Pièce d\'identité téléchargée avec succès. En attente de validation.')
+                                  refreshProfile?.()
+                                })
+                                .catch((err) => {
+                                  console.error('ID upload failed:', err)
+                                  alert(err?.message || 'Erreur lors du téléchargement de la pièce')
+                                })
+                            }}
+                          />
+                          <button
+                            className="btn btn-primary btn-small"
+                            onClick={() => document.getElementById('id-upload').click()}
+                          >
+                            Télécharger
+                          </button>
+                        </div>
+                      )}
+                      {user?.hasUploadedID && !user?.isVerified && (
+                        <button className="btn btn-outline btn-small" disabled>En attente</button>
+                      )}
+                    </div>
+                    <div className="info-box verification-info">
+                      <p>ℹ️ La vérification est nécessaire pour passer des commandes.</p>
+                    </div>
+                    {ordersError && (
+                      <div className="info-box" style={{ marginTop: 12 }}>
+                        <p style={{ margin: 0 }}>⚠️ {ordersError}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Right Column - Recent Activity */}
-            <div className="profile-sidebar">
-              <div className="sidebar-card">
-                <h3><span>📦</span> Commandes récentes</h3>
-                <div className="recent-orders-list">
-                  {recentOrders.map((order, index) => (
-                    <div key={index} className="order-item">
-                      <div className="order-info">
-                        <span className="order-id">{order.id}</span>
-                        <span className="order-date">{order.date}</span>
-                      </div>
-                      <div className="order-details">
-                        <span className={`order-status status-${order.status.toLowerCase().replace(' ', '-')}`}>
-                          {order.status}
-                        </span>
-                        <span className="order-total">{order.total}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <a href="/client/orders" className="see-all-link">
-                  Voir toutes les commandes →
-                </a>
-              </div>
-
-              <div className="sidebar-card quick-actions-card">
-                <h3><span>⚡</span> Actions rapides</h3>
-                <div className="quick-actions-grid">
-                  <a href="/products" className="quick-action">
-                    <span className="action-icon">🛒</span>
-                    <span>Catalogue</span>
-                  </a>
-                  <a href="/client/orders" className="quick-action">
-                    <span className="action-icon">📦</span>
-                    <span>Commandes</span>
-                  </a>
-                  <a href="/cart" className="quick-action">
-                    <span className="action-icon">🛍️</span>
-                    <span>Panier</span>
-                  </a>
-                  <a href="/contact" className="quick-action">
-                    <span className="action-icon">💬</span>
-                    <span>Support</span>
-                  </a>
-                </div>
-              </div>
-            </div>
+            
           </div>
         </div>
       </div>

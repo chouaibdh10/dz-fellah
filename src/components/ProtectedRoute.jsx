@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext'
 const ProtectedRoute = ({ children, requiredRole }) => {
   const { user, loading } = useAuth()
 
+  const userRole = user?.userType || user?.user_type
+
   if (loading) {
     return (
       <div style={{
@@ -24,7 +26,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
     return <Navigate to="/login" replace />
   }
 
-  if (requiredRole && user.userType !== requiredRole) {
+  if (requiredRole && userRole !== requiredRole) {
     return <Navigate to="/" replace />
   }
 

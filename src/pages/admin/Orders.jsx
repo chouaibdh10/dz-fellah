@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import AdminLayout from '../../components/admin/AdminLayout'
-import { api } from '../../services/api'
+import { ordersAPI } from '../../utils/api'
 import './AdminOrders.css'
 
 const Orders = () => {
@@ -10,9 +10,9 @@ const Orders = () => {
 
   useEffect(() => {
     setLoading(true)
-    api.orders
-      .list()
-      .then((list) => {
+    ordersAPI.listOrders()
+      .then((data) => {
+        const list = Array.isArray(data) ? data : (data?.results || [])
         const mapped = list.map((o) => {
           const itemsCount = (o.items || []).reduce((sum, it) => sum + Number(it.quantity), 0)
           const total = (o.items || []).reduce(
@@ -22,7 +22,7 @@ const Orders = () => {
           return {
             id: `#CMD-${String(o.id).padStart(3, '0')}`,
             rawId: o.id,
-            customer: o.client_name || o.client_email,
+            customer: o.client_name || o.client_email || o.client?.email || 'Client',
             date: o.created_at,
             items: itemsCount,
             total,
@@ -31,6 +31,10 @@ const Orders = () => {
           }
         })
         setOrders(mapped)
+      })
+      .catch((err) => {
+        console.error('Failed to load admin orders:', err)
+        setOrders([])
       })
       .finally(() => setLoading(false))
   }, [])
@@ -71,12 +75,12 @@ const Orders = () => {
   const handleStatusChange = (orderId, newStatus) => {
     const found = orders.find((o) => o.id === orderId)
     if (!found) return
-    api.orders
-      .setStatus(found.rawId, newStatus)
+    ordersAPI.updateOrderStatus(found.rawId, newStatus)
       .then((updated) => {
         setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: updated.status } : o)))
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error('Failed to update order status:', err)
         setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)))
       })
   }
@@ -136,31 +140,31 @@ const Orders = () => {
         {/* Filters */}
         <div className="orders-controls">
           <div className="filter-tabs">
-            <button 
+            <button
               className={filterStatus === 'all' ? 'active' : ''}
               onClick={() => setFilterStatus('all')}
             >
               Toutes
             </button>
-            <button 
+            <button
               className={filterStatus === 'pending' ? 'active' : ''}
               onClick={() => setFilterStatus('pending')}
             >
               En attente
             </button>
-            <button 
+            <button
               className={filterStatus === 'processing' ? 'active' : ''}
               onClick={() => setFilterStatus('processing')}
             >
               En cours
             </button>
-            <button 
+            <button
               className={filterStatus === 'shipped' ? 'active' : ''}
               onClick={() => setFilterStatus('shipped')}
             >
               Expédiées
             </button>
-            <button 
+            <button
               className={filterStatus === 'delivered' ? 'active' : ''}
               onClick={() => setFilterStatus('delivered')}
             >
@@ -179,7 +183,7 @@ const Orders = () => {
           filteredOrders.map(order => {
             const statusInfo = getStatusInfo(order.status)
             const paymentInfo = getPaymentInfo(order.payment)
-            
+
             return (
               <div key={order.id} className="order-card">
                 <div className="order-header">
@@ -219,7 +223,7 @@ const Orders = () => {
 
                   <div className="order-actions">
                     <button className="btn-view">👁️ Détails</button>
-                    <select 
+                    <select
                       className="status-select"
                       value={order.status}
                       onChange={(e) => handleStatusChange(order.id, e.target.value)}

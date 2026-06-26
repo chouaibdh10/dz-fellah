@@ -1,6 +1,6 @@
 import React from 'react'
 import ClientSidebar from './ClientSidebar'
-import './ClientLayout.css'
+import '../../styles/ClientLayout.css'
 
 const ClientLayout = ({ children }) => {
   return (

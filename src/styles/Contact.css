@@ -1,0 +1,327 @@
+.contact-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-light) 100%);
+}
+
+.contact-hero {
+  background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+  color: white;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.contact-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.contact-hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.contact-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 3rem;
+}
+
+/* Contact Info */
+.contact-info {
+  background: var(--bg-card);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px var(--shadow-green);
+  height: fit-content;
+}
+
+.contact-info h2 {
+  font-size: 1.5rem;
+  color: var(--text-dark);
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.info-item:last-of-type {
+  border-bottom: none;
+  margin-bottom: 2rem;
+}
+
+.info-icon {
+  font-size: 1.5rem;
+  background: var(--bg-light);
+  padding: 0.75rem;
+  border-radius: 12px;
+}
+
+.info-item h3 {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.info-item p {
+  font-size: 1rem;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.social-links h3 {
+  font-size: 1rem;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-icon {
+  font-size: 1.5rem;
+  background: var(--bg-light);
+  padding: 0.75rem;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+  background: #2E7D32;
+  transform: translateY(-3px);
+}
+
+/* Contact Form */
+.contact-form-container {
+  background: var(--bg-card);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px var(--shadow-green);
+}
+
+.contact-form-container h2 {
+  font-size: 1.5rem;
+  color: var(--text-dark);
+  margin-bottom: 2rem;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: var(--bg-light);
+  color: var(--text-dark);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(27, 94, 32, 0.3);
+}
+
+/* Success Message */
+.success-message {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.success-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.success-message h3 {
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.success-message p {
+  color: var(--text-light);
+  margin-bottom: 2rem;
+}
+
+.new-message-btn {
+  background: var(--bg-light);
+  color: var(--text-dark);
+  border: none;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.new-message-btn:hover {
+  background: #C5E1A5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contact-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2rem 1rem;
+  }
+
+  .contact-hero {
+    padding: 3rem 1.5rem;
+  }
+
+  .contact-hero h1 {
+    font-size: 2rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===================================
+   DARK MODE - CONTACT PAGE
+   =================================== */
+[data-theme="dark"] .contact-page {
+  background: linear-gradient(180deg, #1a2e1a 0%, #0d1f0d 50%, #0a1a0a 100%);
+}
+
+[data-theme="dark"] .contact-hero {
+  background: linear-gradient(135deg, #1a2e1a 0%, #0d1f0d 100%);
+  border-bottom: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .contact-info {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .contact-info h2 {
+  color: #f0f0f0;
+  border-bottom-color: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .info-item {
+  border-bottom-color: rgba(74, 222, 128, 0.1);
+}
+
+[data-theme="dark"] .info-icon {
+  background: rgba(74, 222, 128, 0.1);
+}
+
+[data-theme="dark"] .info-item h3 {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .info-item p {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .social-links h3 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .social-icon {
+  background: rgba(74, 222, 128, 0.1);
+}
+
+[data-theme="dark"] .social-icon:hover {
+  background: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .contact-form {
+  background: linear-gradient(145deg, #1a2e1a 0%, #152815 100%);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .contact-form h2 {
+  color: #f0f0f0;
+  border-bottom-color: rgba(74, 222, 128, 0.2);
+}
+
+[data-theme="dark"] .success-message h3 {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .success-message p {
+  color: #a0a0a0;
+}
+
+[data-theme="dark"] .new-message-btn {
+  background: rgba(74, 222, 128, 0.1);
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .new-message-btn:hover {
+  background: rgba(74, 222, 128, 0.2);
+}

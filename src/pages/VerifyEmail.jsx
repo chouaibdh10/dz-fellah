@@ -1,27 +1,17 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useMemo } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
-import './Auth.css'
+import '../styles/Auth.css'
 
 const VerifyEmail = () => {
+  const { t } = useTranslation()
   const { user } = useAuth()
-  const [resending, setResending] = useState(false)
-  const [message, setMessage] = useState('')
+  const [searchParams] = useSearchParams()
 
-  const handleResendEmail = async () => {
-    setResending(true)
-    setMessage('')
-    
-    try {
-      // TODO: Appeler l'API pour renvoyer l'email de vérification
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setMessage('Email de vérification renvoyé avec succès!')
-    } catch (error) {
-      setMessage('Erreur lors de l\'envoi de l\'email')
-    } finally {
-      setResending(false)
-    }
-  }
+  const targetEmail = useMemo(() => {
+    return searchParams.get('email') || user?.email || ''
+  }, [searchParams, user])
 
   return (
     <div className="auth-page">
@@ -33,53 +23,43 @@ const VerifyEmail = () => {
         <h1 className="auth-title">Vérifiez votre email</h1>
         
         <p className="verify-message">
-          Un email de vérification a été envoyé à <strong>{user?.email || 'votre adresse email'}</strong>
+          {t('verifyEmail.sentTo')} <strong>{targetEmail || t('verifyEmail.yourEmail')}</strong>
         </p>
         
         <p className="verify-instructions">
-          Veuillez vérifier votre boîte de réception et cliquer sur le lien de vérification pour activer votre compte.
+          {t('verifyEmail.instructions')}
         </p>
 
         <div className="verify-steps">
           <div className="verify-step">
             <span className="step-number">1</span>
-            <span>Ouvrez votre boîte email</span>
+            <span>{t('verifyEmail.step1')}</span>
           </div>
           <div className="verify-step">
             <span className="step-number">2</span>
-            <span>Trouvez l'email de DZ-Fellah</span>
+            <span>{t('verifyEmail.step2')}</span>
           </div>
           <div className="verify-step">
             <span className="step-number">3</span>
-            <span>Cliquez sur le lien de vérification</span>
+            <span>{t('verifyEmail.step3')}</span>
           </div>
         </div>
 
-        {message && (
-          <div className={`message ${message.includes('succès') ? 'success-message' : 'error-message'}`}>
-            {message}
-          </div>
-        )}
-
-        <button 
-          onClick={handleResendEmail}
-          className="btn btn-secondary"
-          disabled={resending}
-        >
-          {resending ? 'Envoi en cours...' : 'Renvoyer l\'email'}
-        </button>
+        <div className="verify-hint">
+          <p>Si vous n'avez rien reçu, reconnectez-vous : un nouvel email de vérification sera envoyé automatiquement.</p>
+        </div>
 
         <div className="verify-help">
-          <p>Vous n'avez pas reçu l'email ?</p>
+          <p>{t('verifyEmail.noEmail')}</p>
           <ul>
-            <li>Vérifiez votre dossier spam/courrier indésirable</li>
-            <li>Assurez-vous que l'adresse email est correcte</li>
-            <li>Attendez quelques minutes et réessayez</li>
+            <li>{t('verifyEmail.help1')}</li>
+            <li>{t('verifyEmail.help2')}</li>
+            <li>{t('verifyEmail.help3')}</li>
           </ul>
         </div>
 
         <p className="auth-link">
-          <Link to="/login">Retour à la connexion</Link>
+          <Link to="/login">{t('verifyEmail.backToLogin')}</Link>
         </p>
       </div>
     </div>
