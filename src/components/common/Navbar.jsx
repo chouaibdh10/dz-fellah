@@ -44,7 +44,7 @@ const Navbar = () => {
 
         <button
           className="navbar-toggle"
-          aria-label="Menu"
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -122,6 +122,7 @@ const Navbar = () => {
           ) : (
             <>
               <li><Link to="/about" className="nav-link" onClick={closeMenu}>{t('nav.about')}</Link></li>
+              <li><Link to="/products" className="nav-link" onClick={closeMenu}>Produits</Link></li>
               <li><Link to="/login" className="nav-link" onClick={closeMenu}>{t('nav.login')}</Link></li>
               <li><Link to="/register-choice" className="nav-link" onClick={closeMenu}>{t('nav.register')}</Link></li>
 
