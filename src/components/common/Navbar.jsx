@@ -3,14 +3,12 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
-import { useTheme } from '../../context/ThemeContext'
 import NotificationBell from '../notifications/NotificationBell'
 import logo from '../../photos/DZ-fellah.png'
 import '../../styles/Navbar.css'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const { theme, toggleTheme } = useTheme()
   const { t, i18n } = useTranslation()
   const { user, logout, isProducer, isClient, isAdmin } = useAuth()
   const { getItemCount } = useCart()
@@ -90,14 +88,6 @@ const Navbar = () => {
                     <option value="ar">{t('lang.ar')}</option>
                   </select>
                 </div>
-                <button
-                  onClick={toggleTheme}
-                  className="theme-toggle-btn"
-                  aria-label="Toggle theme"
-                  title={theme === 'light' ? t('nav.darkMode') : t('nav.lightMode')}
-                >
-                  {theme === 'light' ? '🌙' : '☀️'}
-                </button>
               </li>
 
               <li className="user-section">
@@ -140,14 +130,6 @@ const Navbar = () => {
                     <option value="ar">{t('lang.ar')}</option>
                   </select>
                 </div>
-                <button
-                  onClick={toggleTheme}
-                  className="theme-toggle-btn"
-                  aria-label="Toggle theme"
-                  title={theme === 'light' ? t('nav.darkMode') : t('nav.lightMode')}
-                >
-                  {theme === 'light' ? '🌙' : '☀️'}
-                </button>
               </li>
             </>
           )}
